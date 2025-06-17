@@ -1,3 +1,6 @@
+### 1.6.6
+- Updated localization files.
+
 ### 1.6.5
 - Chalks can now be enchanted in creative mode with a command.
 - Chalks are now using default item stack damage logic and play default sound when broken
