@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.6.10 - 2025-06-17
+- Updated localization files.
+
 ## 1.6.9 - 2024-12-10
 - Chalks can now be enchanted if added to enchantment tags.
 - Chalks are now using default item stack damage logic and play default sound when broken

@@ -257,6 +257,7 @@ publishMods {
         displayName = "${mod_name} - ${minecraft_version} - ${mod_version}"
 
         minecraftVersions.add(minecraft_version)
+        minecraftVersions.add("1.21.1")
         javaVersions.add(JavaVersion.VERSION_21)
 
         clientRequired = true
@@ -270,5 +271,6 @@ publishMods {
         displayName = "${mod_name} - ${mod_version}"
 
         minecraftVersions.add(minecraft_version)
+        minecraftVersions.add("1.21.1")
     }
 }
