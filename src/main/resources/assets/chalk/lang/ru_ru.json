@@ -34,6 +34,9 @@
 "item.chalk.orange_chalk": "Оранжевый мел",
 "item.chalk.white_chalk": "Белый мел",
 
+"tag.item.c.chalks": "Мел",
+"tag.item.c.glowings": "Светящееся",
+
 "gui.chalk.tooltip.hold_for_details": "§8Удерживайте [§7Shift§8] для подробностей.",
 
 "item.chalk.chalk_box": "Коробка для мела",
