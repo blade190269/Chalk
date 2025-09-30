@@ -9,6 +9,7 @@ import io.github.mortuusars.chalk.core.SymbolOrientation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
@@ -147,7 +148,8 @@ public class ChalkMarkBakedModel implements BakedModel {
                 quad.getTintIndex(),
                 quad.getDirection(),
                 quad.getSprite(),
-                false
+                false,
+                0x00000000
         );
     }
 
@@ -173,7 +175,7 @@ public class ChalkMarkBakedModel implements BakedModel {
     }
 
     private BakedQuad getBakedQuad(@NotNull Direction facing, MarkSymbol symbol, SymbolOrientation symbolRotation) {
-        TextureAtlasSprite texture = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+        TextureAtlasSprite texture = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
                 .apply(symbol.getTextureLocation());
 
         // Tint index is set to 0 (-1 is off) to color the marks with ChalkMarkBlockColor
@@ -192,7 +194,7 @@ public class ChalkMarkBakedModel implements BakedModel {
 
         Vector3f from = FROM_COORDS.get(facing);
         Vector3f to = TO_COORDS.get(facing);
-        return faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, MODEL_STATE, blockPartRotation, true);
+        return FaceBakery.bakeQuad(from, to, blockPartFace, texture, facing, MODEL_STATE, blockPartRotation, true, 0x00000000);
     }
 
     @Override
@@ -210,18 +212,15 @@ public class ChalkMarkBakedModel implements BakedModel {
         return baseModel.usesBlockLight();
     }
 
-    @Override
-    public boolean isCustomRenderer() {
-        return baseModel.isCustomRenderer();
-    }
-
+    @SuppressWarnings("deprecation")
     @Override
     public @NotNull TextureAtlasSprite getParticleIcon() {
         return baseModel.getParticleIcon();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public @NotNull ItemOverrides getOverrides() {
-        return baseModel.getOverrides();
+    public @NotNull ItemTransforms getTransforms() {
+        return baseModel.getTransforms();
     }
 }

@@ -16,7 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -33,13 +33,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Map;
@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings({"deprecation", "NullableProblems"})
 public class ChalkMarkBlock extends Block {
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final EnumProperty<MarkSymbol> SYMBOL = EnumProperty.create("symbol", MarkSymbol.class);
     public static final EnumProperty<SymbolOrientation> ORIENTATION = EnumProperty.create("orientation", SymbolOrientation.class);
     public static final BooleanProperty GLOWING = BooleanProperty.create("glowing");
@@ -93,12 +93,7 @@ public class ChalkMarkBlock extends Block {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader pLevel, BlockPos pPos, BlockState pState) {
-        return new ItemStack(Chalk.Items.getChalk(this.color));
-    }
-
-    @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         if (player.isCreative())
             return new ItemStack(Chalk.Items.getChalk(color));
 
@@ -145,7 +140,7 @@ public class ChalkMarkBlock extends Block {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hHitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hHitResult) {
         ItemStack usedStack = player.getItemInHand(hand);
 
         if (!state.getValue(GLOWING) && usedStack.is(Chalk.Tags.Items.GLOWINGS)) {
@@ -158,13 +153,13 @@ public class ChalkMarkBlock extends Block {
                 ParticleUtils.spawnParticle(level, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(pos, state.getValue(FACING),
                         0.3f), new Vector3f(0f, 0.03f, 0f), 2);
 
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             else
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -179,13 +174,8 @@ public class ChalkMarkBlock extends Block {
             level.playSound(null, pos, Chalk.SoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
 
             if (level instanceof ServerLevel serverLevel) {
-                int colorValue = ChalkColors.fromDyeColor(color);
-                float R = (colorValue & 0x00FF0000) >> 16;
-                float G = (colorValue & 0x0000FF00) >> 8;
-                float B = (colorValue & 0x000000FF);
-
                 Vector3f centerOffset = PositionUtils.blockCenterOffsetToFace(pos, facing, 0.25f);
-                serverLevel.sendParticles(new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
+                serverLevel.sendParticles(new DustParticleOptions(ChalkColors.fromDyeColor(color), 2f),
                         centerOffset.x(), centerOffset.y(), centerOffset.z(),
                         1, 0.1, 0.1, 0.1, 0.02);
             }
@@ -199,7 +189,7 @@ public class ChalkMarkBlock extends Block {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState p_49928_, BlockGetter p_49929_, BlockPos p_49930_) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
@@ -224,14 +214,14 @@ public class ChalkMarkBlock extends Block {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         if (!state.canSurvive(level, pos)) {
             removeMarkWithEffects(level, pos);
             return;
         }
 
         BlockPos surfacePos = pos.relative(state.getValue(FACING).getOpposite());
-        if (surfacePos.equals(fromPos) && level.getBlockState(surfacePos).getBlock() instanceof GrassBlock) {
+        if (orientation != null && surfacePos.equals(pos.relative(orientation.getFront())) && level.getBlockState(surfacePos).getBlock() instanceof GrassBlock) {
             level.removeBlock(pos, false);
             level.playSound(null, pos, Chalk.SoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
         }

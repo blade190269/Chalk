@@ -19,7 +19,7 @@ public class PositionUtils {
     public static Vector3f blockCenterOffsetToFace(BlockPos blockPos, Direction facing, float offset){
         Vector3f vec = blockCenter(blockPos);
 
-        Vec3i normal = facing.getNormal();
+        Vec3i normal = facing.getUnitVec3i();
         return new Vector3f(vec.x() - (normal.getX() * offset), vec.y() - (normal.getY() * offset), vec.z() - (normal.getZ() * offset));
     }
 }

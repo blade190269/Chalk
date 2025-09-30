@@ -1,6 +1,5 @@
 package io.github.mortuusars.chalk.item;
 
-import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.core.IChalkDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
@@ -8,7 +7,6 @@ import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.data.ChalkColors;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,9 +15,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -56,7 +52,7 @@ public class ChalkItem extends Item implements IChalkDrawingTool {
         }
 
         if (drawMark(drawingContext, drawingContext.createRegularMark(ChalkColors.fromDyeColor(color), false)))
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+            return InteractionResult.SUCCESS_SERVER;
         else if (drawingContext.hasExistingMark())
             return InteractionResult.PASS;
 
@@ -101,13 +97,11 @@ public class ChalkItem extends Item implements IChalkDrawingTool {
             return 64; // Fallback for the case where config is not loaded yet. In datagen for example.
         }
     }
+
     public DyeColor getColor() {
         return this.color;
     }
-    @Override
-    public boolean isRepairable(@NotNull ItemStack stack) {
-        return false;
-    }
+
     @Override
     public boolean isBookEnchantable(@NotNull ItemStack stack, @NotNull ItemStack book) {
         return false;

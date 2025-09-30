@@ -5,7 +5,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.145'
+    id 'net.neoforged.gradle.userdev' version '7.0.160'
     id 'me.modmuss50.mod-publish-plugin' version '0.6.3'
 }
 
@@ -93,7 +93,7 @@ runs {
         systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
     }
 
-    data {
+    clientData {
         // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
         // workingDirectory project.file('run-data')
 
@@ -113,49 +113,13 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
-// All jar files from this folder will be added automatically as runtime mod dependencies
-String extraModsDir = "extra-mods-${minecraft_version}"
-
 dependencies {
-    // Specify the version of Minecraft to use.
-    // Depending on the plugin applied there are several options. We will assume you applied the userdev plugin as shown above.
-    // The group for userdev is net.neoforged, the module name is neoforge, and the version is the same as the neoforge version.
-    // You can however also use the vanilla plugin (net.neoforged.gradle.vanilla) to use a version of Minecraft without the neoforge loader.
-    // And its provides the option to then use net.minecraft as the group, and one of; client, server or joined as the module name, plus the game version as version.
-    // For all intends and purposes: You can treat this dependency as if it is a normal library you would use.
     implementation "net.neoforged:neoforge:${neo_version}"
 
-//    // Locally sourced extra mods for runtime (i.e. testing) - thanks AE2 for this idea
-//    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
-//        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
-//        def versionSep = basename.lastIndexOf('-')
-//        assert versionSep != -1
-//        def artifactId = basename.substring(0, versionSep)
-//        def version = basename.substring(versionSep + 1)
-//        localRuntime fg.deobf("extra-mods:$artifactId:$version")
-//    }
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
 
-    // Example optional mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
-
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation "blank:coolmod-${mc_version}:${coolmod_version}"
-
-    // Example mod dependency using a file as dependency
-    // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
-
-    // Example project dependency using a sister or child project:
-    // implementation project(":myproject")
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -257,7 +221,6 @@ publishMods {
         displayName = "${mod_name} - ${minecraft_version} - ${mod_version}"
 
         minecraftVersions.add(minecraft_version)
-        minecraftVersions.add("1.21.1")
         javaVersions.add(JavaVersion.VERSION_21)
 
         clientRequired = true
@@ -271,6 +234,5 @@ publishMods {
         displayName = "${mod_name} - ${mod_version}"
 
         minecraftVersions.add(minecraft_version)
-        minecraftVersions.add("1.21.1")
     }
 }

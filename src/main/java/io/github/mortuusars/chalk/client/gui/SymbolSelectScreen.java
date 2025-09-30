@@ -22,7 +22,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.NbtUtils;
@@ -173,7 +175,6 @@ public class SymbolSelectScreen extends Screen {
         graphics.fill(x + SYMBOL_SIZE, y, (int)(x + SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS), y + SYMBOL_SIZE, borderColor);
         graphics.fill(x, y + SYMBOL_SIZE, x + SYMBOL_SIZE, (int)(y + SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS), borderColor);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(r, g, b, 1f);
         RenderSystem.enableBlend();
 
@@ -184,7 +185,7 @@ public class SymbolSelectScreen extends Screen {
         poseStack.mulPose(Axis.ZP.rotationDegrees(symbol.getDefaultOrientation().getRotation() + Config.Client.SYMBOL_ROTATION_OFFSETS.get(symbol).get()));
         poseStack.translate(-x - SYMBOL_SIZE / 2f , -y - SYMBOL_SIZE / 2f, 0);
         poseStack.translate(0, 0, 100);
-        graphics.blit(SYMBOL_TEXTURES.get(symbol), x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);
+        graphics.blit(RenderType::guiTextured, SYMBOL_TEXTURES.get(symbol), x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         poseStack.popPose();
@@ -195,11 +196,10 @@ public class SymbolSelectScreen extends Screen {
 
     @SuppressWarnings("DataFlowIssue")
     private void renderBlockSurface(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.applyModelViewMatrix();
         Lighting.setupForFlatItems();
 
         PoseStack posestack1 = new PoseStack();
@@ -229,7 +229,7 @@ public class SymbolSelectScreen extends Screen {
         posestack1.scale(1.0F, -1.0F, 1.0F);
         posestack1.scale(SYMBOL_SIZE, SYMBOL_SIZE, SYMBOL_SIZE);
 
-        MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
         minecraft.getBlockRenderer().renderSingleBlock(surfaceState, posestack1, bufferSource,
                 LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
@@ -237,7 +237,6 @@ public class SymbolSelectScreen extends Screen {
         bufferSource.endBatch();
         RenderSystem.enableDepthTest();
         Lighting.setupFor3DItems();
-        RenderSystem.applyModelViewMatrix();
     }
 
     @Override

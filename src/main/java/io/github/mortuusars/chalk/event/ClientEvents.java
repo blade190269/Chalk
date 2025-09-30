@@ -9,7 +9,6 @@ import io.github.mortuusars.chalk.client.render.ChalkMarkBakedModel;
 import io.github.mortuusars.chalk.client.render.ChalkMarkBlockColor;
 import io.github.mortuusars.chalk.item.component.ChalkBoxContents;
 import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -34,8 +33,8 @@ public class ClientEvents {
         @SubscribeEvent
         private static void clientSetup(FMLClientSetupEvent event) {
             event.enqueueWork(() -> {
-                ItemProperties.register(Chalk.Items.CHALK_BOX.get(), ChalkBoxItem.SELECTED_PROPERTY,
-                        (stack, level, entity, damage) -> Chalk.Items.CHALK_BOX.get().getSelectedChalkColor(stack));
+//                ItemProperties.register(Chalk.Items.CHALK_BOX.get(), ChalkBoxItem.SELECTED_PROPERTY,
+//                        (stack, level, entity, damage) -> Chalk.Items.CHALK_BOX.get().getSelectedChalkColor(stack));
             });
         }
 
@@ -49,13 +48,13 @@ public class ClientEvents {
             Chalk.Blocks.MARKS.forEach((color, block) -> {
                 for (BlockState blockState : block.get().getStateDefinition().getPossibleStates()) {
                     ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
-                    BakedModel existingModel = event.getModels().get(variantMRL);
+                    BakedModel existingModel = event.getBakingResult().blockStateModels().get(variantMRL);
 
                     if (existingModel instanceof ChalkMarkBakedModel)
                         Chalk.LOGGER.warn("Tried to replace {} model twice", block);
                     else if (existingModel != null) {
                         ChalkMarkBakedModel customModel = new ChalkMarkBakedModel(existingModel);
-                        event.getModels().put(variantMRL, customModel);
+                        event.getBakingResult().blockStateModels().put(variantMRL, customModel);
                     }
                     else
                         Chalk.LOGGER.warn("{} model not found. ChalkMarkBakedModel would not be added for this blockstate.", variantMRL);

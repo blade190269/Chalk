@@ -39,13 +39,8 @@ public class ParticleUtils {
     /**
      * Spawns a color dust particles at the blockPos, close to the specified face.
      */
-    public static void spawnColorDustParticles(DyeColor color, Level level, BlockPos pos, Direction face){
-        int colorValue = ChalkColors.fromDyeColor(color);
-        float R = (colorValue & 0x00FF0000) >> 16;
-        float G = (colorValue & 0x0000FF00) >> 8;
-        float B = (colorValue & 0x000000FF);
-
-        ParticleUtils.spawnParticle(level, new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
+    public static void spawnColorDustParticles(DyeColor color, Level level, BlockPos pos, Direction face) {
+        ParticleUtils.spawnParticle(level, new DustParticleOptions(ChalkColors.fromDyeColor(color), 2f),
                 PositionUtils.blockCenterOffsetToFace(pos, face, 0.25f), 1);
     }
 }

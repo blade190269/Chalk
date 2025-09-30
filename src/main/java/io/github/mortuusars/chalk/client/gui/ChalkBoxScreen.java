@@ -50,7 +50,7 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
             if (!slot.mayPickup(player) && !slot.isActive()) {
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
-                graphics.blit(TEXTURE, leftPos + slot.x - 1, topPos + slot.y - 1, 176, 36, 20, 20);
+                graphics.blit(RenderType::guiTextured, TEXTURE, leftPos + slot.x - 1, topPos + slot.y - 1, 176f, 36f, 20, 20, 256, 256);
                 graphics.renderFakeItem(slot.getItem(), leftPos + slot.x, topPos + slot.y);
                 graphics.fill(RenderType.guiGhostRecipeOverlay(), leftPos + slot.x - 1, topPos + slot.y - 1,
                         leftPos + slot.x + 15, topPos + slot.y + 15, 0x40FFFFFF);
@@ -63,33 +63,33 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.blit(TEXTURE, getGuiLeft(), getGuiTop(), 0, 0, imageWidth, imageHeight);
+        graphics.blit(RenderType::guiTextured, TEXTURE, getGuiLeft(), getGuiTop(), 0, 0, imageWidth, imageHeight, 256, 256);
 
         renderChalkSlots(graphics, 52, getMenu().isGlowingEnabled() ? 17 : 32);
 
         if (getMenu().isGlowingEnabled()) {
             // Bar + Slot
-            graphics.blit(TEXTURE, getGuiLeft() + 52, getGuiTop() + 57, 0, 217, 72, 28);
+            graphics.blit(RenderType::guiTextured, TEXTURE, getGuiLeft() + 52, getGuiTop() + 57, 0, 217, 72, 28, 256, 256);
 
             Slot slot = getMenu().slots.get(ChalkBoxItem.GLOWINGS_SLOT_INDEX);
             if (slot.getItem().isEmpty()) {
-                graphics.blit(TEXTURE, getGuiLeft() + slot.x - 1, getGuiTop() + slot.y - 1, 176, 18, 18, 18);
+                graphics.blit(RenderType::guiTextured, TEXTURE, getGuiLeft() + slot.x - 1, getGuiTop() + slot.y - 1, 176, 18, 18, 18, 256, 256);
             }
 
             // Fill
             int barSize = (int) Math.ceil((Math.min(getMenu().getGlowAmount(), maxGlowingUses) / (float) maxGlowingUses) * GLOWING_BAR_WIDTH);
             int glowingBarFillLevel = Math.min(GLOWING_BAR_WIDTH, barSize);
-            graphics.blit(TEXTURE, getGuiLeft() + 52, getGuiTop() + 57, 72, 217, glowingBarFillLevel, 5);
+            graphics.blit(RenderType::guiTextured, TEXTURE, getGuiLeft() + 52, getGuiTop() + 57, 72, 217, glowingBarFillLevel, 5, 256, 256);
         }
     }
 
     protected void renderChalkSlots(GuiGraphics graphics, int x, int y) {
-        graphics.blit(TEXTURE, getGuiLeft() + x, getGuiTop() + y, 0, 180, 72, 36);
+        graphics.blit(RenderType::guiTextured, TEXTURE, getGuiLeft() + x, getGuiTop() + y, 0, 180, 72, 36, 256, 256);
 
         for (int slotIndex = 0; slotIndex < ChalkBoxItem.CHALK_SLOTS; slotIndex++) {
             Slot slot = getMenu().slots.get(slotIndex);
             if (slot.getItem().isEmpty()) {
-                graphics.blit(TEXTURE, getGuiLeft() + slot.x - 1, getGuiTop() + slot.y - 1, 176, 0, 18, 18);
+                graphics.blit(RenderType::guiTextured, TEXTURE, getGuiLeft() + slot.x - 1, getGuiTop() + slot.y - 1, 176, 0, 18, 18, 256, 256);
             }
         }
     }

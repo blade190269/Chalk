@@ -106,8 +106,7 @@ public class Chalk {
             for (DyeColor color : ChalkColors.COLORS.keySet()) {
                 CHALKS.put(color, ITEMS.register(color + "_chalk", () -> new ChalkItem(color, new Item.Properties()
                         .stacksTo(1)
-                        .durability(64)
-                        .setNoRepair())));
+                        .durability(64))));
             }
         }
 
@@ -128,7 +127,7 @@ public class Chalk {
     }
 
     public static class DataComponents {
-        private static final DeferredRegister.DataComponents DATA_COMPONENT_TYPES = DeferredRegister.createDataComponents(Chalk.ID);
+        private static final DeferredRegister.DataComponents DATA_COMPONENT_TYPES = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Chalk.ID);
 
         public static final DataComponentType<ChalkBoxContents> CHALK_BOX_CONTENTS = register("chalk_box_contents",
                 builder -> builder.persistent(ChalkBoxContents.CODEC).networkSynchronized(ChalkBoxContents.STREAM_CODEC).cacheEncoding());

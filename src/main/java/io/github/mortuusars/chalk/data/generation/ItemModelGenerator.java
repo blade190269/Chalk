@@ -4,11 +4,11 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.data.ChalkColors;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.DyeColor;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+//import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+//import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public class ItemModelGenerator extends ItemModelProvider {
-    public ItemModelGenerator(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+public class ItemModelGenerator /*extends ItemModelProvider*/ {
+    /*public ItemModelGenerator(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         super(generator.getPackOutput(), Chalk.ID, existingFileHelper);
     }
 
@@ -24,5 +24,5 @@ public class ItemModelGenerator extends ItemModelProvider {
                     .texture("layer0", "item/chalk_box")
                     .texture("layer1", "item/" + "chalk_box_" + color + "_chalk");
         }
-    }
+    }*/
 }

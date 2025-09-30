@@ -50,7 +50,7 @@ public class ChalkBoxItem extends Item implements IChalkDrawingTool {
     public static final ResourceLocation SELECTED_PROPERTY = Chalk.resource("selected");
 
     public ChalkBoxItem(Properties properties) {
-        super(properties.setNoRepair());
+        super(properties.setNoCombineRepair());
     }
 
     @Override
@@ -145,16 +145,6 @@ public class ChalkBoxItem extends Item implements IChalkDrawingTool {
     }
 
     @Override
-    public boolean isRepairable(@NotNull ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public boolean isEnchantable(@NotNull ItemStack stack) {
-        return false;
-    }
-
-    @Override
     public boolean isBookEnchantable(@NotNull ItemStack stack, @NotNull ItemStack book) {
         return false;
     }
@@ -193,18 +183,18 @@ public class ChalkBoxItem extends Item implements IChalkDrawingTool {
 
         Mark mark = drawingContext.createRegularMark(chalkDrawingTool.getMarkColorValue(selectedChalk), isGlowing(chalkBoxStack));
         if (drawMark(drawingContext, mark)) {
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.FAIL;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand usedHand) {
+    public @NotNull InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand usedHand) {
         ItemStack usedStack = player.getItemInHand(usedHand);
 
         if (!usedStack.is(this)) {
-            return InteractionResultHolder.pass(usedStack);
+            return InteractionResult.PASS;
         }
 
         if (player.isSecondaryUseActive()) {
@@ -212,13 +202,13 @@ public class ChalkBoxItem extends Item implements IChalkDrawingTool {
                 level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS,
                         0.9f, 0.9f + level.random.nextFloat() * 0.2f);
             } else {
-                return InteractionResultHolder.fail(usedStack);
+                return InteractionResult.FAIL;
             }
         } else if (player instanceof ServerPlayer serverPlayer) {
             openGUI(serverPlayer, usedStack);
         }
 
-        return InteractionResultHolder.sidedSuccess(usedStack, level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     public void openGUI(ServerPlayer player, ItemStack chalkBoxStack) {

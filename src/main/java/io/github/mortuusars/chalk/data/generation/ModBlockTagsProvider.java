@@ -1,19 +1,7 @@
 package io.github.mortuusars.chalk.data.generation;
 
-import io.github.mortuusars.chalk.Chalk;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.concurrent.CompletableFuture;
-
-public class ModBlockTagsProvider extends BlockTagsProvider {
-    public ModBlockTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
+public class ModBlockTagsProvider /*extends BlockTagsProvider*/ {
+    /*public ModBlockTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
         super(generator.getPackOutput(), provider, Chalk.ID, existingFileHelper);
     }
 
@@ -33,5 +21,5 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
                 .add(Blocks.SCULK_SHRIEKER)
                 .add(Blocks.SCULK_SENSOR)
         ;
-    }
+    }*/
 }

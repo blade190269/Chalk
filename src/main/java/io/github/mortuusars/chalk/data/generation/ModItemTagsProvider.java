@@ -1,21 +1,7 @@
 package io.github.mortuusars.chalk.data.generation;
 
-import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.data.ChalkColors;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.concurrent.CompletableFuture;
-
-public class ModItemTagsProvider extends ItemTagsProvider {
-    public ModItemTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider,
+public class ModItemTagsProvider /*extends ItemTagsProvider*/ {
+    /*public ModItemTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider,
                                BlockTagsProvider blockTagsProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(generator.getPackOutput(), lookupProvider, blockTagsProvider.contentsGetter(), Chalk.ID, existingFileHelper);
     }
@@ -34,5 +20,5 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         for (DyeColor color : ChalkColors.COLORS.keySet()){
             tag(color.getTag()).add(Chalk.Items.getChalk(color));
         }
-    }
+    }*/
 }

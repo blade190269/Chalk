@@ -37,13 +37,9 @@ public class MarkDrawHelper {
                     Chalk.CriteriaTriggers.MARK_DRAWN.get().trigger(serverPlayer, surfaceMaterialColor, color);
                 });
 
-                float R = (markColor & 0x00FF0000) >> 16;
-                float G = (markColor & 0x0000FF00) >> 8;
-                float B = (markColor & 0x000000FF);
-
                 Vector3f pos = PositionUtils.blockCenterOffsetToFace(markPos, markBlockState.getValue(ChalkMarkBlock.FACING), 0.25f);
 
-                serverLevel.sendParticles(new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
+                serverLevel.sendParticles(new DustParticleOptions(markColor, 2f),
                         pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
                 serverLevel.playSound(null, pos.x(), pos.y(), pos.z(), Chalk.SoundEvents.MARK_DRAW.get(),
                         SoundSource.BLOCKS, 0.7f,  new Random().nextFloat() * 0.2f + 0.8f);
