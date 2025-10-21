@@ -1,6 +1,22 @@
 {
-  "block.chalk.chalk_mark_block": "粉笔标记",
-  
+  "block.chalk.chalk_mark": "粉笔标记",
+  "block.chalk.black_chalk_mark": "黑色粉笔标记",
+  "block.chalk.red_chalk_mark": "红色粉笔标记",
+  "block.chalk.green_chalk_mark": "绿色粉笔标记",
+  "block.chalk.brown_chalk_mark": "棕色粉笔标记",
+  "block.chalk.blue_chalk_mark": "蓝色粉笔标记",
+  "block.chalk.purple_chalk_mark": "紫色粉笔标记",
+  "block.chalk.cyan_chalk_mark": "青色粉笔标记",
+  "block.chalk.light_gray_chalk_mark": "淡灰色粉笔标记",
+  "block.chalk.gray_chalk_mark": "灰色粉笔标记",
+  "block.chalk.pink_chalk_mark": "粉红色粉笔标记",
+  "block.chalk.lime_chalk_mark": "黄绿色粉笔标记",
+  "block.chalk.yellow_chalk_mark": "黄色粉笔标记",
+  "block.chalk.light_blue_chalk_mark": "淡蓝色粉笔标记",
+  "block.chalk.magenta_chalk_mark": "品红色粉笔标记",
+  "block.chalk.orange_chalk_mark": "橙色粉笔标记",
+  "block.chalk.white_chalk_mark": "白色粉笔标记",
+
   "item.chalk.black_chalk": "黑色粉笔",
   "item.chalk.red_chalk": "红色粉笔",
   "item.chalk.green_chalk": "绿色粉笔",
@@ -17,10 +33,14 @@
   "item.chalk.magenta_chalk": "品红色粉笔",
   "item.chalk.orange_chalk": "橙色粉笔",
   "item.chalk.white_chalk": "白色粉笔",
-  
+
+  "gui.chalk.tooltip.hold_for_details": "§8按住[§7Shift§8]查看详情",
+
   "item.chalk.chalk_box": "粉笔盒",
-  "item.chalk.chalk_box.tooltip.drawing_with": "绘制时使用：",
-  "item.chalk.chalk_box.tooltip.open": "<右键打开>",
+  "item.chalk.chalk_box.tooltip.open": "§8[§7右键点击§8]或对空气§8[§7使用§8]打开",
+  "item.chalk.chalk_box.tooltip.insert": "§8[§7右键点击§8]放入物品",
+  "item.chalk.chalk_box.tooltip.change_selected": "对空气§8[§7潜行+使用§8]切换选中的§7粉笔",
+
   "container.chalk.chalk_box": "粉笔盒",
 
   "chalk.subtitles.chalk_broken": "粉笔损坏",
@@ -32,7 +52,7 @@
   "chalk.subtitles.mark_removed": "粉笔标记被擦除",
 
   "gui.chalk.symbol.center": "点",
-  "gui.chalk.symbol.arrow": "箭",
+  "gui.chalk.symbol.arrow": "箭头",
   "gui.chalk.symbol.house": "房子",
   "gui.chalk.symbol.check": "勾",
   "gui.chalk.symbol.cross": "叉",
@@ -41,16 +61,50 @@
   "gui.chalk.symbol.pickaxe": "镐",
 
   "gui.chalk.no_symbols_unlocked": "你还没有学会绘制任何特殊记号",
-  "gui.chalk.unlocked_symbol_message": "你学会了用粉笔绘制 %s ",
 
-  "advancement.chalk.get_skeleton_skull": "骨血相连",
-  "advancement.chalk.get_skeleton_skull.description": "获得一个骷髅头颅",
-  "advancement.chalk.sleep_three_times_in_one_place": "床在家就在",
-  "advancement.chalk.sleep_three_times_in_one_place.description": "连续三晚在同一地点入睡",
-  "advancement.chalk.black_chalk_on_black_block": "独处于黑暗",
-  "advancement.chalk.black_chalk_on_black_block.description": "在黑夜中使用黑色粉笔在黑色方块上绘图",
-  "advancement.chalk.draw_mark_in_maze": "朝这儿走！",
-  "advancement.chalk.draw_mark_in_maze.description": "在迷宫般的结构中绘图",
-  "advancement.chalk.vandalism": "乱涂乱画",
-  "advancement.chalk.vandalism.description": "在村庄中用粉笔绘图"
+  "chat.chalk.symbol_unlocked": "你学会了用粉笔绘制 %s ",
+
+  "advancement.chalk.bound_by_bone.title": "骸骨之契",
+  "advancement.chalk.bound_by_bone.description": "获得一个骷髅头颅",
+  "advancement.chalk.home_is_where_the_bed_is.title": "此心安处",
+  "advancement.chalk.home_is_where_the_bed_is.description": "在同一地点连续入睡三次",
+  "advancement.chalk.this_way.title": "循此轨迹！",
+  "advancement.chalk.this_way.description": "在迷宫结构中用粉笔绘制标记",
+  "advancement.chalk.vandalism.title": "涂鸦艺术",
+  "advancement.chalk.vandalism.description": "在村庄内用粉笔绘制图案",
+  "advancement.chalk.alone_in_the_darkness.title": "至暗独行",
+  "advancement.chalk.alone_in_the_darkness.description": "在漆黑环境中于黑色方块上用黑色粉笔作画",
+
+  "chalk.configuration.Symbols": "符号设置",
+  "chalk.configuration.ChalkBoxGlowingEnabled": "粉笔盒：发光功能",
+  "chalk.configuration.ChalkDurability": "粉笔耐久度",
+  "chalk.configuration.GlowingMarkLightLevel": "发光标记亮度等级",
+  "chalk.configuration.GenerateChalkInLootChests": "在战利品箱中生成粉笔",
+  "chalk.configuration.ChalkBoxAmountPerGlowingItem": "粉笔盒：每个发光物品消耗量",
+
+  "chalk.configuration.SymbolOffsets": "符号偏移量",
+  "chalk.configuration.ChalkBoxTooltipContents": "粉笔盒：提示框内容显示",
+  "chalk.configuration.ChalkBoxTooltipDetails": "粉笔盒：提示框详细信息",
+
+  "chalk.configuration.CrossEnabled": "叉",
+  "chalk.configuration.CrossUnlockAdvancement": "『叉』解锁进度",
+  "chalk.configuration.CheckEnabled": "勾",
+  "chalk.configuration.CheckUnlockAdvancement": "『勾』解锁进度",
+  "chalk.configuration.PickaxeEnabled": "镐",
+  "chalk.configuration.PickaxeUnlockAdvancement": "『镐』解锁进度",
+  "chalk.configuration.HouseEnabled": "房子",
+  "chalk.configuration.HouseUnlockAdvancement": "『房子』解锁进度",
+  "chalk.configuration.SkullEnabled": "骷髅",
+  "chalk.configuration.SkullUnlockAdvancement": "『骷髅』解锁进度",
+  "chalk.configuration.HeartEnabled": "心",
+  "chalk.configuration.HeartUnlockAdvancement": "『心』解锁进度",
+
+  "chalk.configuration.CenterRotationOffset": "『中心点』旋转偏移",
+  "chalk.configuration.CrossRotationOffset": "『叉』旋转偏移",
+  "chalk.configuration.HeartRotationOffset": "『心』旋转偏移",
+  "chalk.configuration.SkullRotationOffset": "『骷髅』旋转偏移",
+  "chalk.configuration.HouseRotationOffset": "『房子』旋转偏移",
+  "chalk.configuration.CheckRotationOffset": "『勾』旋转偏移",
+  "chalk.configuration.PickaxeRotationOffset": "『镐』旋转偏移",
+  "chalk.configuration.ArrowRotationOffset": "『箭头』旋转偏移"
 }
