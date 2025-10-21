@@ -33,9 +33,6 @@
   "item.chalk.magenta_chalk": "品红色粉笔",
   "item.chalk.orange_chalk": "橙色粉笔",
   "item.chalk.white_chalk": "白色粉笔",
-  
-  "tag.item.chalk.chalks": "粉笔",
-  "tag.item.chalk.glowings": "发光",
 
   "gui.chalk.tooltip.hold_for_details": "§8按住[§7Shift§8]查看详情",
 
