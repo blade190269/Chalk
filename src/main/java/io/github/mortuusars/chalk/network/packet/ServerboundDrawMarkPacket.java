@@ -3,7 +3,6 @@ package io.github.mortuusars.chalk.network.packet;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.IDrawingTool;
-import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.utils.MarkDrawHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.NbtUtils;
@@ -55,6 +54,12 @@ public record ServerboundDrawMarkPacket(int color, BlockState blockState, BlockP
 
         if (!(existingState.isAir() || existingState.getBlock() instanceof ChalkMarkBlock)) {
             Chalk.LOGGER.error("Cannot draw at this block.");
+            return true;
+        }
+
+        if (!(blockState.getBlock() instanceof ChalkMarkBlock)) {
+            Chalk.LOGGER.error("Player {} tried to set invalid block state through ServerboundDrawMarkPacket. State: {}",
+                  player.getScoreboardName(), blockState);
             return true;
         }
 

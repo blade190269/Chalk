@@ -1,3 +1,7 @@
+### 1.6.4
+- Fixed potential exploit.
+- Updated localization files.
+
 ### 1.6.3
 - Fixed glow uses being consumed twice per one mark drawn.
 - Fixed glow disappearing when playing on dedicated server. 
