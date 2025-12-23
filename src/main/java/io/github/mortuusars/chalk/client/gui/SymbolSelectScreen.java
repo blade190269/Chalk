@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -283,8 +284,8 @@ public class SymbolSelectScreen extends Screen {
         Mark mark = createMark(symbol, player.getItemInHand(drawingHand));
 
         if (drawingContext.canDraw() && (!drawingContext.hasExistingMark() || drawingContext.shouldMarkReplaceAnother(mark))) {
-            Packets.sendToServer(new ServerboundDrawMarkPacket(mark.color,
-                    NbtUtils.writeBlockState(mark.createBlockState(player.getItemInHand(drawingHand))), drawingContext.getMarkBlockPos(), drawingHand));
+            CompoundTag blockNbt = NbtUtils.writeBlockState(mark.createBlockState(player.getItemInHand(drawingHand)));
+            Packets.sendToServer(new ServerboundDrawMarkPacket(mark.color, blockNbt, drawingContext.getMarkBlockPos(), drawingHand));
             player.swing(drawingHand);
             return true;
         }

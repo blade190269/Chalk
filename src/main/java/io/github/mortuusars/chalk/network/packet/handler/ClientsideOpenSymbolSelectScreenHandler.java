@@ -10,8 +10,9 @@ import java.util.List;
 public class ClientsideOpenSymbolSelectScreenHandler {
     public static void handle(List<MarkSymbol> unlockedSymbols) {
         MarkDrawingContext storedContext = MarkDrawingContext.getStoredContext();
-        if (storedContext == null)
+        if (storedContext == null) {
             throw new IllegalStateException("Stored MarkDrawingContext was null.");
+        }
 
         SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(unlockedSymbols, storedContext);
         Minecraft.getInstance().setScreen(symbolSelectScreen);

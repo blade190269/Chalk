@@ -1,3 +1,7 @@
+### 1.6.7
+- Fixed potential exploit.
+- Updated localization files.
+
 ### 1.6.6
 - Updated localization files.
 

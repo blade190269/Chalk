@@ -5,6 +5,7 @@ import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.utils.MarkDrawHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -60,6 +62,13 @@ public record ServerboundDrawMarkPacket(int color, CompoundTag blockStateNBT, Bl
         }
 
         BlockState blockState = NbtUtils.readBlockState(level.holderLookup(Registries.BLOCK), blockStateNBT);
+
+        if (!(blockState.getBlock() instanceof ChalkMarkBlock)) {
+            Chalk.LOGGER.error("Player {} tried to set invalid block state through ServerboundDrawMarkPacket. State: {}",
+                  player.getScoreboardName(), blockState);
+            return true;
+        }
+
         return MarkDrawHelper.draw(player, level, markBlockPos, blockState, color, drawingHand);
     }
 }
