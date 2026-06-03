@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.6.12 - 2026-06-03
+- Fixed equality checking of `chalk:chalk_box_contents` component.
+
 ## 1.6.11 - 2025-12-23
 - Fixed potential exploit
 - Updated localization files
