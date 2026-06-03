@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.11 - 2025-12-23
+- Fixed potential exploit
+- Updated localization files
+
 ## 1.6.10 - 2025-06-17
 - Updated localization files.
 

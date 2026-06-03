@@ -59,6 +59,12 @@ public record DrawMarkC2SP(int color, CompoundTag blockStateNBT, BlockPos markBl
             }
 
             BlockState blockState = NbtUtils.readBlockState(level.holderLookup(Registries.BLOCK), packet.blockStateNBT());
+
+            if (!(blockState.getBlock() instanceof ChalkMarkBlock)) {
+                Chalk.LOGGER.error("Player {} tried to set invalid block through DrawMarkC2SP. State: {}.", player.getScoreboardName(), blockState);
+                return true;
+            }
+
             return MarkDrawHelper.draw(player, level, packet.markBlockPos(), blockState, packet.color(), packet.drawingHand());
         });
     }
