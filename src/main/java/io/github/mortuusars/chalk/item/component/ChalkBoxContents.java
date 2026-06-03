@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public record ChalkBoxContents(List<ItemStack> items, int glowAmount) implements TooltipComponent {
     public static final ChalkBoxContents EMPTY = new ChalkBoxContents(NonNullList.withSize(ChalkBoxItem.SLOTS, ItemStack.EMPTY), 0);
@@ -46,6 +47,35 @@ public record ChalkBoxContents(List<ItemStack> items, int glowAmount) implements
             }
         }
 
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        ChalkBoxContents that = (ChalkBoxContents) obj;
+
+        if (glowAmount != that.glowAmount()) return false;
+
+        if (items.size() != that.items.size()) return false;
+
+        for (int i = 0; i < items.size(); i++) {
+            if (!ItemStack.isSameItemSameComponents(items.get(i), that.items.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = glowAmount;
+        for (ItemStack stack : items) {
+            result = 31 * result + Objects.hashCode(ItemStack.hashItemAndComponents(stack));
+        }
+        return result;
     }
 
     public int getSelectedChalkIndex() {
