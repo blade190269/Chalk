@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "io.github.mortuusars.chalk.neoforge.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "plugin": "io.github.mortuusars.chalk.neoforge.ChalkMixinPlugin",
+  "client": [
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
