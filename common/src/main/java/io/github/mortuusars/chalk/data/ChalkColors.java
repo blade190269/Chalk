@@ -6,23 +6,23 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ChalkColors {
-    public static final Map<DyeColor, Integer> COLORS = new LinkedHashMap<>(){{
-        put(DyeColor.WHITE, 0xffffff);
-        put(DyeColor.LIGHT_GRAY, 0xadada8);
+    public static final Map<DyeColor, Integer> COLORS = new LinkedHashMap<>() {{ // LinkedHasMap keeps order
+        put(DyeColor.WHITE, 0xFFFFFF);
+        put(DyeColor.LIGHT_GRAY, 0xADADA8);
         put(DyeColor.GRAY, 0x606466);
         put(DyeColor.BLACK, 0x252525);
-        put(DyeColor.BROWN, 0x8a522a);
-        put(DyeColor.RED, 0xeb4a39);
-        put(DyeColor.ORANGE, 0xff8034);
-        put(DyeColor.YELLOW, 0xffd929);
-        put(DyeColor.LIME, 0x9ae437);
-        put(DyeColor.GREEN, 0x51a80b);
-        put(DyeColor.CYAN, 0x1dcac0);
-        put(DyeColor.LIGHT_BLUE, 0x82dbf8);
-        put(DyeColor.BLUE, 0x3b50d2);
-        put(DyeColor.PURPLE, 0xa74cd2);
-        put(DyeColor.MAGENTA, 0xed60e2);
-        put(DyeColor.PINK, 0xee658e);
+        put(DyeColor.BROWN, 0x8A522A);
+        put(DyeColor.RED, 0xEB4A39);
+        put(DyeColor.ORANGE, 0xFF8034);
+        put(DyeColor.YELLOW, 0xFFD929);
+        put(DyeColor.LIME, 0x9AE437);
+        put(DyeColor.GREEN, 0x51A80B);
+        put(DyeColor.CYAN, 0x1DCAC0);
+        put(DyeColor.LIGHT_BLUE, 0x82DBF8);
+        put(DyeColor.BLUE, 0x3B50D2);
+        put(DyeColor.PURPLE, 0xA74CD2);
+        put(DyeColor.MAGENTA, 0xED60E2);
+        put(DyeColor.PINK, 0xEE658E);
     }};
 
     public static int fromDyeColor(DyeColor color) {

@@ -4,12 +4,11 @@ import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.client.ConfigScreenFactory
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.ChalkClient;
 import io.github.mortuusars.chalk.client.gui.ChalkBoxScreen;
-import io.github.mortuusars.chalk.client.render.ChalkMarkBlockColor;
+import io.github.mortuusars.chalk.client.render.MarkBlockColor;
 import io.github.mortuusars.chalk.network.fabric.FabricS2CPacketHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 
@@ -22,7 +21,7 @@ public class ChalkFabricClient implements ClientModInitializer {
 
         ConfigScreenFactoryRegistry.INSTANCE.register(Chalk.ID, ConfigurationScreen::new);
 
-        ColorProviderRegistry.BLOCK.register(new ChalkMarkBlockColor(), Chalk.Blocks.MARKS.values()
+        ColorProviderRegistry.BLOCK.register(new MarkBlockColor(), Chalk.Blocks.MARKS.values()
               .stream()
               .map(Supplier::get)
               .toArray(Block[]::new));

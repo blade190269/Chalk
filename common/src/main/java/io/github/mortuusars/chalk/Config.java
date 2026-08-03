@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.mortuusars.chalk.core.MarkSymbol;
+import io.github.mortuusars.chalk.core.OldMarkSymbol;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +24,7 @@ public class Config {
         public static final ModConfigSpec.BooleanValue CHALK_BOX_GLOWING_ENABLED;
         public static final ModConfigSpec.IntValue CHALK_BOX_GLOWING_AMOUNT_PER_ITEM;
         public static final ModConfigSpec.BooleanValue LOOT;
-        public static final Map<MarkSymbol, Pair<ModConfigSpec.BooleanValue, ModConfigSpec.ConfigValue<String>>> SYMBOL_CONFIG;
+        public static final Map<OldMarkSymbol, Pair<ModConfigSpec.BooleanValue, ModConfigSpec.ConfigValue<String>>> SYMBOL_CONFIG;
 
         static {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -44,18 +44,18 @@ public class Config {
             builder.comment("Enable/disable symbols and location of the advancement that will unlock that symbol. (Empty = available from the start)")
                     .push("Symbols");
 
-            Map<MarkSymbol, String> symbolAdvancements = new HashMap<>();
-            symbolAdvancements.put(MarkSymbol.CHECKMARK, "");
-            symbolAdvancements.put(MarkSymbol.CROSS, "");
-            symbolAdvancements.put(MarkSymbol.SKULL, "chalk:adventure/bound_by_bone");
-            symbolAdvancements.put(MarkSymbol.HOUSE, "chalk:adventure/home_is_where_the_bed_is");
-            symbolAdvancements.put(MarkSymbol.HEART, "minecraft:husbandry/tame_an_animal");
-            symbolAdvancements.put(MarkSymbol.PICKAXE, "minecraft:story/iron_tools");
+            Map<OldMarkSymbol, String> symbolAdvancements = new HashMap<>();
+            symbolAdvancements.put(OldMarkSymbol.CHECKMARK, "");
+            symbolAdvancements.put(OldMarkSymbol.CROSS, "");
+            symbolAdvancements.put(OldMarkSymbol.SKULL, "chalk:adventure/bound_by_bone");
+            symbolAdvancements.put(OldMarkSymbol.HOUSE, "chalk:adventure/home_is_where_the_bed_is");
+            symbolAdvancements.put(OldMarkSymbol.HEART, "minecraft:husbandry/tame_an_animal");
+            symbolAdvancements.put(OldMarkSymbol.PICKAXE, "minecraft:story/iron_tools");
 
             SYMBOL_CONFIG = new HashMap<>();
 
             for (var entry : symbolAdvancements.entrySet()) {
-                MarkSymbol symbol = entry.getKey();
+                OldMarkSymbol symbol = entry.getKey();
                 String advancement = entry.getValue();
 
                 String symbolName = StringUtils.capitalize(symbol.getSerializedName());
@@ -74,7 +74,6 @@ public class Config {
         public static final ModConfigSpec SPEC;
         public static final ModConfigSpec.BooleanValue CHALK_BOX_TOOLTIP_CONTENTS;
         public static final ModConfigSpec.BooleanValue CHALK_BOX_TOOLTIP_DETAILS;
-        public static final Map<MarkSymbol, ModConfigSpec.IntValue> SYMBOL_ROTATION_OFFSETS;
 
         static {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -86,19 +85,6 @@ public class Config {
             CHALK_BOX_TOOLTIP_DETAILS = builder
                     .comment("Information about using Chalk Box will be shown in the item's tooltip.")
                     .define("ChalkBoxTooltipDetails", true);
-
-            builder.comment("Rotation offsets (in degrees) for each mark.").push("SymbolOffsets");
-
-            SYMBOL_ROTATION_OFFSETS = new HashMap<>();
-
-            for (MarkSymbol symbol : MarkSymbol.values()) {
-                String symbolName = StringUtils.capitalize(symbol.getSerializedName());
-                int defaultOffset = symbol == MarkSymbol.CROSS || symbol == MarkSymbol.CHECKMARK ? 45 : 0;
-                SYMBOL_ROTATION_OFFSETS.put(symbol, builder.defineInRange(symbolName + "RotationOffset",
-                        defaultOffset, -360, 360));
-            }
-
-            builder.pop();
 
             SPEC = builder.build();
         }

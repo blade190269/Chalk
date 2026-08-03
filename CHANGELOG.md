@@ -3,6 +3,7 @@
 ## UNRELEASED
 - Sorted chalk colors same way as in vanilla.  
 - Removed ChalkDurability common config option. Chalk durability can be configured with `minecraft:max_damage` component on the item.
+- Removed ChalkSymbolOffsets client config option. Offset is part of the symbol definition. 
 
 ## 1.6.12 - 2026-06-03
 - Fixed equality checking of `chalk:chalk_box_contents` component.

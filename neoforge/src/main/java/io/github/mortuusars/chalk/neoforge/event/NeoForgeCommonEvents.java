@@ -8,6 +8,7 @@ import io.github.mortuusars.chalk.network.packet.C2SPackets;
 import io.github.mortuusars.chalk.network.packet.CommonPackets;
 import io.github.mortuusars.chalk.network.packet.Packet;
 import io.github.mortuusars.chalk.network.packet.S2CPackets;
+import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,6 +27,7 @@ import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,11 @@ import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Chalk.ID)
 public class NeoForgeCommonEvents {
+    @SubscribeEvent
+    public static void addDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(Chalk.Registries.MARK_SYMBOL, MarkSymbol.DIRECT_CODEC, MarkSymbol.DIRECT_CODEC);
+    }
+
     @SubscribeEvent
     private static void onCreativeTabsBuild(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {

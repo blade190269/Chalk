@@ -1,8 +1,10 @@
 package io.github.mortuusars.chalk.utils;
 
+import io.github.mortuusars.chalk.core.component.Point2d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 public class PositionUtils {
@@ -21,5 +23,24 @@ public class PositionUtils {
 
         Vec3i normal = facing.getNormal();
         return new Vector3f(vec.x() - (normal.getX() * offset), vec.y() - (normal.getY() * offset), vec.z() - (normal.getZ() * offset));
+    }
+
+    /**
+     * Returns a point representing where on a block face was clicked. 0.0 to 1.0.
+     */
+    public static Point2d getClickedBlockSpaceCoords(Vec3 location, Direction face) {
+        BlockPos pos = BlockPos.containing(location);
+
+        final double x = location.x - pos.getX();
+        final double y = location.y - pos.getY();
+        final double z = location.z - pos.getZ();
+
+        return switch (face) {
+            case NORTH -> new Point2d(1d - x, 1d - y);
+            case SOUTH -> new Point2d(x, 1d - y);
+            case WEST -> new Point2d(z, 1d - y);
+            case EAST -> new Point2d(1d - z, 1d - y);
+            default -> new Point2d(x, z);
+        };
     }
 }

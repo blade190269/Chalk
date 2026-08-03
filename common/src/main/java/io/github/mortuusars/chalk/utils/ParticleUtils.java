@@ -10,7 +10,6 @@ import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
 
 public class ParticleUtils {
-
     /**
      * Spawns a particle with slight random offset to each. Includes velocity.
      */

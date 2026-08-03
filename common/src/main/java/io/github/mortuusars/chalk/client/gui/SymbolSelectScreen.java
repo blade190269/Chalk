@@ -7,13 +7,8 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.core.ChalkMarkDrawable;
-import io.github.mortuusars.chalk.core.Mark;
-import io.github.mortuusars.chalk.core.MarkSymbol;
-import io.github.mortuusars.chalk.network.Packets;
-import io.github.mortuusars.chalk.network.packet.serverbound.DrawMarkC2SP;
+import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
+import io.github.mortuusars.chalk.world.item.MarkDrawable;
 import io.github.mortuusars.chalk.data.ChalkColors;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.client.Minecraft;
@@ -25,9 +20,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
@@ -40,22 +34,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SymbolSelectScreen extends Screen {
     private static final int SYMBOL_SIZE = 48;
     private static final int SYMBOL_SPACING = 10;
     private static final float SYMBOL_BORDER_THICKNESS = 2;
     private static final int DEFAULT_SYMBOL_BORDER_COLOR = 0xFF252525;
-    private static final Map<MarkSymbol, ResourceLocation> SYMBOL_TEXTURES;
 
     private final Player player;
     private final Level level;
     private final long openTimestamp;
 
-    private final List<MarkSymbol> unlockedSymbols;
+    private final List<Holder<MarkSymbol>> symbols;
     private final MarkDrawingContext drawingContext;
     private final InteractionHand drawingHand;
 
@@ -73,19 +64,12 @@ public class SymbolSelectScreen extends Screen {
     private int buttonsStartX;
 
     @Nullable
-    private MarkSymbol hoveredSymbol;
+    private Holder<MarkSymbol> hoveredSymbol;
     private boolean mouseWasReleased;
 
-    static {
-        SYMBOL_TEXTURES = new HashMap<>();
-        for (MarkSymbol symbol : MarkSymbol.getSpecialSymbols()) {
-            SYMBOL_TEXTURES.put(symbol, Chalk.resource("textures/block/mark/" + symbol.getSerializedName() + ".png"));
-        }
-    }
-
-    public SymbolSelectScreen(List<MarkSymbol> unlockedSymbols, MarkDrawingContext context) {
+    public SymbolSelectScreen(List<Holder<MarkSymbol>> symbols, MarkDrawingContext context) {
         super(Component.empty());
-        this.unlockedSymbols = unlockedSymbols;
+        this.symbols = symbols;
         this.drawingContext = context;
         this.drawingHand = context.getDrawingHand();
 
@@ -97,7 +81,7 @@ public class SymbolSelectScreen extends Screen {
 
         ItemStack itemInHand = minecraft.player.getItemInHand(drawingHand);
 
-        this.color = itemInHand.getItem() instanceof ChalkMarkDrawable drawingTool ? drawingTool.getMarkColorValue(itemInHand) : ChalkColors.fromDyeColor(DyeColor.WHITE);
+        this.color = itemInHand.getItem() instanceof MarkDrawable drawingTool ? drawingTool.getMarkColorValue(itemInHand) : ChalkColors.fromDyeColor(DyeColor.WHITE);
         r = (float)(this.color >> 16 & 255) / 255.0F;
         g = (float)(this.color >> 8 & 255) / 255.0F;
         b = (float)(this.color & 255) / 255.0F;
@@ -117,8 +101,8 @@ public class SymbolSelectScreen extends Screen {
         centerX = width / 2;
         centerY = height / 2;
 
-        buttonsWidth = !unlockedSymbols.isEmpty() ?
-                SYMBOL_SIZE * unlockedSymbols.size() + SYMBOL_SPACING * (unlockedSymbols.size() - 1)
+        buttonsWidth = !symbols.isEmpty() ?
+                SYMBOL_SIZE * symbols.size() + SYMBOL_SPACING * (symbols.size() - 1)
                 : SYMBOL_SIZE;
         buttonsStartX = centerX - buttonsWidth / 2;
     }
@@ -140,8 +124,8 @@ public class SymbolSelectScreen extends Screen {
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 200);
 
-        for (int i = 0; i < unlockedSymbols.size(); i++) {
-            MarkSymbol symbol = unlockedSymbols.get(i);
+        for (int i = 0; i < symbols.size(); i++) {
+            Holder<MarkSymbol> symbol = symbols.get(i);
 
             int x = buttonsStartX + SYMBOL_SIZE * i + SYMBOL_SPACING * i - 1;
             int y = centerY - SYMBOL_SIZE / 2;
@@ -149,10 +133,12 @@ public class SymbolSelectScreen extends Screen {
 
             if (isHovering) {
                 this.hoveredSymbol = symbol;
-                player.displayClientMessage(Component.translatable(symbol.getTranslationKey()), true);
+                symbol.unwrapKey()
+                      .map(key -> key.location().toLanguageKey("mark_symbol"))
+                      .ifPresent(key -> player.displayClientMessage(Component.translatable(key), true));
             }
 
-            drawSymbolButton(graphics, mouseX, mouseY, symbol, x, y, isHovering);
+            drawSymbolButton(graphics, mouseX, mouseY, symbol.value(), x, y, isHovering);
         }
 
         graphics.pose().popPose();
@@ -180,10 +166,10 @@ public class SymbolSelectScreen extends Screen {
         poseStack.pushPose();
 
         poseStack.translate(x + SYMBOL_SIZE / 2f, y + SYMBOL_SIZE / 2f, 0);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(symbol.getDefaultOrientation().getRotation() + Config.Client.SYMBOL_ROTATION_OFFSETS.get(symbol).get()));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(symbol.rotationOffset()));
         poseStack.translate(-x - SYMBOL_SIZE / 2f , -y - SYMBOL_SIZE / 2f, 0);
         poseStack.translate(0, 0, 100);
-        graphics.blit(SYMBOL_TEXTURES.get(symbol), x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);
+        graphics.blit(symbol.texture().withPrefix("textures/").withSuffix(".png"), x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         poseStack.popPose();
@@ -247,8 +233,8 @@ public class SymbolSelectScreen extends Screen {
         }
 
         int key = pKeyCode - InputConstants.KEY_0; // Offset
-        if (key >= 1 && key <= Math.min(unlockedSymbols.size(), 9)) {
-            tryDrawSymbol(unlockedSymbols.get(key - 1));
+        if (key >= 1 && key <= Math.min(symbols.size(), 9)) {
+            tryDrawSymbol(symbols.get(key - 1));
             this.close();
             return true;
         }
@@ -275,32 +261,33 @@ public class SymbolSelectScreen extends Screen {
         return true;
     }
 
-    private boolean tryDrawSymbol(MarkSymbol symbol) {
-        if (symbol == null)
+    private boolean tryDrawSymbol(@Nullable Holder<MarkSymbol> symbol) {
+        if (symbol == null) {
             return false;
+        }
 
         return drawSymbol(symbol);
     }
 
-    private boolean drawSymbol(@NotNull MarkSymbol symbol) {
-        Mark mark = createMark(symbol, player.getItemInHand(drawingHand));
+    private boolean drawSymbol(@NotNull Holder<MarkSymbol> symbol) {
+//        Mark mark = createMark(symbol, player.getItemInHand(drawingHand));
 
-        if (drawingContext.canDraw() && (!drawingContext.hasExistingMark() || drawingContext.shouldMarkReplaceAnother(mark))) {
-            Packets.sendToServer(new DrawMarkC2SP(mark.color,
-                    NbtUtils.writeBlockState(mark.createBlockState(player.getItemInHand(drawingHand))), drawingContext.getMarkBlockPos(), drawingHand));
-            player.swing(drawingHand);
-            return true;
-        }
+//        if (drawingContext.canDraw() && (!drawingContext.hasExistingMark() || drawingContext.shouldMarkReplaceAnother(mark))) {
+//            Packets.sendToServer(new DrawMarkC2SP(mark.color,
+//                    NbtUtils.writeBlockState(mark.createBlockState(player.getItemInHand(drawingHand))), drawingContext.getMarkBlockPos(), drawingHand));
+//            player.swing(drawingHand);
+//            return true;
+//        }
 
         return false;
     }
 
-    private Mark createMark(MarkSymbol symbol, ItemStack itemInHand) {
-        if (!(itemInHand.getItem() instanceof ChalkMarkDrawable drawingTool))
-            throw new IllegalStateException("Item in hand is not IDrawingTool. [%s]".formatted(itemInHand));
-
-        return drawingTool.getMark(itemInHand, drawingContext, symbol);
-    }
+//    private Mark createMark(Holder<MarkSymbol> symbol, ItemStack itemInHand) {
+//        if (!(itemInHand.getItem() instanceof MarkDrawable drawingTool))
+//            throw new IllegalStateException("Item in hand is not IDrawingTool. [%s]".formatted(itemInHand));
+//
+//        return drawingTool.getMark(itemInHand, drawingContext, symbol);
+//    }
 
     public void close() {
         this.onClose();

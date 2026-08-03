@@ -3,11 +3,10 @@ package io.github.mortuusars.chalk.world.item;
 import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Platform;
-import io.github.mortuusars.chalk.world.block.ChalkMarkBlock;
+import io.github.mortuusars.chalk.world.block.OldChalkMarkBlock;
 import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.core.ChalkMarkDrawable;
-import io.github.mortuusars.chalk.core.Mark;
-import io.github.mortuusars.chalk.core.MarkSymbol;
+import io.github.mortuusars.chalk.core.OldMarkSymbol;
+import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
 import io.github.mortuusars.chalk.data.ChalkColors;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
@@ -16,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,7 +31,6 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class ChalkBoxItem extends Item implements ChalkMarkDrawable {
+public class ChalkBoxItem extends Item implements MarkDrawable {
     public ChalkBoxItem(Properties properties) {
         super(properties);
     }
@@ -168,18 +167,18 @@ public class ChalkBoxItem extends Item implements ChalkMarkDrawable {
             return InteractionResult.SUCCESS;
         }
 
-        MarkDrawingContext drawingContext = createDrawingContext(context);
+        MarkDrawingContext drawingContext = createMarkDrawingContext(context);
 
-        if (!drawingContext.canDraw() || !(selectedChalk.getItem() instanceof ChalkMarkDrawable chalkDrawingTool))
+        if (!drawingContext.canDraw() || !(selectedChalk.getItem() instanceof MarkDrawable drawable)) {
             return InteractionResult.FAIL;
+        }
 
         if (player.isSecondaryUseActive()) {
             drawingContext.openSymbolSelectionScreen();
             return InteractionResult.CONSUME;
         }
 
-        Mark mark = drawingContext.createRegularMark(chalkDrawingTool.getMarkColorValue(selectedChalk), isGlowing(chalkBoxStack));
-        if (drawMark(drawingContext, mark)) {
+        if (drawMark(drawingContext, drawingContext.createRegularMark(drawable.getMarkColorValue(selectedChalk), isGlowing(chalkBoxStack)))) {
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
         }
 
@@ -258,36 +257,30 @@ public class ChalkBoxItem extends Item implements ChalkMarkDrawable {
 //                0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
 //    }
 
+//    @Override
+//    public OldMark getMark(ItemStack chalkBoxStack, MarkDrawingContext drawingContext, OldMarkSymbol symbol) {
+//        ItemStack selectedChalk = getSelectedChalk(chalkBoxStack);
+//
+//        DyeColor color = selectedChalk.getItem() instanceof MarkDrawable chalkItem
+//                ? chalkItem.getMarkColor(selectedChalk).orElse(DyeColor.WHITE)
+//                : DyeColor.WHITE;
+//
+//        return drawingContext.createMark(ChalkColors.fromDyeColor(color), symbol, isGlowing(chalkBoxStack));
+//    }
+
     @Override
-    public Mark getMark(ItemStack chalkBoxStack, MarkDrawingContext drawingContext, MarkSymbol symbol) {
-        ItemStack selectedChalk = getSelectedChalk(chalkBoxStack);
-
-        DyeColor color = selectedChalk.getItem() instanceof ChalkMarkDrawable chalkItem
-                ? chalkItem.getMarkColor(selectedChalk).orElse(DyeColor.WHITE)
-                : DyeColor.WHITE;
-
-        return drawingContext.createMark(ChalkColors.fromDyeColor(color), symbol, isGlowing(chalkBoxStack));
-    }
-
-    @Override
-    public void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, BlockState markBlockState) {
-        if (player.isCreative())
+    public void onMarkDrawn(Player player, InteractionHand drawingHand, BlockPos markPos, Direction facing, Mark mark) {
+        if (player.isCreative()) {
             return;
+        }
 
-        ItemStack chalkBoxStack = player.getItemInHand(hand);
-
+        ItemStack chalkBoxStack = player.getItemInHand(drawingHand);
         int selectedChalkIndex = getContents(chalkBoxStack).getSelectedChalkIndex();
-
         Preconditions.checkState(selectedChalkIndex >= 0, "Chalk Box has no selected drawing tool. {}", chalkBoxStack);
-
         ItemStack selectedChalk = getItemInSlot(chalkBoxStack, selectedChalkIndex);
-
-        selectedChalk.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-
+        selectedChalk.hurtAndBreak(1, player, LivingEntity.getSlotForHand(drawingHand));
         setItemInSlot(chalkBoxStack, selectedChalkIndex, selectedChalk.isEmpty() ? ItemStack.EMPTY : selectedChalk);
-
-        if (markBlockState.getValue(ChalkMarkBlock.GLOWING))
-            consumeGlow(chalkBoxStack);
+        consumeGlow(chalkBoxStack);
     }
 
     public @NotNull ChalkBoxContents getContents(ItemStack stack) {
@@ -348,7 +341,7 @@ public class ChalkBoxItem extends Item implements ChalkMarkDrawable {
 
         ArrayList<ItemStack> items = new ArrayList<>(contents.items().stream().limit(ChalkBoxContents.CHALK_SLOTS).toList());
         int chalks = ((int) items.stream()
-                .filter(stack -> stack.getItem() instanceof ChalkMarkDrawable)
+                .filter(stack -> stack.getItem() instanceof MarkDrawable)
                 .count());
 
         if (selectedChalkIndex < 0 || chalks < 2) {
@@ -357,7 +350,7 @@ public class ChalkBoxItem extends Item implements ChalkMarkDrawable {
 
         int rotateAmount = 0;
         for (int i = selectedChalkIndex + 1; i < ChalkBoxContents.CHALK_SLOTS; i++) {
-            if (contents.items().get(i).getItem() instanceof ChalkMarkDrawable) {
+            if (contents.items().get(i).getItem() instanceof MarkDrawable) {
                 rotateAmount = i;
                 break;
             }
@@ -391,7 +384,7 @@ public class ChalkBoxItem extends Item implements ChalkMarkDrawable {
     @Override
     public Optional<DyeColor> getMarkColor(ItemStack chalkBoxStack) {
         ItemStack selectedChalk = getSelectedChalk(chalkBoxStack);
-        return selectedChalk.getItem() instanceof ChalkMarkDrawable drawingTool ? drawingTool.getMarkColor(selectedChalk) : Optional.empty();
+        return selectedChalk.getItem() instanceof MarkDrawable drawingTool ? drawingTool.getMarkColor(selectedChalk) : Optional.empty();
     }
 
     @Override

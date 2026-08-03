@@ -4,8 +4,9 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.ChalkClient;
 import io.github.mortuusars.chalk.client.gui.ChalkBoxScreen;
 import io.github.mortuusars.chalk.client.gui.tooltip.ClientChalkBoxTooltip;
-import io.github.mortuusars.chalk.client.render.ChalkMarkBakedModel;
-import io.github.mortuusars.chalk.client.render.ChalkMarkBlockColor;
+import io.github.mortuusars.chalk.client.render.MarkBakedModel;
+import io.github.mortuusars.chalk.client.render.MarkBlockColor;
+import io.github.mortuusars.chalk.neoforge.client.NeoForgeMarkBakedModel;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -41,28 +42,23 @@ public class NeoForgeClientEvents {
 
     @SubscribeEvent
     private static void modelBake(ModelEvent.ModifyBakingResult event) {
-        Chalk.Blocks.MARKS.forEach((color, block) -> {
-            for (BlockState blockState : block.get().getStateDefinition().getPossibleStates()) {
-                ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
-                BakedModel existingModel = event.getModels().get(variantMRL);
+        for (BlockState blockState : Chalk.Blocks.MARK.get().getStateDefinition().getPossibleStates()) {
+            ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
+            BakedModel existingModel = event.getModels().get(variantMRL);
 
-                if (existingModel instanceof ChalkMarkBakedModel)
-                    Chalk.LOGGER.warn("Tried to replace {} model twice", block);
-                else if (existingModel != null) {
-                    ChalkMarkBakedModel customModel = new ChalkMarkBakedModel(existingModel);
-                    event.getModels().put(variantMRL, customModel);
-                } else
-                    Chalk.LOGGER.warn("{} model not found. ChalkMarkBakedModel would not be added for this blockstate.", variantMRL);
-            }
-        });
+            if (existingModel instanceof NeoForgeMarkBakedModel)
+                Chalk.LOGGER.warn("Tried to replace {} model twice", blockState);
+            else if (existingModel != null) {
+                NeoForgeMarkBakedModel customModel = new NeoForgeMarkBakedModel(existingModel);
+                event.getModels().put(variantMRL, customModel);
+            } else
+                Chalk.LOGGER.warn("{} model not found. MarkBakedModel would not be added for this blockstate.", variantMRL);
+        }
     }
 
     @SubscribeEvent
     private static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        event.register(new ChalkMarkBlockColor(), Chalk.Blocks.MARKS.values()
-              .stream()
-              .map(Supplier::get)
-              .toArray(Block[]::new));
+        event.register(new MarkBlockColor(), Chalk.Blocks.MARK.get());
     }
 
     @SubscribeEvent

@@ -1,22 +1,23 @@
 package io.github.mortuusars.chalk.utils;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.world.block.ChalkMarkBlock;
-import io.github.mortuusars.chalk.core.Mark;
-import io.github.mortuusars.chalk.core.MarkSymbol;
-import io.github.mortuusars.chalk.core.SymbolOrientation;
+import io.github.mortuusars.chalk.world.block.MarkBlock;
+import io.github.mortuusars.chalk.world.block.MarkBlockEntity;
+import io.github.mortuusars.chalk.core.OldMarkSymbol;
+import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
 import io.github.mortuusars.chalk.core.SymbolUnlocking;
 import io.github.mortuusars.chalk.network.Packets;
 import io.github.mortuusars.chalk.network.packet.clientbound.SelectSymbolS2CP;
-import io.github.mortuusars.chalk.data.ChalkColors;
+import io.github.mortuusars.chalk.world.chalk.Mark;
+import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,23 +26,34 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MarkDrawingContext {
     @Nullable
     private static MarkDrawingContext storedContext;
 
-    private final Player player;
-    private final Level level;
-    private final BlockHitResult hitResult;
-    private final InteractionHand drawingHand;
-    private final SymbolOrientation initialOrientation;
+    protected final Player player;
+    protected final Level level;
+    protected final BlockHitResult hitResult;
+    protected final Direction markFacing;
+    protected final BlockPos markBlockPos;
+    protected final InteractionHand drawingHand;
+    protected final GridCell clickedCell;
+    protected final Optional<MarkBlockEntity> existingMarkBlockEntity;
+    protected final Optional<Mark> existingMark;
 
     public MarkDrawingContext(Player player, @NotNull BlockHitResult hitResult, InteractionHand drawingHand) {
         this.player = player;
         this.level = player.level();
         this.hitResult = hitResult;
+        this.markFacing = hitResult.getDirection();
+        this.markBlockPos = hitResult.getBlockPos().relative(markFacing);
         this.drawingHand = drawingHand;
-        this.initialOrientation = SymbolOrientation.fromClickLocationAll(hitResult.getLocation(), hitResult.getDirection());
+        this.clickedCell = GridCell.fromClickLocation(hitResult.getLocation(), hitResult.getDirection());
+        this.existingMarkBlockEntity = level.getBlockEntity(getMarkBlockPos()) instanceof MarkBlockEntity existingBlockEntity
+              ? Optional.of(existingBlockEntity)
+              : Optional.empty();
+        this.existingMark = existingMarkBlockEntity.map(be -> be.getMarks().get(markFacing.get3DDataValue()));
     }
 
     public static void storeContext(MarkDrawingContext context) {
@@ -56,39 +68,101 @@ public class MarkDrawingContext {
         storedContext = null;
     }
 
-    public boolean canDraw() {
-        return canBeDrawnOn(hitResult.getBlockPos(), getMarkFacing(), level);
-    }
+    // --
 
     public Player getPlayer() {
         return player;
     }
 
-    public BlockPos getMarkBlockPos() {
-        return hitResult.getBlockPos().relative(getMarkFacing());
+    public Level getLevel() {
+        return level;
     }
 
-    @NotNull
+    public BlockHitResult getHitResult() {
+        return hitResult;
+    }
+
     public Direction getMarkFacing() {
-        return hitResult.getDirection();
+        return markFacing;
     }
 
-    public SymbolOrientation getInitialOrientation() {
-        return initialOrientation;
+    public BlockPos getMarkBlockPos() {
+        return markBlockPos;
     }
 
     public InteractionHand getDrawingHand() {
         return drawingHand;
     }
 
+    public GridCell getClickedCell() {
+        return clickedCell;
+    }
+
+    public Optional<MarkBlockEntity> getExistingMarkBlockEntity() {
+        return existingMarkBlockEntity;
+    }
+
+    public Optional<Mark> getExistingMark() {
+        return existingMark;
+    }
+
+    // --
+
+    public boolean canDraw() {
+        BlockPos pos = hitResult.getBlockPos();
+        Direction face = getMarkFacing();
+        BlockState surfaceBlockState = level.getBlockState(pos);
+        BlockState markPosState = level.getBlockState(pos.relative(face));
+        return (markPosState.isAir() || markPosState.getBlock() instanceof MarkBlock)
+              && Block.isFaceFull(surfaceBlockState.getCollisionShape(level, pos), face)
+              && !surfaceBlockState.is(Chalk.Tags.Blocks.CHALK_CANNOT_DRAW_ON);
+    }
+
+    public boolean shouldMarkReplaceAnother(Mark newMark, Mark oldMark) {
+        if (!newMark.symbol().equals(oldMark.symbol())) return true;
+        if (newMark.orientation() != oldMark.orientation()) return true;
+        if (newMark.color() != oldMark.color()) return true;
+        return newMark.glowing() && !oldMark.glowing();
+    }
+
+    // --
+
+    public Mark createRegularMark(int color, boolean glowing) {
+        Holder<MarkSymbol> symbol = getClickedCell() == GridCell.CENTER
+              ? MarkSymbol.getOrThrow(level.registryAccess(), MarkSymbol.CENTER)
+              : MarkSymbol.getOrThrow(level.registryAccess(), MarkSymbol.ARROW);
+        return createMark(color, symbol, glowing);
+    }
+
+    public Mark createMark(int color, Holder<MarkSymbol> symbol, boolean glowing) {
+        Direction face = getMarkFacing();
+
+        MarkSymbol.OrientationBehavior orientationBehavior = symbol.value().orientationBehavior();
+
+        SymbolOrientation orientation;
+
+        if (orientationBehavior == MarkSymbol.OrientationBehavior.FULL)
+            orientation = SymbolOrientation.fromCell(clickedCell);
+        else if (orientationBehavior == MarkSymbol.OrientationBehavior.CARDINAL)
+            orientation = SymbolOrientation.fromClickLocationCardinal(hitResult.getLocation(), face);
+        else if (orientationBehavior == MarkSymbol.OrientationBehavior.UP_DOWN_CARDINAL && (face == Direction.UP || face == Direction.DOWN))
+            orientation = SymbolOrientation.fromRotation(player.getDirection().getOpposite().get2DDataValue() * 90);
+        else
+            orientation = SymbolOrientation.CENTER;
+
+        return new Mark(symbol, color, orientation, glowing);
+    }
+
+    // --
+
     public void openSymbolSelectionScreen() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             storeContext(this);
             return;
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            List<MarkSymbol> unlockedSymbols = SymbolUnlocking.getUnlockedSymbols(serverPlayer);
+            List<OldMarkSymbol> unlockedSymbols = SymbolUnlocking.getUnlockedSymbols(serverPlayer);
 
             if (!unlockedSymbols.isEmpty())
                 Packets.sendToClient(new SelectSymbolS2CP(unlockedSymbols), serverPlayer);
@@ -97,58 +171,4 @@ public class MarkDrawingContext {
         }
     }
 
-    public Mark createRegularMark(int color, boolean glowing) {
-        return createMark(color, getInitialOrientation() == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW, glowing);
-    }
-
-    public Mark createMark(int color, MarkSymbol symbol, boolean glowing) {
-        Direction face = getMarkFacing();
-        MarkSymbol.OrientationBehavior rotBehavior = symbol.getOrientationBehavior();
-
-        SymbolOrientation orientation;
-
-        if (rotBehavior == MarkSymbol.OrientationBehavior.FULL)
-            orientation = initialOrientation;
-        else if (rotBehavior == MarkSymbol.OrientationBehavior.CARDINAL)
-            orientation = SymbolOrientation.fromClickLocationCardinal(hitResult.getLocation(), face);
-        else if (rotBehavior == MarkSymbol.OrientationBehavior.UP_DOWN_CARDINAL && (face == Direction.UP || face == Direction.DOWN))
-            orientation = SymbolOrientation.fromRotation(player.getDirection().getOpposite().get2DDataValue() * 90);
-        else
-            orientation = symbol.getDefaultOrientation();
-
-        return new Mark(face, color, symbol, orientation, glowing);
-    }
-
-    public boolean hasExistingMark() {
-        return level.getBlockState(hitResult.getBlockPos().relative(getMarkFacing())).getBlock() instanceof ChalkMarkBlock;
-    }
-
-    public boolean shouldMarkReplaceAnother(Mark mark) {
-        BlockState oldMarkState = level.getBlockState(hitResult.getBlockPos().relative(getMarkFacing()));
-        if (!(oldMarkState.getBlock() instanceof ChalkMarkBlock markBlock))
-            return true;
-
-        if (mark.color != ChalkColors.fromDyeColor(markBlock.getColor()))
-            return true;
-        if (mark.facing != oldMarkState.getValue(ChalkMarkBlock.FACING))
-            return true;
-        else if (mark.symbol != oldMarkState.getValue(ChalkMarkBlock.SYMBOL))
-            return true;
-        else if (mark.orientation != oldMarkState.getValue(ChalkMarkBlock.ORIENTATION))
-            return true;
-        else
-            return (mark.glowing && !oldMarkState.getValue(ChalkMarkBlock.GLOWING));
-    }
-
-    public boolean draw(Mark mark) {
-        ItemStack drawingItemstack = player.getItemInHand(drawingHand);
-        return MarkDrawHelper.draw(player, level, getMarkBlockPos(), mark.createBlockState(drawingItemstack), mark.color, drawingHand);
-    }
-
-    private static boolean canBeDrawnOn(BlockPos pos, Direction face, Level level) {
-        BlockState blockStateAtPos = level.getBlockState(pos);
-        BlockState markPosState = level.getBlockState(pos.relative(face));
-        return (markPosState.isAir() || markPosState.getBlock() instanceof ChalkMarkBlock) &&
-                Block.isFaceFull(blockStateAtPos.getCollisionShape(level, pos), face) && !blockStateAtPos.is(Chalk.Tags.Blocks.CHALK_CANNOT_DRAW_ON);
-    }
 }

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.core.ChalkMarkDrawable;
+import io.github.mortuusars.chalk.world.item.MarkDrawable;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -116,7 +116,7 @@ public record ChalkBoxContents(List<ItemStack> items, int glowAmount) implements
     public int getSelectedChalkIndex() {
         for (int slot = 0; slot < SLOTS; slot++) {
             ItemStack itemInSlot = items().get(slot);
-            if (itemInSlot.getItem() instanceof ChalkMarkDrawable) {
+            if (itemInSlot.getItem() instanceof MarkDrawable) {
                 return slot;
             }
         }

@@ -1,0 +1,5 @@
+{
+  "orientation_behavior": "fixed",
+  "rotation_offset": 45,
+  "texture": "chalk:block/mark/cross"
+}

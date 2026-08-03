@@ -1,0 +1,5 @@
+{
+  "orientation_behavior": "up_down_cardinal",
+  "rotation_offset": 45,
+  "texture": "chalk:block/mark/check"
+}

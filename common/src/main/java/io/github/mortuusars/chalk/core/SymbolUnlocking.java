@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SymbolUnlocking {
-    public static List<MarkSymbol> getUnlockedSymbols(ServerPlayer player) {
-        List<MarkSymbol> unlocked = new ArrayList<>();
+    public static List<OldMarkSymbol> getUnlockedSymbols(ServerPlayer player) {
+        List<OldMarkSymbol> unlocked = new ArrayList<>();
 
-        for (MarkSymbol symbol : MarkSymbol.getSpecialSymbols()) {
+        for (OldMarkSymbol symbol : OldMarkSymbol.getSpecialSymbols()) {
             try {
                 Pair<ModConfigSpec.BooleanValue, ModConfigSpec.ConfigValue<String>> symbolConfig = Config.Common.SYMBOL_CONFIG.get(symbol);
 
