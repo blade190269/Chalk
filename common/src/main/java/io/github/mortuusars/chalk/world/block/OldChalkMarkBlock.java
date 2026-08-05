@@ -134,16 +134,6 @@ public class OldChalkMarkBlock extends Block {
     }
 
     @Override
-    public void onPlace(BlockState blockState, Level level, BlockPos pos, BlockState state, boolean p_60570_) {
-        super.onPlace(blockState, level, pos, state, p_60570_);
-
-        if (level.isClientSide){
-            Chalk.LOGGER.info(blockState);
-            Chalk.LOGGER.info(state);
-        }
-    }
-
-    @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hHitResult) {
         ItemStack usedStack = player.getItemInHand(hand);
 

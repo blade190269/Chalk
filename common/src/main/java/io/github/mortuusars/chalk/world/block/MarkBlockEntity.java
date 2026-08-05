@@ -2,18 +2,20 @@ package io.github.mortuusars.chalk.world.block;
 
 import com.mojang.logging.LogUtils;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
-import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.chalk.MarkSet;
-import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class MarkBlockEntity extends BlockEntity {
@@ -33,6 +35,26 @@ public class MarkBlockEntity extends BlockEntity {
         return marks;
     }
 
+    public void marksChanged() {
+        setChanged();
+        if (level != null) {
+            // Forces client to update
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
+    }
+
+    @Override
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag, registries);
+        return tag;
+    }
+
     // --
 
     @Override
@@ -48,7 +70,13 @@ public class MarkBlockEntity extends BlockEntity {
         if (tag.contains("Marks")) {
             MarkSet.CODEC.decode(registries.createSerializationContext(NbtOps.INSTANCE), tag.get("Marks"))
                   .resultOrPartial(LOGGER::error)
-                  .ifPresent(result -> marks = result.getFirst());
+                  .ifPresent(result -> {
+                      marks = result.getFirst();
+                      if (level != null && level.isClientSide) {
+                          // Updates model on the client
+                          level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+                      }
+                  });
         }
     }
 }

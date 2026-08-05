@@ -5,9 +5,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.IntStream;
 
 public class MarkSet {
     public static final Codec<MarkSet> CODEC = Codec.simpleMap(Direction.CODEC, Mark.CODEC, StringRepresentable.keys(Direction.values())).codec()
@@ -40,15 +42,6 @@ public class MarkSet {
         this(new Mark[6]);
     }
 
-    public void forEach(BiConsumer<Direction, Mark> consumer) {
-        for (int i = 0; i < 6; i++) {
-            @Nullable Mark mark = marks[i];
-            if (mark != null) {
-                consumer.accept(Direction.from3DDataValue(i), mark);
-            }
-        }
-    }
-
     public @Nullable Mark get(Direction face) {
         return marks[face.get3DDataValue()];
     }
@@ -66,6 +59,12 @@ public class MarkSet {
         marks[face.get3DDataValue()] = null;
     }
 
+    public int[] getIndices() {
+        return IntStream.range(0, marks.length)
+              .filter(i -> marks[i] != null)
+              .toArray();
+    }
+
     public boolean isEmpty() {
         for (Mark mark : marks) {
             if (mark != null) {
@@ -73,6 +72,25 @@ public class MarkSet {
             }
         }
         return true;
+    }
+
+    public int getCount() {
+        int count = 0;
+        for (Mark mark : marks) {
+            if (mark != null) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public void forEach(BiConsumer<Direction, Mark> consumer) {
+        for (int i = 0; i < 6; i++) {
+            @Nullable Mark mark = marks[i];
+            if (mark != null) {
+                consumer.accept(Direction.from3DDataValue(i), mark);
+            }
+        }
     }
 
     public Mark[] copyArray() {

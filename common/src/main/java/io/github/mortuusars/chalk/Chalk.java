@@ -54,9 +54,11 @@ public class Chalk {
         public static final Supplier<MarkBlock> MARK = Register.block("mark",
               () -> new MarkBlock(BlockBehaviour.Properties.of()
                     .pushReaction(PushReaction.DESTROY)
+                    .replaceable()
                     .instabreak()
                     .noOcclusion()
                     .noCollission()
+                    .noTerrainParticles()
                     .sound(SoundType.NETHER_WART)));
 
         public static final Map<DyeColor, Supplier<MarkBlock>> MARKS = new LinkedHashMap<>();

@@ -3,8 +3,9 @@ package io.github.mortuusars.chalk.world.item;
 import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.utils.PositionUtils;
+import io.github.mortuusars.chalk.world.block.DrawnMark;
+import io.github.mortuusars.chalk.world.block.MarkBlock;
 import io.github.mortuusars.chalk.world.block.MarkBlockEntity;
-import io.github.mortuusars.chalk.world.block.OldChalkMarkBlock;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.Mark;
 import net.minecraft.core.BlockPos;
@@ -48,14 +49,14 @@ public interface MarkDrawable {
         Direction facing = clickedFace;
         BlockPos surfacePos = clickedPos;
 
-        if (level.getBlockEntity(surfacePos) instanceof MarkBlockEntity markBlockEntity) {
-            surfacePos = surfacePos.relative(facing.getOpposite());
+        if (level.getBlockState(surfacePos).getBlock() instanceof MarkBlock
+              && MarkBlock.getClickedMark(level, clickLocation) instanceof DrawnMark existingMark) {
+            facing = existingMark.facing();
         }
 
-//        if (level.getBlockState(surfacePos).getBlock() instanceof OldChalkMarkBlock) {
-//            facing = level.getBlockState(surfacePos).getValue(OldChalkMarkBlock.FACING);
-//            surfacePos = surfacePos.relative(facing.getOpposite());
-//        }
+        if (level.getBlockEntity(surfacePos) instanceof MarkBlockEntity) {
+            surfacePos = surfacePos.relative(facing.getOpposite());
+        }
 
         BlockHitResult hitResult = new BlockHitResult(clickLocation, facing, surfacePos, false);
         return new MarkDrawingContext(player, hitResult, drawingHand);
@@ -77,11 +78,15 @@ public interface MarkDrawable {
             return false;
         }
 
-        //TODO: calculate mark here
+        @Nullable Mark existingMark = blockEntity.getMarks().get(face);
+        if (existingMark != null && existingMark.isSameMarkDifferentColors(mark)) {
+            mark = mark
+                  .lerpColor(existingMark.color(), 0.5f)
+                  .withGlowing(existingMark.glowing() || mark.glowing());
+        }
 
         blockEntity.getMarks().set(face, mark);
-        blockEntity.setChanged();
-        player.level().sendBlockUpdated(markPos, player.level().getBlockState(markPos), player.level().getBlockState(markPos), Block.UPDATE_ALL);
+        blockEntity.marksChanged();
         drawable.onMarkDrawn(player, drawingHand, markPos, face, mark);
         player.swing(drawingHand);
         return true;
