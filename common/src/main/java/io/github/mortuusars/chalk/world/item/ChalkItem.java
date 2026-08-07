@@ -1,10 +1,12 @@
 package io.github.mortuusars.chalk.world.item;
 
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.data.ChalkColors;
-import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.Mark;
+import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,9 +15,8 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 
 public class ChalkItem extends Item implements MarkDrawable {
     private final DyeColor color;
@@ -25,72 +26,67 @@ public class ChalkItem extends Item implements MarkDrawable {
         this.color = color;
     }
 
+    public DyeColor getColor() {
+        return this.color;
+    }
+
+    @Override
+    public int getMarkDrawingColor(ItemStack stack) {
+        return ChalkColors.fromDyeColor(getColor());
+    }
+
+    // --
+
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
         InteractionHand hand = context.getHand();
-        ItemStack itemStack = context.getItemInHand();
+        ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
 
-        if (player == null || !(itemStack.getItem() instanceof ChalkItem)) {
+        if (player == null) {
             return InteractionResult.FAIL;
         }
 
-        // When holding chalks in both hands - skip drawing from offhand
-        if (hand == InteractionHand.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem) {
+        // When holding drawable items in both hands - skip drawing from offhand
+        //TODO: Test if needed
+        if (hand == InteractionHand.OFF_HAND && player.getMainHandItem().getItem() instanceof MarkDrawable) {
             return InteractionResult.FAIL;
         }
 
-        MarkDrawingContext drawingContext = createMarkDrawingContext(player, context.getClickedPos(),
-              context.getClickLocation(), context.getClickedFace(), hand);
+        MarkDrawingContext drawingContext = createMarkDrawingContext(player, context.getHand(),
+              context.getClickLocation(), context.getClickedPos(), context.getClickedFace());
 
-        if (!drawingContext.canDraw()) {
+        if (!canDrawMark(player, drawingContext)) {
             return InteractionResult.FAIL;
         }
 
         if (player.isSecondaryUseActive()) {
-            drawingContext.openSymbolSelectionScreen();
+            selectSymbolAndDraw(player, drawingContext);
             return InteractionResult.CONSUME;
         }
 
-        if (drawMark(drawingContext, drawingContext.createRegularMark(ChalkColors.fromDyeColor(color), false))) {
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        if (drawMark(player, drawingContext, createRegularMark(player, drawingContext, stack))) {
+            return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
         }
-
-//        if (drawingContext.hasExistingMark()) {
-//            return InteractionResult.PASS;
-//        }
 
         return InteractionResult.FAIL;
     }
 
     @Override
-    public void onMarkDrawn(Player player, InteractionHand drawingHand, BlockPos markPos, Direction facing, Mark mark) {
-        MarkDrawable.super.onMarkDrawn(player, drawingHand, markPos, facing, mark);
+    public void onMarkDrawn(Player player, MarkDrawingContext context, Mark mark) {
+        MarkDrawable.super.onMarkDrawn(player, context, mark);
+        onChalkMarkDrawn(player, context.hand(), player.getItemInHand(context.hand()), context.markPos(), context.markFacing(), mark);
+    }
 
-        if (player.isCreative()) {
-            return;
+    public void onChalkMarkDrawn(Player player, InteractionHand hand, ItemStack stack, BlockPos markPos, Direction markFacing, Mark mark) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            BlockPos surfacePos = markPos.relative(markFacing.getOpposite());
+            MapColor surfaceColor = player.level().getBlockState(surfacePos).getMapColor(player.level(), surfacePos);
+            Chalk.CriteriaTriggers.MARK_DRAWN.get().trigger(serverPlayer, stack, surfaceColor, getColor());
         }
 
-        ItemStack stack = player.getItemInHand(drawingHand);
-        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(drawingHand));
-    }
-
-    @Override
-    public int getMarkColorValue(ItemStack stack) {
-        return ChalkColors.fromDyeColor(getColor());
-    }
-
-    @Override
-    public Optional<DyeColor> getMarkColor(ItemStack stack) {
-        return Optional.of(getColor());
-    }
-
-    @Override
-    public boolean isGlowing(ItemStack stack) {
-        return false;
-    }
-
-    public DyeColor getColor() {
-        return this.color;
+        if (!player.isCreative()) {
+            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+        }
     }
 }

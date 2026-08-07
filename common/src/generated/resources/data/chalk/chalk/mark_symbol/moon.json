@@ -1,0 +1,6 @@
+{
+  "group_priority": 420,
+  "orientation_behavior": "up_down_cardinal",
+  "required_advancement": "minecraft:adventure/sleep_in_bed",
+  "texture": "chalk:block/mark/moon"
+}

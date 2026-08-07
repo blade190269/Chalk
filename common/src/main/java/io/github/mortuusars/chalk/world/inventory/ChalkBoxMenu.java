@@ -100,7 +100,7 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
     }
 
     public boolean isGlowingEnabled() {
-        return Config.Common.CHALK_BOX_GLOWING_ENABLED.get();
+        return Config.Server.CHALK_BOX_GLOWING_ENABLED.get();
     }
 
     public int getGlowAmount() {

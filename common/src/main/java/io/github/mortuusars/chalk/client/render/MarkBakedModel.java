@@ -146,20 +146,20 @@ public class MarkBakedModel implements BakedModel {
 
     static {
         FROM_COORDS = new HashMap<>();
-        FROM_COORDS.put(Direction.DOWN, new Vector3f(0, 15.9f, 0));
+        FROM_COORDS.put(Direction.DOWN, new Vector3f(0, 15.95f, 0));
         FROM_COORDS.put(Direction.UP, new Vector3f(0, 0, 0));
-        FROM_COORDS.put(Direction.NORTH, new Vector3f(0, 0, 15.9f));
+        FROM_COORDS.put(Direction.NORTH, new Vector3f(0, 0, 15.95f));
         FROM_COORDS.put(Direction.SOUTH, new Vector3f(0, 0, 0));
-        FROM_COORDS.put(Direction.WEST, new Vector3f(15.9f, 0, 0));
+        FROM_COORDS.put(Direction.WEST, new Vector3f(15.95f, 0, 0));
         FROM_COORDS.put(Direction.EAST, new Vector3f(0, 0, 0));
 
         TO_COORDS = new HashMap<>();
         TO_COORDS.put(Direction.DOWN, new Vector3f(16, 16, 16));
-        TO_COORDS.put(Direction.UP, new Vector3f(16, 0.1f, 16));
+        TO_COORDS.put(Direction.UP, new Vector3f(16, 0.05f, 16));
         TO_COORDS.put(Direction.NORTH, new Vector3f(16, 16, 16));
-        TO_COORDS.put(Direction.SOUTH, new Vector3f(16, 16, 0.1f));
+        TO_COORDS.put(Direction.SOUTH, new Vector3f(16, 16, 0.05f));
         TO_COORDS.put(Direction.WEST, new Vector3f(16, 16, 16));
-        TO_COORDS.put(Direction.EAST, new Vector3f(0.1f, 16, 16));
+        TO_COORDS.put(Direction.EAST, new Vector3f(0.05f, 16, 16));
     }
 
 //    private BakedQuad getBakedQuad(@NotNull Direction facing, OldMarkSymbol symbol, SymbolOrientation symbolRotation) {

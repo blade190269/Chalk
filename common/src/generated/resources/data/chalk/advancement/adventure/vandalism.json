@@ -5,12 +5,6 @@
       "conditions": {
         "location": {
           "structures": "minecraft:village_desert"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -19,12 +13,6 @@
       "conditions": {
         "location": {
           "structures": "minecraft:village_plains"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -33,12 +21,6 @@
       "conditions": {
         "location": {
           "structures": "minecraft:village_savanna"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -47,12 +29,6 @@
       "conditions": {
         "location": {
           "structures": "minecraft:village_snowy"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -61,12 +37,6 @@
       "conditions": {
         "location": {
           "structures": "minecraft:village_taiga"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
         }
       },
       "trigger": "chalk:mark_drawn"

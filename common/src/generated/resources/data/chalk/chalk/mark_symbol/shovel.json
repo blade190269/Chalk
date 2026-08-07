@@ -1,7 +1,7 @@
 {
   "group": "tools",
-  "group_priority": 30,
+  "group_priority": 20,
   "orientation_behavior": "up_down_cardinal",
   "required_advancement": "minecraft:story/iron_tools",
-  "texture": "chalk:block/mark/pickaxe"
+  "texture": "chalk:block/mark/shovel"
 }

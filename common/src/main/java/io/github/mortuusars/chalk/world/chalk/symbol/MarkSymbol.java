@@ -17,40 +17,73 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
-public record MarkSymbol(ResourceLocation texture, int rotationOffset, OrientationBehavior orientationBehavior) {
+import static io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol.OrientationBehavior.*;
+
+public record MarkSymbol(ResourceLocation texture, int rotationOffset, OrientationBehavior orientationBehavior,
+                         Optional<ResourceLocation> requiredAdvancement, String group, int groupPriority) {
+
+    public static final String GROUP_PRIMARY = "primary";
     public static final ResourceKey<MarkSymbol> ARROW =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("arrow"));
-    public static final ResourceKey<MarkSymbol> CENTER =
-          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("center"));
+    public static final ResourceKey<MarkSymbol> DOT =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("dot"));
+    public static final ResourceKey<MarkSymbol> BACK =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("back"));
 
-    public static final ResourceKey<MarkSymbol> CHECKMARK =
+    public static final String GROUP_SYMBOLS = "symbols";
+    public static final ResourceKey<MarkSymbol> CHECK =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("check"));
     public static final ResourceKey<MarkSymbol> CROSS =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("cross"));
     public static final ResourceKey<MarkSymbol> HOUSE =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("house"));
-    public static final ResourceKey<MarkSymbol> PICKAXE =
-          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("pickaxe"));
     public static final ResourceKey<MarkSymbol> HEART =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("heart"));
     public static final ResourceKey<MarkSymbol> SKULL =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("skull"));
+    public static final ResourceKey<MarkSymbol> NOTE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("note"));
+    public static final ResourceKey<MarkSymbol> SUN =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("sun"));
+    public static final ResourceKey<MarkSymbol> MOON =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("moon"));
+    public static final ResourceKey<MarkSymbol> STAR =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("star"));
 
-    public static final ResourceKey<MarkSymbol> DEFAULT = CENTER;
+    public static final String GROUP_TOOLS = "tools";
+    public static final ResourceKey<MarkSymbol> PICKAXE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("pickaxe"));
+    public static final ResourceKey<MarkSymbol> AXE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("axe"));
+    public static final ResourceKey<MarkSymbol> SHOVEL =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("shovel"));
+    public static final ResourceKey<MarkSymbol> SWORD =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("sword"));
+    public static final ResourceKey<MarkSymbol> HOE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("hoe"));
+
+    public static final ResourceKey<MarkSymbol> DEFAULT = DOT;
 
     // --
 
     public static final Codec<MarkSymbol> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
           ResourceLocation.CODEC.fieldOf("texture").forGetter(MarkSymbol::texture),
           Codec.intRange(-180, 180).optionalFieldOf("rotation_offset", 0).forGetter(MarkSymbol::rotationOffset),
-          OrientationBehavior.CODEC.optionalFieldOf("orientation_behavior", OrientationBehavior.FULL).forGetter(MarkSymbol::orientationBehavior)
+          OrientationBehavior.CODEC.optionalFieldOf("orientation_behavior", FULL).forGetter(MarkSymbol::orientationBehavior),
+          ResourceLocation.CODEC.optionalFieldOf("required_advancement").forGetter(MarkSymbol::requiredAdvancement),
+          Codec.STRING.optionalFieldOf("group", "symbols").forGetter(MarkSymbol::group),
+          Codec.INT.optionalFieldOf("group_priority", 9999).forGetter(MarkSymbol::groupPriority)
     ).apply(i, MarkSymbol::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MarkSymbol> DIRECT_STREAM_CODEC = StreamCodec.composite(
           ResourceLocation.STREAM_CODEC, MarkSymbol::texture,
           ByteBufCodecs.INT, MarkSymbol::rotationOffset,
           OrientationBehavior.STREAM_CODEC, MarkSymbol::orientationBehavior,
+          ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), MarkSymbol::requiredAdvancement,
+          ByteBufCodecs.STRING_UTF8, MarkSymbol::group,
+          ByteBufCodecs.INT, MarkSymbol::groupPriority,
           MarkSymbol::new
     );
 
@@ -78,22 +111,46 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
               .orElseThrow();
     }
 
+    public static Stream<Holder<MarkSymbol>> getAllHolders(HolderLookup.Provider lookup) {
+        return lookup.lookupOrThrow(Chalk.Registries.MARK_SYMBOL)
+              .listElements()
+              .map(ref -> ref);
+    }
+
     // --
 
     public static void bootstrap(BootstrapContext<MarkSymbol> context) {
-        register(context, ARROW, 0, OrientationBehavior.FULL);
-        register(context, CENTER, 0, OrientationBehavior.FIXED);
-        register(context, CHECKMARK, 45, OrientationBehavior.UP_DOWN_CARDINAL);
-        register(context, CROSS, 45, OrientationBehavior.FIXED);
-        register(context, HOUSE, 0, OrientationBehavior.UP_DOWN_CARDINAL);
-        register(context, PICKAXE, 0, OrientationBehavior.UP_DOWN_CARDINAL);
-        register(context, HEART, 0, OrientationBehavior.UP_DOWN_CARDINAL);
-        register(context, SKULL, 0, OrientationBehavior.UP_DOWN_CARDINAL);
+        register(context, ARROW, 0, FULL, Optional.empty(), GROUP_PRIMARY, 10);
+        register(context, DOT, 0, FIXED, Optional.empty(), GROUP_PRIMARY, 20);
+        register(context, BACK, 0, CARDINAL, Optional.empty(), GROUP_PRIMARY, 30);
+        register(context, CHECK, 45, UP_DOWN_CARDINAL, Optional.empty(), GROUP_PRIMARY, 40);
+        register(context, CROSS, 45, FIXED, Optional.empty(), GROUP_PRIMARY, 50);
+
+        register(context, HOUSE, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/home_is_where_the_bed_is"), GROUP_SYMBOLS, 100);
+        register(context, HEART, 0, UP_DOWN_CARDINAL, adv("minecraft:husbandry/breed_an_animal"), GROUP_SYMBOLS, 110);
+        register(context, SKULL, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/sniper_duel"), GROUP_SYMBOLS, 120);
+        register(context, NOTE, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/play_jukebox_in_meadows"), GROUP_SYMBOLS, 130);
+        //TODO: Advancement for SUN
+        register(context, SUN, 0, UP_DOWN_CARDINAL, Optional.empty(), GROUP_SYMBOLS, 210);
+        register(context, MOON, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/sleep_in_bed"), GROUP_SYMBOLS, 220);
+        register(context, STAR, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/trade_at_world_height"), GROUP_SYMBOLS, 230);
+
+        register(context, SWORD, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 10);
+        register(context, SHOVEL, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 20);
+        register(context, PICKAXE, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 30);
+        register(context, AXE, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 40);
+        register(context, HOE, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 50);
     }
 
-    static void register(BootstrapContext<MarkSymbol> context, ResourceKey<MarkSymbol> key, int rotationOffset, MarkSymbol.OrientationBehavior behavior) {
+    static Optional<ResourceLocation> adv(String id) {
+        return Optional.of(ResourceLocation.parse(id));
+    }
+
+    static void register(BootstrapContext<MarkSymbol> context, ResourceKey<MarkSymbol> key,
+                         int rotationOffset, MarkSymbol.OrientationBehavior behavior,
+                         Optional<ResourceLocation> requiredAdvancement, String group, int groupPriority) {
         ResourceLocation texture = key.location().withPrefix("block/mark/");
-        context.register(key, new MarkSymbol(texture, rotationOffset, behavior));
+        context.register(key, new MarkSymbol(texture, rotationOffset, behavior, requiredAdvancement, group, groupPriority));
     }
 
     // --

@@ -1,9 +1,26 @@
 # Changelog
 
 ## UNRELEASED
-- Sorted chalk colors same way as in vanilla.  
-- Removed ChalkDurability common config option. Chalk durability can be configured with `minecraft:max_damage` component on the item.
-- Removed ChalkSymbolOffsets client config option. Offset is part of the symbol definition. 
+- Skull symbol unlocking is changed from `Bound by Bone (chalk:adventure/bound_by_bone)` to `Sniper Duel (minecraft:adventure/sniper_duel)` advancement
+- Heart symbol unlocking is changed from `Best Friends Forever (minecraft:husbandry/tame_an_animal)` to `The Parrots and the Bats (minecraft:husbandry/breed_an_animal)` advancement
+- Added Trial Chambers to the list of structures that unlock `This Way (chalk:adventure/this_way)` advancement
+- Sorted chalk item colors same way as in vanilla
+- Glowing marks no longer emit light
+- Improved orientation of the marks drawn on the ceiling (bottom side of a block)
+
+Symbols
+- Added symbols: ...
+- Symbol selection overlay will show all symbols if player is in creative mode
+
+Config
+- Added `symbol_unlocking` server config option
+- Added `symbol_selection_groups_sorting` client config option
+- Moved `ChalkBoxGlowingEnabled` and `ChalkBoxAmountPerGlowingItem` options from common to server config
+- Changed casing of all config options from 'PascalCase' to 'snake_case'
+- Removed whole Symbols category in common config. All symbol properties are now data-driven
+- Removed `GlowingMarkLightLevel` common config option
+- Removed `ChalkDurability` common config option. Chalk durability can be configured with `minecraft:max_damage` component on the item
+- Removed `ChalkSymbolOffsets` client config option. Offset is part of the symbol definition.
 
 ## 1.6.12 - 2026-06-03
 - Fixed equality checking of `chalk:chalk_box_contents` component.

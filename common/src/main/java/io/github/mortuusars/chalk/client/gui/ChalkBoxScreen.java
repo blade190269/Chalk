@@ -24,7 +24,7 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
 
     public ChalkBoxScreen(ChalkBoxMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        maxGlowingUses = Config.Common.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
+        maxGlowingUses = Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
         this.minecraft = Minecraft.getInstance();
         this.player = Minecraft.getInstance().player;
     }

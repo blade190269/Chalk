@@ -1,0 +1,6 @@
+{
+  "group": "primary",
+  "group_priority": 30,
+  "orientation_behavior": "cardinal",
+  "texture": "chalk:block/mark/back"
+}

@@ -11,6 +11,7 @@ import io.github.mortuusars.chalk.network.packet.S2CPackets;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -53,17 +54,22 @@ public class NeoForgeCommonEvents {
 
     @SubscribeEvent
     public static void advancementAward(AdvancementEvent.AdvancementEarnEvent event) {
-        ResourceLocation id = event.getAdvancement().id();
+        ResourceLocation advancement = event.getAdvancement().id();
 
-        for (var entry : Config.Common.SYMBOL_CONFIG.entrySet()) {
-            boolean isEnabled = entry.getValue().getFirst().get();
-            String location = entry.getValue().getSecond().get();
-            if (isEnabled && !location.isEmpty() && location.equals(id.toString()) && event.getEntity() instanceof ServerPlayer player) {
-                player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked",
-                      Component.translatable(entry.getKey().getTranslationKey()).withStyle(Style.EMPTY.withColor(0x53a5df))), false);
-                player.playNotifySound(Chalk.SoundEvents.MARK_DRAW.get(), SoundSource.PLAYERS, 1f, 1f);
-                return;
+        if (event.getEntity() instanceof ServerPlayer player) {
+            List<Holder<MarkSymbol>> unlockedSymbols = MarkSymbol.getAllHolders(player.registryAccess())
+                  .filter(symbol -> symbol.value().requiredAdvancement()
+                        .map(id -> id.equals(advancement)).orElse(false))
+                  .toList();
+
+            for (Holder<MarkSymbol> symbol : unlockedSymbols) {
+                symbol.unwrapKey().ifPresent(key -> {
+                    player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked",
+                          Component.translatable(key.location().toLanguageKey()).withStyle(Style.EMPTY.withColor(0x53a5df))), false);
+                });
             }
+
+            player.playNotifySound(Chalk.SoundEvents.MARK_DRAW.get(), SoundSource.PLAYERS, 1f, 1f);
         }
     }
 

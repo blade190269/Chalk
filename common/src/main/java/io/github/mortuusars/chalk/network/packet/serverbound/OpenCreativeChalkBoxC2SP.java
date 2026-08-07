@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record OpenCreativeChalkBoxC2SP(int chalkBoxSlotIndex) implements Packet {
     public static final CustomPacketPayload.Type<OpenCreativeChalkBoxC2SP> TYPE = new CustomPacketPayload.Type<>(Chalk.resource("open_creative_chalk_box"));
+
     public static final StreamCodec<FriendlyByteBuf, OpenCreativeChalkBoxC2SP> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, OpenCreativeChalkBoxC2SP::chalkBoxSlotIndex,
             OpenCreativeChalkBoxC2SP::new

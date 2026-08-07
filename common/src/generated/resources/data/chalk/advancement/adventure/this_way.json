@@ -5,12 +5,6 @@
       "conditions": {
         "location": {
           "structures": "minecraft:fortress"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -19,12 +13,6 @@
       "conditions": {
         "location": {
           "structures": "minecraft:mineshaft"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -33,12 +21,6 @@
       "conditions": {
         "location": {
           "structures": "minecraft:mineshaft_mesa"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -47,12 +29,14 @@
       "conditions": {
         "location": {
           "structures": "minecraft:stronghold"
-        },
-        "mark_color": {
-          "colors": []
-        },
-        "surface_color": {
-          "colors": []
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    },
+    "draw_in_trial_chambers": {
+      "conditions": {
+        "location": {
+          "structures": "minecraft:trial_chambers"
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -75,7 +59,8 @@
       "draw_in_mineshaft",
       "draw_in_mineshaft_mesa",
       "draw_in_fortress",
-      "draw_in_stronghold"
+      "draw_in_stronghold",
+      "draw_in_trial_chambers"
     ]
   ],
   "sends_telemetry_event": true

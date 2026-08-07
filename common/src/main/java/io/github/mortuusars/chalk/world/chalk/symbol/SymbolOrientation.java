@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk.world.chalk.symbol;
 
 import com.mojang.serialization.Codec;
-import io.github.mortuusars.chalk.core.component.Point2d;
+import io.github.mortuusars.chalk.utils.Point2d;
 import io.github.mortuusars.chalk.utils.GridCell;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import io.netty.buffer.ByteBuf;

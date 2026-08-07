@@ -1,4 +1,6 @@
 {
+  "group_priority": 200,
   "orientation_behavior": "up_down_cardinal",
+  "required_advancement": "minecraft:husbandry/breed_an_animal",
   "texture": "chalk:block/mark/heart"
 }

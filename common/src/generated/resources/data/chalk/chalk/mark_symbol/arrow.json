@@ -1,3 +1,5 @@
 {
+  "group": "primary",
+  "group_priority": 10,
   "texture": "chalk:block/mark/arrow"
 }

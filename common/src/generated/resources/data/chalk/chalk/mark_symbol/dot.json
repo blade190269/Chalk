@@ -1,0 +1,6 @@
+{
+  "group": "primary",
+  "group_priority": 20,
+  "orientation_behavior": "fixed",
+  "texture": "chalk:block/mark/dot"
+}

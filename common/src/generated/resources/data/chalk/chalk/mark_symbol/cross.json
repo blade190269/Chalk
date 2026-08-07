@@ -1,4 +1,6 @@
 {
+  "group": "primary",
+  "group_priority": 50,
   "orientation_behavior": "fixed",
   "rotation_offset": 45,
   "texture": "chalk:block/mark/cross"

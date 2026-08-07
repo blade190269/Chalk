@@ -38,7 +38,7 @@ public class ClientChalkBoxTooltip implements ClientTooltipComponent {
     }
 
     private int backgroundHeight() {
-        boolean showGlowingStuff = Config.Common.CHALK_BOX_GLOWING_ENABLED.get()
+        boolean showGlowingStuff = Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
                 && (contents.glowAmount() > 0 || !contents.items().get(ChalkBoxContents.GLOWINGS_SLOT).isEmpty());
         return showGlowingStuff ? 69 : 42;
     }
@@ -62,7 +62,7 @@ public class ClientChalkBoxTooltip implements ClientTooltipComponent {
             }
         }
 
-        boolean showGlowingStuff = Config.Common.CHALK_BOX_GLOWING_ENABLED.get()
+        boolean showGlowingStuff = Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
                 && (contents.glowAmount() > 0 || !contents.items().get(ChalkBoxContents.GLOWINGS_SLOT).isEmpty());
         if (showGlowingStuff) {
             guiGraphics.blit(TEXTURE, x, y + 38, 0, 41, backgroundWidth(), 30, 128, 128);
@@ -71,7 +71,7 @@ public class ClientChalkBoxTooltip implements ClientTooltipComponent {
 
             if (contents.glowAmount() > 0) {
                 int maxWidth = 72;
-                float fill = contents.glowAmount() / (float)Config.Common.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
+                float fill = contents.glowAmount() / (float) Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
                 int fillWidth = Math.min((int)Math.floor(maxWidth * fill), maxWidth);
                 guiGraphics.blit(TEXTURE, x + 2, y + 40, 0, 71, fillWidth, 5, 128, 128);
             }

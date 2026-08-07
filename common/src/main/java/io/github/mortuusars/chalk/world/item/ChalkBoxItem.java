@@ -3,22 +3,18 @@ package io.github.mortuusars.chalk.world.item;
 import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Platform;
-import io.github.mortuusars.chalk.world.block.OldChalkMarkBlock;
 import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.core.OldMarkSymbol;
 import io.github.mortuusars.chalk.world.chalk.Mark;
+import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
-import io.github.mortuusars.chalk.data.ChalkColors;
-import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,6 +39,8 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
     public ChalkBoxItem(Properties properties) {
         super(properties);
     }
+
+    // --
 
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack stack) {
@@ -105,7 +103,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
                 }
             }
         }
-        else if (Config.Common.CHALK_BOX_GLOWING_ENABLED.get()
+        else if (Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
                 && otherStack.is(Chalk.Tags.Items.GLOWINGS)) {
             ItemStack existingItem = getItemInSlot(stack, ChalkBoxContents.GLOWINGS_SLOT);
             int glowAmountBefore = getGlowAmount(stack);
@@ -147,39 +145,45 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
-        ItemStack chalkBoxStack = context.getItemInHand();
-        if (!chalkBoxStack.is(this))
-            return InteractionResult.FAIL;
-
+        InteractionHand hand = context.getHand();
+        ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
-        if (player == null)
+
+        if (player == null) {
             return InteractionResult.FAIL;
+        }
 
-        if (context.getHand() == InteractionHand.OFF_HAND && (player.getMainHandItem().getItem() instanceof ChalkItem || player.getMainHandItem().is(this)))
-            return InteractionResult.FAIL; // Skip drawing from offhand if chalks in both hands.
+        //TODO: verify that offhand check is not needed here
 
-        ItemStack selectedChalk = getSelectedChalk(chalkBoxStack);
+        ItemStack selectedChalk = getSelectedChalk(stack);
 
         if (selectedChalk.isEmpty()) {
             if (player instanceof ServerPlayer serverPlayer) {
-                open(serverPlayer, context.getHand());
+                open(serverPlayer, hand);
             }
             return InteractionResult.SUCCESS;
         }
 
-        MarkDrawingContext drawingContext = createMarkDrawingContext(context);
+        if (!(selectedChalk.getItem() instanceof MarkDrawable drawable)) {
+            Chalk.LOGGER.error("Cannot draw mark using a Chalk Box: selected chalk is not a drawable item, but {}.", selectedChalk.getItem());
+            player.playSound(SoundEvents.NOTE_BLOCK_BASS.value());
+            return InteractionResult.FAIL;
+        }
 
-        if (!drawingContext.canDraw() || !(selectedChalk.getItem() instanceof MarkDrawable drawable)) {
+        MarkDrawingContext drawingContext = createMarkDrawingContext(player, context.getHand(),
+              context.getClickLocation(), context.getClickedPos(), context.getClickedFace());
+
+        if (!canDrawMark(player, drawingContext)) {
             return InteractionResult.FAIL;
         }
 
         if (player.isSecondaryUseActive()) {
-            drawingContext.openSymbolSelectionScreen();
+            selectSymbolAndDraw(player, drawingContext);
             return InteractionResult.CONSUME;
         }
 
-        if (drawMark(drawingContext, drawingContext.createRegularMark(drawable.getMarkColorValue(selectedChalk), isGlowing(chalkBoxStack)))) {
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        if (drawMark(player, drawingContext, createRegularMark(player, drawingContext, stack))) {
+            return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
         }
 
         return InteractionResult.FAIL;
@@ -189,24 +193,20 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!stack.is(this)) {
-            return InteractionResultHolder.pass(stack);
-        }
-
         if (player.isSecondaryUseActive()) {
             if (rotateSelectedChalk(stack)) {
                 level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS,
                         0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+                return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
             } else {
                 return InteractionResultHolder.fail(stack);
             }
         } else if (player instanceof ServerPlayer serverPlayer) {
-            SimpleMenuProvider menuProvider = new SimpleMenuProvider(
-                  (id, inventory, pl) -> new ChalkBoxMenu(id, inventory, hand), stack.getHoverName());
-            Platform.openMenu(serverPlayer, menuProvider, buffer -> buffer.writeEnum(hand));
+            open(serverPlayer, hand);
+            return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
         }
 
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        return InteractionResultHolder.pass(stack);
     }
 
     public void open(ServerPlayer player, InteractionHand hand) {
@@ -231,56 +231,43 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
               0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
     }
 
-//    public void openGUI(ServerPlayer player, ItemStack chalkBoxStack) {
-//        if (!(chalkBoxStack.getItem() instanceof ChalkBoxItem)) {
-//            Chalk.LOGGER.error("Cannot open Chalk Box menu: {} is not a ChalkBoxItem.", chalkBoxStack);
-//            return;
-//        }
-//
-//        int chalkBoxSlotIndex = player.getInventory().findSlotMatchingItem(chalkBoxStack);
-//        if (chalkBoxSlotIndex < 0) {
-//            Chalk.LOGGER.error("Cannot open Chalk Box menu: {} is not found in player's inventory.", chalkBoxStack);
-//            return;
-//        }
-//
-//        Component title = chalkBoxStack.has(DataComponents.CUSTOM_NAME)
-//                ? chalkBoxStack.getHoverName()
-//                : Component.translatable("container.chalk.chalk_box");
-//
-//        SimpleMenuProvider menuProvider = new SimpleMenuProvider((containerID, playerInventory, playerEntity) ->
-//                new ChalkBoxMenu(containerID, playerInventory, chalkBoxSlotIndex), title);
-//
-//        Platform.openMenu(player, menuProvider, buffer -> buffer.writeVarInt(chalkBoxSlotIndex));
-//
-//        player.level().playSound(null, player.position().x, player.position().y, player.position().z,
-//                Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
-//                0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
-//    }
-
-//    @Override
-//    public OldMark getMark(ItemStack chalkBoxStack, MarkDrawingContext drawingContext, OldMarkSymbol symbol) {
-//        ItemStack selectedChalk = getSelectedChalk(chalkBoxStack);
-//
-//        DyeColor color = selectedChalk.getItem() instanceof MarkDrawable chalkItem
-//                ? chalkItem.getMarkColor(selectedChalk).orElse(DyeColor.WHITE)
-//                : DyeColor.WHITE;
-//
-//        return drawingContext.createMark(ChalkColors.fromDyeColor(color), symbol, isGlowing(chalkBoxStack));
-//    }
+    // -- Drawable
 
     @Override
-    public void onMarkDrawn(Player player, InteractionHand drawingHand, BlockPos markPos, Direction facing, Mark mark) {
-        if (player.isCreative()) {
+    public int getMarkDrawingColor(ItemStack chalkBoxStack) {
+        ItemStack chalk = getSelectedChalk(chalkBoxStack);
+        return chalk.getItem() instanceof MarkDrawable drawable
+              ? drawable.getMarkDrawingColor(chalk)
+              : 0xFFFFFFFF;
+    }
+
+    @Override
+    public boolean shouldDrawGlowingMark(ItemStack chalkBoxStack) {
+        return Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && getContents(chalkBoxStack).glowAmount() > 0;
+    }
+
+    @Override
+    public void onMarkDrawn(Player player, MarkDrawingContext context, Mark mark) {
+        MarkDrawable.super.onMarkDrawn(player, context, mark);
+
+        ItemStack chalkBoxStack = player.getItemInHand(context.hand());
+        int selectedChalkIndex = getContents(chalkBoxStack).getSelectedChalkIndex();
+        if (selectedChalkIndex < 0) {
+            Chalk.LOGGER.error("Failed to apply Chalk Box onMarkDrawn side effects: no selected chalk. {}", chalkBoxStack.getComponents());
             return;
         }
 
-        ItemStack chalkBoxStack = player.getItemInHand(drawingHand);
-        int selectedChalkIndex = getContents(chalkBoxStack).getSelectedChalkIndex();
-        Preconditions.checkState(selectedChalkIndex >= 0, "Chalk Box has no selected drawing tool. {}", chalkBoxStack);
         ItemStack selectedChalk = getItemInSlot(chalkBoxStack, selectedChalkIndex);
-        selectedChalk.hurtAndBreak(1, player, LivingEntity.getSlotForHand(drawingHand));
+        if (selectedChalk.getItem() instanceof ChalkItem chalk) {
+            chalk.onChalkMarkDrawn(player, context.hand(), selectedChalk, context.markPos(), context.markFacing(), mark);
+        } else if (!player.isCreative()) {
+            selectedChalk.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.hand()));
+        }
+
         setItemInSlot(chalkBoxStack, selectedChalkIndex, selectedChalk.isEmpty() ? ItemStack.EMPTY : selectedChalk);
-        consumeGlow(chalkBoxStack);
+        if (!player.isCreative()) {
+            consumeGlow(chalkBoxStack);
+        }
     }
 
     public @NotNull ChalkBoxContents getContents(ItemStack stack) {
@@ -381,19 +368,6 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         return 0f;
     }
 
-    @Override
-    public Optional<DyeColor> getMarkColor(ItemStack chalkBoxStack) {
-        ItemStack selectedChalk = getSelectedChalk(chalkBoxStack);
-        return selectedChalk.getItem() instanceof MarkDrawable drawingTool ? drawingTool.getMarkColor(selectedChalk) : Optional.empty();
-    }
-
-    @Override
-    public int getMarkColorValue(ItemStack chalkBoxStack) {
-        return getMarkColor(chalkBoxStack)
-                .map(ChalkColors::fromDyeColor)
-                .orElse(0xFFFFFFFF);
-    }
-
     public boolean isItemValid(ItemStack chalkBoxStack, int slot, @NotNull ItemStack stack) {
         if (slot < 0 || slot >= ChalkBoxContents.SLOTS) {
             return false;
@@ -404,13 +378,10 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         }
     }
 
-    @Override
-    public boolean isGlowing(ItemStack chalkBoxStack) {
-        return Config.Common.CHALK_BOX_GLOWING_ENABLED.get() && getContents(chalkBoxStack).glowAmount() > 0;
-    }
+
 
     public int getGlowAmount(ItemStack chalkBoxStack) {
-        return Config.Common.CHALK_BOX_GLOWING_ENABLED.get() ? getContents(chalkBoxStack).glowAmount() : 0;
+        return Config.Server.CHALK_BOX_GLOWING_ENABLED.get() ? getContents(chalkBoxStack).glowAmount() : 0;
     }
 
     public void consumeGlow(ItemStack chalkBoxStack) {
@@ -432,7 +403,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
 
         ItemStack glowingItemStack = getItemInSlot(chalkBoxStack, ChalkBoxContents.GLOWINGS_SLOT);
         if (!glowingItemStack.isEmpty()) {
-            setGlowAmount(chalkBoxStack, Config.Common.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get());
+            setGlowAmount(chalkBoxStack, Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get());
             glowingItemStack.shrink(1);
             setItemInSlot(chalkBoxStack, ChalkBoxContents.GLOWINGS_SLOT, glowingItemStack);
         }
