@@ -11,6 +11,7 @@ import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -262,6 +263,12 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
             chalk.onChalkMarkDrawn(player, context.hand(), selectedChalk, context.markPos(), context.markFacing(), mark);
         } else if (!player.isCreative()) {
             selectedChalk.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.hand()));
+        }
+
+        if (getGlowAmount(chalkBoxStack) > 0 && player instanceof ServerPlayer serverPlayer) {
+            BlockPos surfacePos = context.surfacePos();
+            Chalk.CriteriaTriggers.MARK_GLOWING.get().trigger(
+                  serverPlayer, mark, context.markPos(), player.level().getBlockState(surfacePos).getMapColor(player.level(), surfacePos));
         }
 
         setItemInSlot(chalkBoxStack, selectedChalkIndex, selectedChalk.isEmpty() ? ItemStack.EMPTY : selectedChalk);

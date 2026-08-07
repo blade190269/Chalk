@@ -1,7 +1,8 @@
-package io.github.mortuusars.chalk.advancements;
+package io.github.mortuusars.chalk.advancements.trigger;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.mortuusars.chalk.advancements.PlayerSleepInfo;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;

@@ -193,6 +193,8 @@ public class SymbolSelectScreen extends Screen {
               .map(symbol -> drawable.createMark(player, context, itemStack, symbol))
               .toList();
 
+//        maxSymbolsInRow = 3;
+
         return Lists.partition(marks, maxSymbolsInRow);
     }
 

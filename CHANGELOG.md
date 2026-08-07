@@ -1,16 +1,35 @@
 # Changelog
 
 ## UNRELEASED
-- Skull symbol unlocking is changed from `Bound by Bone (chalk:adventure/bound_by_bone)` to `Sniper Duel (minecraft:adventure/sniper_duel)` advancement
-- Heart symbol unlocking is changed from `Best Friends Forever (minecraft:husbandry/tame_an_animal)` to `The Parrots and the Bats (minecraft:husbandry/breed_an_animal)` advancement
-- Added Trial Chambers to the list of structures that unlock `This Way (chalk:adventure/this_way)` advancement
 - Sorted chalk item colors same way as in vanilla
 - Glowing marks no longer emit light
 - Improved orientation of the marks drawn on the ceiling (bottom side of a block)
 
 Symbols
-- Added symbols: ...
-- Symbol selection overlay will show all symbols if player is in creative mode
+- Added new symbols:
+  - **Back** - unlocked by `This Way` advancement
+  - **Sword**, **Shovel**, **Axe**, **Hoe** - unlocked by `Isn't It Iron Pick` advancement
+  - **Sun** - unlocked by the new `Consumed By The Light` advancement
+  - **Moon** - unlocked by `Alone In The Darkness` advancement
+  - **Star** - unlocked by the new `Guiding Star` advancement
+  - **Note** - unlocked by `Sound of Music` advancement
+- Symbols are now data-driven
+- Overhauled the symbol selection overlay:
+  - Added proper layout and scrolling to support any number of symbols 
+  - Added symbol groups
+  - Added smooth animations
+  - Symbol name is now shown in a tooltip, instead of the action bar
+  - Overlay now shows all symbols if player is in creative mode, instead of only unlocked
+- **Skull** symbol unlocking is changed from `Bound by Bone` to `Sniper Duel` advancement
+- **Heart** symbol unlocking is changed from `Best Friends Forever` to `The Parrots and the Bats` advancement
+- Changed sprite of the **House** symbol
+
+Advancements
+- Added `Consumed By The Light` and `Guiding Star` advancements
+- `Alone In The Darkness` advancement is no longer hidden
+- Added Trial Chambers to the list of structures that unlock `This Way` advancement
+- Added `chalk:mark_glowing` advancement trigger
+- Removed `Bound By Bone` advancement
 
 Config
 - Added `symbol_unlocking` server config option

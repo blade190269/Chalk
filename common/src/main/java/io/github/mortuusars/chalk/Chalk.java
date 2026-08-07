@@ -1,7 +1,8 @@
 package io.github.mortuusars.chalk;
 
-import io.github.mortuusars.chalk.advancements.MarkDrawnTrigger;
-import io.github.mortuusars.chalk.advancements.ConsecutiveSleepingTrigger;
+import io.github.mortuusars.chalk.advancements.trigger.MarkDrawnTrigger;
+import io.github.mortuusars.chalk.advancements.trigger.ConsecutiveSleepingTrigger;
+import io.github.mortuusars.chalk.advancements.trigger.MarkGlowingTrigger;
 import io.github.mortuusars.chalk.world.block.MarkBlockEntity;
 import io.github.mortuusars.chalk.world.block.MarkBlock;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
@@ -135,6 +136,8 @@ public class Chalk {
               Register.criterionTrigger("consecutive_sleeping", ConsecutiveSleepingTrigger::new);
         public static final Supplier<MarkDrawnTrigger> MARK_DRAWN =
               Register.criterionTrigger("mark_drawn", MarkDrawnTrigger::new);
+        public static final Supplier<MarkGlowingTrigger> MARK_GLOWING =
+              Register.criterionTrigger("mark_glowing", MarkGlowingTrigger::new);
 
         static void init() {
         }

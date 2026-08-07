@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
@@ -121,8 +122,8 @@ public class MarkBlock extends BaseEntityBlock {
 
         if (usedStack.is(Chalk.Tags.Items.GLOWINGS)
               && level.getBlockEntity(pos) instanceof MarkBlockEntity blockEntity
-              && getClickedMark(level, hitResult.getLocation()) instanceof DrawnMark(Direction facing, Mark mark)
-              && !mark.glowing()) {
+              && getClickedMark(level, hitResult.getLocation()) instanceof DrawnMark(Direction facing, Mark existingMark)
+              && !existingMark.glowing()) {
 
             if (!player.isCreative()) {
                 usedStack.shrink(1);
@@ -133,8 +134,15 @@ public class MarkBlock extends BaseEntityBlock {
             ParticleUtils.spawnParticle(level, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(pos, facing, 0.3f),
                   new Vector3f(0f, 0.03f, 0f), 2);
 
-            blockEntity.getMarks().set(facing, mark.withGlowing(true));
+            Mark mark = existingMark.withGlowing(true);
+            blockEntity.getMarks().set(facing, mark);
             blockEntity.marksChanged();
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                BlockPos surfacePos = pos.relative(facing.getOpposite());
+                Chalk.CriteriaTriggers.MARK_GLOWING.get().trigger(
+                      serverPlayer, mark, pos, level.getBlockState(surfacePos).getMapColor(level, pos));
+            }
 
             return ItemInteractionResult.SUCCESS;
         }

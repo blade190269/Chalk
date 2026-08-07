@@ -82,16 +82,20 @@
 
   "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
 
-  "chat.chalk.symbol_unlocked": "You learned how to draw a %s with chalk",
+  "chat.chalk.symbol_unlocked": "You learned how to draw %s symbol with chalk",
 
   "advancement.chalk.home_is_where_the_bed_is.title": "Home Is Where the Bed Is",
   "advancement.chalk.home_is_where_the_bed_is.description": "Sleep in one place three times in a row",
   "advancement.chalk.this_way.title": "This Way!",
-  "advancement.chalk.this_way.description": "Draw with Chalk in a labyrinthine structure",
+  "advancement.chalk.this_way.description": "Draw with a Chalk in a labyrinthine structure",
   "advancement.chalk.vandalism.title": "Vandalism",
   "advancement.chalk.vandalism.description": "Draw with a Chalk in a Village",
+  "advancement.chalk.consumed_by_the_light.title": "Consumed By The Light",
+  "advancement.chalk.consumed_by_the_light.description": "Draw with the White Chalk on the white block in the whiteness",
   "advancement.chalk.alone_in_the_darkness.title": "Alone In The Darkness",
   "advancement.chalk.alone_in_the_darkness.description": "Draw with the Black Chalk on the black block in the blackness",
+  "advancement.chalk.guiding_star.title": "Guiding Star",
+  "advancement.chalk.guiding_star.description": "Make a chalk mark glow in the dark",
 
   "chalk.configuration.Symbols": "Symbols",
   "chalk.configuration.ChalkBoxGlowingEnabled": "Chalk Box: Glowing",

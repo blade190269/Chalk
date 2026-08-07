@@ -2,5 +2,6 @@
   "group": "primary",
   "group_priority": 30,
   "orientation_behavior": "cardinal",
+  "required_advancement": "chalk:adventure/this_way",
   "texture": "chalk:block/mark/back"
 }

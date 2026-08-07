@@ -65,7 +65,7 @@ public class NeoForgeCommonEvents {
             for (Holder<MarkSymbol> symbol : unlockedSymbols) {
                 symbol.unwrapKey().ifPresent(key -> {
                     player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked",
-                          Component.translatable(key.location().toLanguageKey()).withStyle(Style.EMPTY.withColor(0x53a5df))), false);
+                          Component.translatable(key.location().toLanguageKey("mark_symbol")).withStyle(Style.EMPTY.withColor(0x53a5df))), false);
                 });
             }
 

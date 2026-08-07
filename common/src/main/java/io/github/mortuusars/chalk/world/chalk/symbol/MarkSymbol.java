@@ -122,7 +122,7 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
     public static void bootstrap(BootstrapContext<MarkSymbol> context) {
         register(context, ARROW, 0, FULL, Optional.empty(), GROUP_PRIMARY, 10);
         register(context, DOT, 0, FIXED, Optional.empty(), GROUP_PRIMARY, 20);
-        register(context, BACK, 0, CARDINAL, Optional.empty(), GROUP_PRIMARY, 30);
+        register(context, BACK, 0, CARDINAL, adv("chalk:adventure/this_way"), GROUP_PRIMARY, 30);
         register(context, CHECK, 45, UP_DOWN_CARDINAL, Optional.empty(), GROUP_PRIMARY, 40);
         register(context, CROSS, 45, FIXED, Optional.empty(), GROUP_PRIMARY, 50);
 
@@ -130,10 +130,9 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
         register(context, HEART, 0, UP_DOWN_CARDINAL, adv("minecraft:husbandry/breed_an_animal"), GROUP_SYMBOLS, 110);
         register(context, SKULL, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/sniper_duel"), GROUP_SYMBOLS, 120);
         register(context, NOTE, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/play_jukebox_in_meadows"), GROUP_SYMBOLS, 130);
-        //TODO: Advancement for SUN
-        register(context, SUN, 0, UP_DOWN_CARDINAL, Optional.empty(), GROUP_SYMBOLS, 210);
-        register(context, MOON, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/sleep_in_bed"), GROUP_SYMBOLS, 220);
-        register(context, STAR, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/trade_at_world_height"), GROUP_SYMBOLS, 230);
+        register(context, SUN, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/consumed_by_the_light"), GROUP_SYMBOLS, 210);
+        register(context, MOON, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/alone_in_the_darkness"), GROUP_SYMBOLS, 220);
+        register(context, STAR, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/guiding_star"), GROUP_SYMBOLS, 230);
 
         register(context, SWORD, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 10);
         register(context, SHOVEL, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 20);

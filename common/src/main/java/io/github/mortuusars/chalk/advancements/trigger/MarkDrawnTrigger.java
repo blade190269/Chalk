@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.advancements;
+package io.github.mortuusars.chalk.advancements.trigger;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -8,6 +8,7 @@ import io.github.mortuusars.chalk.advancements.predicate.MapColorPredicate;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +46,24 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
             TriggerInstance instance = new TriggerInstance(EntityPredicate.wrap(
                   Optional.empty()),
                   Optional.of(LocationPredicate.Builder.inStructure(structureKey).build()),
+                  Optional.empty(),
+                  Optional.empty(),
+                  Optional.empty());
+            return Chalk.CriteriaTriggers.MARK_DRAWN.get().createCriterion(instance);
+        }
+
+        public static Criterion<MarkDrawnTrigger.TriggerInstance> structures(HolderSet<Structure> structures) {
+            TriggerInstance instance = new TriggerInstance(EntityPredicate.wrap(
+                  Optional.empty()),
+                  Optional.of(new LocationPredicate(Optional.empty(),
+                        Optional.empty(),
+                        Optional.of(structures),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty())),
                   Optional.empty(),
                   Optional.empty(),
                   Optional.empty());

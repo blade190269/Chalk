@@ -1,0 +1,35 @@
+{
+  "parent": "chalk:adventure/alone_in_the_darkness",
+  "criteria": {
+    "make_glowing": {
+      "conditions": {
+        "location": {
+          "light": {
+            "light": {
+              "max": 7
+            }
+          }
+        }
+      },
+      "trigger": "chalk:mark_glowing"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.chalk.guiding_star.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:glowstone_dust"
+    },
+    "title": {
+      "translate": "advancement.chalk.guiding_star.title"
+    }
+  },
+  "requirements": [
+    [
+      "make_glowing"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

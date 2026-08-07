@@ -1,42 +1,10 @@
 {
   "parent": "chalk:adventure/this_way",
   "criteria": {
-    "draw_in_village_desert": {
+    "draw_in_village": {
       "conditions": {
         "location": {
-          "structures": "minecraft:village_desert"
-        }
-      },
-      "trigger": "chalk:mark_drawn"
-    },
-    "draw_in_village_plains": {
-      "conditions": {
-        "location": {
-          "structures": "minecraft:village_plains"
-        }
-      },
-      "trigger": "chalk:mark_drawn"
-    },
-    "draw_in_village_savanna": {
-      "conditions": {
-        "location": {
-          "structures": "minecraft:village_savanna"
-        }
-      },
-      "trigger": "chalk:mark_drawn"
-    },
-    "draw_in_village_snowy": {
-      "conditions": {
-        "location": {
-          "structures": "minecraft:village_snowy"
-        }
-      },
-      "trigger": "chalk:mark_drawn"
-    },
-    "draw_in_village_taiga": {
-      "conditions": {
-        "location": {
-          "structures": "minecraft:village_taiga"
+          "structures": "#minecraft:village"
         }
       },
       "trigger": "chalk:mark_drawn"
@@ -57,11 +25,7 @@
   },
   "requirements": [
     [
-      "draw_in_village_plains",
-      "draw_in_village_desert",
-      "draw_in_village_savanna",
-      "draw_in_village_snowy",
-      "draw_in_village_taiga"
+      "draw_in_village"
     ]
   ],
   "rewards": {

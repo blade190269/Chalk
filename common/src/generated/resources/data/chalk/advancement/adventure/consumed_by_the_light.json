@@ -1,23 +1,23 @@
 {
-  "parent": "chalk:adventure/consumed_by_the_light",
+  "parent": "chalk:adventure/this_way",
   "criteria": {
-    "draw_black": {
+    "draw_white": {
       "conditions": {
         "location": {
           "light": {
             "light": {
-              "max": 7
+              "min": 11
             }
           }
         },
         "mark_color": {
           "colors": [
-            "black"
+            "white"
           ]
         },
         "surface_color": {
           "colors": [
-            29
+            36
           ]
         }
       },
@@ -26,19 +26,19 @@
   },
   "display": {
     "description": {
-      "translate": "advancement.chalk.alone_in_the_darkness.description"
+      "translate": "advancement.chalk.consumed_by_the_light.description"
     },
     "icon": {
       "count": 1,
-      "id": "chalk:black_chalk"
+      "id": "chalk:white_chalk"
     },
     "title": {
-      "translate": "advancement.chalk.alone_in_the_darkness.title"
+      "translate": "advancement.chalk.consumed_by_the_light.title"
     }
   },
   "requirements": [
     [
-      "draw_black"
+      "draw_white"
     ]
   ],
   "sends_telemetry_event": true
