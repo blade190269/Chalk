@@ -1,5 +1,5 @@
 {
-  "parent": "chalk:adventure/alone_in_the_darkness",
+  "parent": "chalk:adventure/this_way",
   "criteria": {
     "make_glowing": {
       "conditions": {

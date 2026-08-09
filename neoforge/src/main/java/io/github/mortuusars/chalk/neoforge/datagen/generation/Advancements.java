@@ -9,7 +9,6 @@ import io.github.mortuusars.chalk.advancements.trigger.MarkGlowingTrigger;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,6 @@ import net.minecraft.tags.StructureTags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -45,7 +43,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                           DistancePredicate.absolute(MinMaxBounds.Doubles.atMost(16)))))
               .save(saver, Chalk.resource("adventure/home_is_where_the_bed_is"), existingFileHelper);
 
-        AdvancementHolder drawInStructure = Advancement.Builder.advancement()
+        AdvancementHolder thisWay = Advancement.Builder.advancement()
               .parent(ResourceLocation.parse("minecraft:adventure/root"))
               .display(Chalk.Items.getChalk(DyeColor.YELLOW),
                     Component.translatable("advancement.chalk.this_way.title"),
@@ -59,8 +57,8 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
               .addCriterion("draw_in_trial_chambers", MarkDrawnTrigger.TriggerInstance.structure(registries.lookupOrThrow(Registries.STRUCTURE).getOrThrow(BuiltinStructures.TRIAL_CHAMBERS)))
               .save(saver, Chalk.resource("adventure/this_way"), existingFileHelper);
 
-        Advancement.Builder.advancement()
-              .parent(drawInStructure)
+        AdvancementHolder vandalism = Advancement.Builder.advancement()
+              .parent(thisWay)
               .display(Chalk.Items.getChalk(DyeColor.LIGHT_GRAY),
                     Component.translatable("advancement.chalk.vandalism.title"),
                     Component.translatable("advancement.chalk.vandalism.description"),
@@ -70,8 +68,23 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
               .rewards(AdvancementRewards.Builder.experience(50))
               .save(saver, Chalk.resource("adventure/vandalism"), existingFileHelper);
 
-        AdvancementHolder drawWhite = Advancement.Builder.advancement()
-              .parent(drawInStructure)
+        AdvancementHolder guidingStar = Advancement.Builder.advancement()
+              .parent(thisWay)
+              .display(Items.GLOWSTONE_DUST,
+                    Component.translatable("advancement.chalk.guiding_star.title"),
+                    Component.translatable("advancement.chalk.guiding_star.description"),
+                    null, AdvancementType.TASK, true, true, false)
+              .addCriterion("make_glowing", Chalk.CriteriaTriggers.MARK_GLOWING.get().createCriterion(new MarkGlowingTrigger.TriggerInstance(EntityPredicate.wrap(Optional.empty()),
+                    Optional.empty(),
+                    Optional.of(LocationPredicate.Builder.location()
+                          .setLight(new LightPredicate.Builder()
+                                .setComposite(MinMaxBounds.Ints.atMost(7)))
+                          .build()),
+                    Optional.empty())))
+              .save(saver, Chalk.resource("adventure/guiding_star"), existingFileHelper);
+
+        AdvancementHolder consumedByTheLight = Advancement.Builder.advancement()
+              .parent(guidingStar)
               .display(Chalk.Items.getChalk(DyeColor.WHITE),
                     Component.translatable("advancement.chalk.consumed_by_the_light.title"),
                     Component.translatable("advancement.chalk.consumed_by_the_light.description"),
@@ -86,8 +99,8 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                     Optional.of(new DyeColorPredicate(List.of(DyeColor.WHITE))))))
               .save(saver, Chalk.resource("adventure/consumed_by_the_light"), existingFileHelper);
 
-        AdvancementHolder drawBlack = Advancement.Builder.advancement()
-              .parent(drawWhite)
+        AdvancementHolder aloneInTheDarkness = Advancement.Builder.advancement()
+              .parent(consumedByTheLight)
               .display(Chalk.Items.getChalk(DyeColor.BLACK),
                     Component.translatable("advancement.chalk.alone_in_the_darkness.title"),
                     Component.translatable("advancement.chalk.alone_in_the_darkness.description"),
@@ -101,20 +114,5 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                     Optional.of(new MapColorPredicate(List.of(MapColor.COLOR_BLACK))),
                     Optional.of(new DyeColorPredicate(List.of(DyeColor.BLACK))))))
               .save(saver, Chalk.resource("adventure/alone_in_the_darkness"), existingFileHelper);
-
-        Advancement.Builder.advancement()
-              .parent(drawBlack)
-              .display(Items.GLOWSTONE_DUST,
-                    Component.translatable("advancement.chalk.guiding_star.title"),
-                    Component.translatable("advancement.chalk.guiding_star.description"),
-                    null, AdvancementType.TASK, true, true, false)
-              .addCriterion("make_glowing", Chalk.CriteriaTriggers.MARK_GLOWING.get().createCriterion(new MarkGlowingTrigger.TriggerInstance(EntityPredicate.wrap(Optional.empty()),
-                    Optional.empty(),
-                    Optional.of(LocationPredicate.Builder.location()
-                          .setLight(new LightPredicate.Builder()
-                                .setComposite(MinMaxBounds.Ints.atMost(7)))
-                          .build()),
-                    Optional.empty())))
-              .save(saver, Chalk.resource("adventure/guiding_star"), existingFileHelper);
     }
 }

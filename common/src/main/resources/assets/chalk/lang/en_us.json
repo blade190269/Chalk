@@ -80,6 +80,8 @@
   "mark_symbol_group.chalk.symbols": "Symbols",
   "mark_symbol_group.chalk.tools": "Tools",
 
+  "gui.chalk.mark_symbol.unlocked_by": "Unlocked by: %s",
+
   "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
 
   "chat.chalk.symbol_unlocked": "You learned how to draw %s symbol with chalk",

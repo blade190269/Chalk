@@ -1,5 +1,5 @@
 {
-  "parent": "chalk:adventure/this_way",
+  "parent": "chalk:adventure/guiding_star",
   "criteria": {
     "draw_white": {
       "conditions": {

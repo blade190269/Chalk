@@ -16,9 +16,12 @@ import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.MarkDrawable;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -26,10 +29,12 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -50,7 +55,7 @@ public class SymbolSelectScreen extends Screen {
     protected int GROUP_LABEL_BOTTOM_PADDING = 4;
     protected int DEFAULT_BORDER_COLOR = 0xFF252525;
 
-    protected final Player player;
+    protected final LocalPlayer player;
     protected final Level level;
     protected final long openTimestamp;
     protected final long openTimestampMs = System.currentTimeMillis();
@@ -282,7 +287,7 @@ public class SymbolSelectScreen extends Screen {
         graphics.pose().pushPose();
         graphics.pose().translate(0, -Mth.frac(currentScroll), 0);
 
-        int y = contentY - (int)currentScroll;
+        int y = contentY - (int) currentScroll;
 
         for (Map.Entry<Component, List<List<Mark>>> group : groupsAndRows.entrySet()) {
             int labelX = width / 2 - font.width(group.getKey()) / 2;
@@ -338,9 +343,20 @@ public class SymbolSelectScreen extends Screen {
               .ifPresent(location -> {
                   @SuppressWarnings("deprecation")
                   String namespace = WordUtils.capitalizeFully(location.getNamespace().replace("_", " "));
-                  graphics.renderTooltip(font, List.of(
-                        Component.translatable(location.toLanguageKey("mark_symbol")).getVisualOrderText(),
-                        Component.literal(namespace).withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(true)).getVisualOrderText()), x, y);
+
+                  List<FormattedCharSequence> lines = new ArrayList<>();
+                  lines.add(Component.translatable(location.toLanguageKey("mark_symbol")).getVisualOrderText());
+
+                  if (player.isCreative() && Minecraft.getInstance().options.advancedItemTooltips) {
+                      mark.symbol().value().requiredAdvancement().ifPresent(advancementId -> lines.add(
+                            Component.translatable("gui.chalk.mark_symbol.unlocked_by",
+                                        Component.literal(advancementId.toString()).withStyle(ChatFormatting.DARK_GRAY))
+                                  .withStyle(ChatFormatting.GRAY).getVisualOrderText()));
+                  }
+
+                  lines.add(Component.literal(namespace).withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(true)).getVisualOrderText());
+
+                  graphics.renderTooltip(font, lines, x, y);
               });
     }
 
@@ -491,8 +507,7 @@ public class SymbolSelectScreen extends Screen {
         if (isHoveringOverScrollBar) {
             if (mouseY < scrollThumbY) {
                 scroll(-changePerScroll * 3);
-            }
-            else {
+            } else {
                 scroll(changePerScroll * 3);
             }
             return true;
