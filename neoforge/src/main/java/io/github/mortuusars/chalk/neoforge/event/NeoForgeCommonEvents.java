@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -62,11 +63,31 @@ public class NeoForgeCommonEvents {
                         .map(id -> id.equals(advancement)).orElse(false))
                   .toList();
 
-            for (Holder<MarkSymbol> symbol : unlockedSymbols) {
-                symbol.unwrapKey().ifPresent(key -> {
-                    player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked",
-                          Component.translatable(key.location().toLanguageKey("mark_symbol")).withStyle(Style.EMPTY.withColor(0x53a5df))), false);
-                });
+            if (unlockedSymbols.isEmpty()) {
+                return;
+            }
+
+            if (unlockedSymbols.size() == 1) {
+                unlockedSymbols.getFirst().unwrapKey().ifPresent(key ->
+                      player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked", Component.translatable(
+                            key.location().toLanguageKey("mark_symbol")).withStyle(Style.EMPTY.withColor(0x53a5df))), false));
+            } else {
+                List<MutableComponent> symbolNames = unlockedSymbols.stream()
+                      .filter(s -> s.unwrapKey().isPresent())
+                      .map(s -> Component.translatable(s.unwrapKey().orElseThrow().location().toLanguageKey("mark_symbol"))
+                            .withStyle(Style.EMPTY.withColor(0x53a5df)))
+                      .toList();
+
+                MutableComponent symbolsListComponent = Component.empty();
+
+                for (int i = 0; i < symbolNames.size(); i++) {
+                    if (i != 0) {
+                        symbolsListComponent.append(Component.literal(", "));
+                    }
+                    symbolsListComponent.append(symbolNames.get(i));
+                }
+
+                player.displayClientMessage(Component.translatable("chat.chalk.symbols_unlocked", symbolsListComponent), false);
             }
 
             player.playNotifySound(Chalk.SoundEvents.MARK_DRAW.get(), SoundSource.PLAYERS, 1f, 1f);

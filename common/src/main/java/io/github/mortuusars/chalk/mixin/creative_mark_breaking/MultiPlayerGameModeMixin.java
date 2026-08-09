@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.mixin;
+package io.github.mortuusars.chalk.mixin.creative_mark_breaking;
 
 import io.github.mortuusars.chalk.client.ClientHelper;
 import net.minecraft.client.Minecraft;

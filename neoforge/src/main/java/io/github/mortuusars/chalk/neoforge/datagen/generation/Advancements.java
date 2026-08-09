@@ -82,7 +82,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                                 .setComposite(MinMaxBounds.Ints.atLeast(11)))
                           .build()),
                     Optional.empty(),
-                    Optional.of(new MapColorPredicate(List.of(MapColor.TERRACOTTA_WHITE))),
+                    Optional.of(new MapColorPredicate(List.of(MapColor.TERRACOTTA_WHITE, MapColor.SNOW, MapColor.QUARTZ))),
                     Optional.of(new DyeColorPredicate(List.of(DyeColor.WHITE))))))
               .save(saver, Chalk.resource("adventure/consumed_by_the_light"), existingFileHelper);
 

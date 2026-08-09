@@ -3,6 +3,7 @@ package io.github.mortuusars.chalk.world.block;
 import com.mojang.serialization.MapCodec;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.client.ClientHelper;
+import io.github.mortuusars.chalk.mixin.creative_mark_breaking.MultiPlayerGameModeMixin;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import io.github.mortuusars.chalk.world.chalk.Mark;
@@ -258,7 +259,7 @@ public class MarkBlock extends BaseEntityBlock {
 
     /**
      * Handles mark destroying. One at a time.<br>
-     * This method is not called when player is in creative mode, we handle that separately in {@link io.github.mortuusars.chalk.mixin.MultiPlayerGameModeMixin}.
+     * This method is not called when player is in creative mode, we handle that separately in {@link MultiPlayerGameModeMixin}.
      */
     @Override
     protected void attack(BlockState state, Level level, BlockPos pos, Player player) {

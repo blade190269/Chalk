@@ -3,6 +3,7 @@
 ## UNRELEASED
 - Sorted chalk item colors same way as in vanilla
 - Glowing marks no longer emit light
+- Improved player's view when choosing a symbol (fixed couple of jittering issues)
 - Improved orientation of the marks drawn on the ceiling (bottom side of a block)
 
 Symbols

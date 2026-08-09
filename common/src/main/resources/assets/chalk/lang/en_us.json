@@ -83,6 +83,7 @@
   "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
 
   "chat.chalk.symbol_unlocked": "You learned how to draw %s symbol with chalk",
+  "chat.chalk.symbols_unlocked": "You learned how to draw %s symbols with chalk",
 
   "advancement.chalk.home_is_where_the_bed_is.title": "Home Is Where the Bed Is",
   "advancement.chalk.home_is_where_the_bed_is.description": "Sleep in one place three times in a row",

@@ -6,7 +6,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
@@ -32,7 +31,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -84,6 +82,16 @@ public class SymbolSelectScreen extends Screen {
     protected double maxScroll = 999999.0;
     protected double scroll = 0;
     protected double currentScroll = 0;
+    protected int scrollBarWidth;
+    protected int scrollBarX;
+    protected int scrollBarYStart;
+    protected int scrollBarYEnd;
+    protected double scrollThumbY;
+    protected int scrollThumbSize;
+    protected boolean draggingScrollThumb;
+    protected boolean isHoveringOverScrollBar;
+    protected boolean isHoveringOverScrollThumb;
+    protected double lastScrollingMouseY;
 
     @Nullable
     protected Mark hoveredMark;
@@ -127,7 +135,7 @@ public class SymbolSelectScreen extends Screen {
     @Override
     public void tick() {
         if (!drawable.canDrawMark(player, context)) {
-            this.close();
+            this.onClose();
         }
     }
 
@@ -148,14 +156,14 @@ public class SymbolSelectScreen extends Screen {
             maxScroll = 0;
             contentY = height / 2 - contentHeight / 2;
         } else {
-            maxScroll = Math.max(0, height * 0.3f + contentHeight - height * 0.75f);
+            maxScroll = Math.max(0, height * 0.25f + contentHeight - height * 0.75f);
             contentY = (int) (height * 0.25f);
         }
 
         changePerScroll = height / 8.0;
     }
 
-    private void createGroupsAndRows() {
+    protected void createGroupsAndRows() {
         groupsAndRows.clear();
 
         Map<String, List<Holder<MarkSymbol>>> groupsAndSymbols = symbols.stream()
@@ -165,14 +173,7 @@ public class SymbolSelectScreen extends Screen {
 
         List<String> groups = new ArrayList<>();
         groups.addAll(groupSorting.stream()
-              .filter(group -> {
-                  if (!groupsAndSymbols.containsKey(group)) {
-                      Chalk.LOGGER.warn("Group '{}', defined in {} config value, is not used by any symbol and will be skipped.",
-                            group, Config.Client.SYMBOL_SELECTION_GROUP_SORTING.getPath());
-                      return false;
-                  }
-                  return true;
-              })
+              .filter(groupsAndSymbols::containsKey)
               .toList());
 
         groups.addAll(groupsAndSymbols.keySet().stream()
@@ -193,17 +194,11 @@ public class SymbolSelectScreen extends Screen {
               .map(symbol -> drawable.createMark(player, context, itemStack, symbol))
               .toList();
 
-//        maxSymbolsInRow = 3;
-
         return Lists.partition(marks, maxSymbolsInRow);
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        // Keep sneaking while choosing a mark to not jerk player's camera:
-        //TODO: find a better way to do that. Check keyboard handler or something
-        player.setPose(Pose.CROUCHING);
-
         openAnimation = Mth.clamp((System.currentTimeMillis() - openTimestampMs) / 400f, 0f, 1f);
         openAnimation = 1f - openAnimation;
         openAnimation *= openAnimation * openAnimation;
@@ -220,14 +215,47 @@ public class SymbolSelectScreen extends Screen {
         }
 
         graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 500);
+        graphics.pose().translate(0, 0, 200);
         graphics.fillGradient(0, 0, width, (int) (height * 0.08f),
               FastColor.ARGB32.lerp(openAnimation, 0x007F7F7F, 0x44000000), 0x007F7F7F);
         graphics.fillGradient(0, (int) (height * 0.92f), width, height, 0x007F7F7F, FastColor.ARGB32.lerp(openAnimation, 0x00000000, 0x44000000));
+
+        if (maxScroll > 0) {
+            renderScrollBar(graphics, mouseX, mouseY, partialTicks);
+        }
+
+        graphics.pose().popPose();
+    }
+
+    public void renderScrollBar(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        scrollBarWidth = 3;
+        scrollBarX = (int) (width - height * 0.2f);
+        scrollBarYStart = (int) (height * 0.2f);
+        scrollBarYEnd = (int) (height * 0.8f);
+
+        graphics.fill(scrollBarX - 1, scrollBarYStart - 1, scrollBarX + scrollBarWidth + 1, scrollBarYEnd + 1, 0x55111111);
+        graphics.fill(scrollBarX, scrollBarYStart, scrollBarX + scrollBarWidth, scrollBarYEnd, 0x55AAAAAA);
+
+        double progress = currentScroll / maxScroll;
+        double thumbRatio = (double) height * 0.5 / contentHeight;
+        int yArea = scrollBarYEnd - scrollBarYStart;
+        scrollThumbSize = (int) Math.max(height * 0.075f, yArea * thumbRatio);
+        scrollThumbY = scrollBarYStart + ((yArea - scrollThumbSize) * progress);
+
+        graphics.pose().pushPose();
+        graphics.pose().translate(scrollBarX, scrollThumbY, 0);
+        isHoveringOverScrollBar = mouseX >= scrollBarX && mouseX < scrollBarX + scrollBarWidth && mouseY >= scrollBarYStart && mouseY < scrollBarYEnd;
+        isHoveringOverScrollThumb = isHoveringOverScrollBar && mouseY >= scrollThumbY && mouseY < scrollThumbY + scrollThumbSize;
+        int thumbColor = draggingScrollThumb || isHoveringOverScrollThumb ? 0xFFFFFFFF : 0xBBFFFFFF;
+        graphics.fill(0, 0, scrollBarWidth, scrollThumbSize, thumbColor);
         graphics.pose().popPose();
     }
 
     protected void handleScreenEdgeScrolling(int mouseY, float partialTicks) {
+        if (draggingScrollThumb) {
+            return;
+        }
+
         float screenScrollArea = Math.max(20, height * 0.1f);
 
         if (mouseY < screenScrollArea) {
@@ -318,16 +346,12 @@ public class SymbolSelectScreen extends Screen {
 
     @Override
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        // Background
         graphics.fillGradient(0, 0, width, height,
               FastColor.ARGB32.lerp(openAnimation, 0x00000000, 0x40000000),
               FastColor.ARGB32.lerp(openAnimation, 0x00000000, 0x40000000));
     }
 
-    private void renderMarkButton(GuiGraphics graphics, int mouseX, int mouseY, Mark mark, int x, int y, boolean isHovering) {
-        PoseStack poseStack = graphics.pose();
-        poseStack.pushPose();
-
+    protected void renderMarkButton(GuiGraphics graphics, int mouseX, int mouseY, Mark mark, int x, int y, boolean isHovering) {
         int borderColor = isHovering ? hoverBorderColor : DEFAULT_BORDER_COLOR;
         borderColor = FastColor.ARGB32.lerp(openAnimation, FastColor.ARGB32.color(0x00, borderColor), borderColor);
         graphics.fill(x - SYMBOL_BORDER_THICKNESS, y - SYMBOL_BORDER_THICKNESS,
@@ -339,9 +363,9 @@ public class SymbolSelectScreen extends Screen {
         RenderSystem.setShaderColor(r, g, b, openAnimation);
         RenderSystem.enableBlend();
 
-        poseStack.pushPose();
+        graphics.pose().pushPose();
 
-        poseStack.translate(x + SYMBOL_SIZE / 2f, y + SYMBOL_SIZE / 2f, 0);
+        graphics.pose().translate(x + SYMBOL_SIZE / 2f, y + SYMBOL_SIZE / 2f, 0);
 
         int rotation = mark.symbol().value().orientationBehavior() == MarkSymbol.OrientationBehavior.FULL || mark.symbol().value().orientationBehavior() == MarkSymbol.OrientationBehavior.CARDINAL
               ? mark.orientation().getRotation()
@@ -353,27 +377,25 @@ public class SymbolSelectScreen extends Screen {
             rotation %= 360;
         }
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees(rotation + mark.symbol().value().rotationOffset()));
-        poseStack.translate(-x - SYMBOL_SIZE / 2f, -y - SYMBOL_SIZE / 2f, 100);
+        graphics.pose().mulPose(Axis.ZP.rotationDegrees(rotation + mark.symbol().value().rotationOffset()));
+        graphics.pose().translate(-x - SYMBOL_SIZE / 2f, -y - SYMBOL_SIZE / 2f, 100);
         graphics.blit(mark.symbol().value().texture().withPrefix("textures/").withSuffix(".png"),
               x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-        poseStack.popPose();
+        graphics.pose().popPose();
 
         // Shadow overlay
-        poseStack.pushPose();
-        poseStack.translate(0, 0, 100);
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 100);
         graphics.fillGradient(x, y, x + SYMBOL_SIZE, y + SYMBOL_SIZE,
               FastColor.ARGB32.lerp(openAnimation, 0x33000000, 0x00AAAAAA),
               FastColor.ARGB32.lerp(openAnimation, 0x33000000, 0x2F000000));
-        poseStack.popPose();
-
-        poseStack.popPose();
+        graphics.pose().popPose();
     }
 
     @SuppressWarnings("DataFlowIssue")
-    private void renderBlockSurface(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
+    protected void renderBlockSurface(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -425,15 +447,13 @@ public class SymbolSelectScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode)) {
-            this.close();
-            return true;
-        }
+//        if (keyCode == InputConstants.KEY_LSHIFT) {
+//            Minecraft.getInstance().options.keyShift.setDown(true);
+//            return true;
+//        }
 
-        int key = keyCode - InputConstants.KEY_0; // Offset
-        if (key >= 1 && key <= Math.min(symbols.size(), 9)) {
-            tryDrawSymbol(symbols.get(key - 1));
-            this.close();
+        if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode)) {
+            this.onClose();
             return true;
         }
 
@@ -451,7 +471,33 @@ public class SymbolSelectScreen extends Screen {
     }
 
     @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (isHoveringOverScrollThumb) {
+            draggingScrollThumb = true;
+            lastScrollingMouseY = 0;
+            return true;
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (draggingScrollThumb) {
+            draggingScrollThumb = false;
+            return true;
+        }
+
+        if (isHoveringOverScrollBar) {
+            if (mouseY < scrollThumbY) {
+                scroll(-changePerScroll * 3);
+            }
+            else {
+                scroll(changePerScroll * 3);
+            }
+            return true;
+        }
+
         if (!mouseWasReleased && level.getGameTime() - openTimestamp < 4) {
             mouseWasReleased = true;
             return true;
@@ -463,8 +509,21 @@ public class SymbolSelectScreen extends Screen {
             }
         }
 
-        this.close();
+        this.onClose();
         return true;
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (draggingScrollThumb && button == InputConstants.MOUSE_BUTTON_LEFT) {
+            int scrollBarSize = scrollBarYEnd - scrollBarYStart;
+            double value = maxScroll / (scrollBarSize - scrollThumbSize);
+            scroll(dragY * value);
+            lastScrollingMouseY = mouseY;
+            return true;
+        }
+
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
@@ -487,17 +546,5 @@ public class SymbolSelectScreen extends Screen {
 
     public void scrollTo(double position) {
         scroll = Mth.clamp(position, 0, maxScroll);
-    }
-
-    // --
-
-    public void close() {
-        this.onClose();
-    }
-
-    @Override
-    public void onClose() {
-        player.setPose(null);
-        super.onClose();
     }
 }
