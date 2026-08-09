@@ -1,8 +1,7 @@
 package io.github.mortuusars.chalk.neoforge.event;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.advancements.PlayerSleepInfo;
+import io.github.mortuusars.chalk.event.CommonEvents;
 import io.github.mortuusars.chalk.network.neoforge.PacketsImpl;
 import io.github.mortuusars.chalk.network.packet.C2SPackets;
 import io.github.mortuusars.chalk.network.packet.CommonPackets;
@@ -10,17 +9,10 @@ import io.github.mortuusars.chalk.network.packet.Packet;
 import io.github.mortuusars.chalk.network.packet.S2CPackets;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -31,9 +23,6 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Chalk.ID)
@@ -41,98 +30,6 @@ public class NeoForgeCommonEvents {
     @SubscribeEvent
     public static void addDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(Chalk.Registries.MARK_SYMBOL, MarkSymbol.DIRECT_CODEC, MarkSymbol.DIRECT_CODEC);
-    }
-
-    @SubscribeEvent
-    private static void onCreativeTabsBuild(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            for (Supplier<ChalkItem> item : Chalk.Items.CHALKS.values()) {
-                event.accept(item.get());
-            }
-            event.accept(Chalk.Items.CHALK_BOX.get());
-        }
-    }
-
-    @SubscribeEvent
-    public static void advancementAward(AdvancementEvent.AdvancementEarnEvent event) {
-        ResourceLocation advancement = event.getAdvancement().id();
-
-        if (event.getEntity() instanceof ServerPlayer player) {
-            List<Holder<MarkSymbol>> unlockedSymbols = MarkSymbol.getAllHolders(player.registryAccess())
-                  .filter(symbol -> symbol.value().requiredAdvancement()
-                        .map(id -> id.equals(advancement)).orElse(false))
-                  .toList();
-
-            if (unlockedSymbols.isEmpty()) {
-                return;
-            }
-
-            if (unlockedSymbols.size() == 1) {
-                unlockedSymbols.getFirst().unwrapKey().ifPresent(key ->
-                      player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked", Component.translatable(
-                            key.location().toLanguageKey("mark_symbol")).withStyle(Style.EMPTY.withColor(0x53a5df))), false));
-            } else {
-                List<MutableComponent> symbolNames = unlockedSymbols.stream()
-                      .filter(s -> s.unwrapKey().isPresent())
-                      .map(s -> Component.translatable(s.unwrapKey().orElseThrow().location().toLanguageKey("mark_symbol"))
-                            .withStyle(Style.EMPTY.withColor(0x53a5df)))
-                      .toList();
-
-                MutableComponent symbolsListComponent = Component.empty();
-
-                for (int i = 0; i < symbolNames.size(); i++) {
-                    if (i != 0) {
-                        symbolsListComponent.append(Component.literal(", "));
-                    }
-                    symbolsListComponent.append(symbolNames.get(i));
-                }
-
-                player.displayClientMessage(Component.translatable("chat.chalk.symbols_unlocked", symbolsListComponent), false);
-            }
-
-            player.playNotifySound(Chalk.SoundEvents.MARK_DRAW.get(), SoundSource.PLAYERS, 1f, 1f);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onSleepFinished(PlayerWakeUpEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
-
-        boolean sleepingLongEnough = serverPlayer.isSleepingLongEnough();
-        if (!sleepingLongEnough)
-            return;
-
-        List<String> tags = serverPlayer.getTags().stream().toList();
-
-        List<BlockPos> sleepPositions = new ArrayList<>();
-
-        for (String tag : tags) {
-            if (tag.startsWith("ChalkConsecutiveSleepPositions")) {
-                serverPlayer.removeTag(tag);
-
-                String dataStr = tag.replace("ChalkConsecutiveSleepPositions", "");
-                PlayerSleepInfo sleepInfo = PlayerSleepInfo.deserialize(dataStr);
-                sleepPositions = new ArrayList<>(sleepInfo.sleepPositions());
-                break;
-            }
-        }
-
-        Optional<BlockPos> sleepingPos = serverPlayer.getSleepingPos();
-        if (sleepingPos.isPresent()) {
-            if (sleepPositions.size() > 20)
-                sleepPositions.removeFirst();
-
-            sleepPositions.add(sleepingPos.get());
-
-            PlayerSleepInfo sleepInfo = new PlayerSleepInfo(sleepPositions);
-
-            Chalk.CriteriaTriggers.CONSECUTIVE_SLEEPING.get().trigger(serverPlayer, sleepInfo);
-
-            String serializedDataStr = sleepInfo.serialize();
-            serverPlayer.addTag("ChalkConsecutiveSleepPositions" + serializedDataStr);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -155,4 +52,30 @@ public class NeoForgeCommonEvents {
                   (StreamCodec<FriendlyByteBuf, Packet>) definition.codec(), PacketsImpl::handle);
         }
     }
+
+    @SubscribeEvent
+    private static void onCreativeTabsBuild(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            for (Supplier<ChalkItem> item : Chalk.Items.CHALKS.values()) {
+                event.accept(item.get());
+            }
+            event.accept(Chalk.Items.CHALK_BOX.get());
+        }
+    }
+
+//    @SubscribeEvent
+//    public static void advancementAward(AdvancementEvent.AdvancementEarnEvent event) {
+//        if (event.getEntity() instanceof ServerPlayer player) {
+//            CommonEvents.onAdvancementAward(player, event.getAdvancement());
+//        }
+//    }
+
+//    @SubscribeEvent
+//    public static void onSleepFinished(PlayerWakeUpEvent event) {
+//        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+//            return;
+//        }
+//
+//        CommonEvents.onStoppedSleeping(serverPlayer);
+//    }
 }

@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public record PlayerSleepInfo(List<BlockPos> sleepPositions) {
     public static final Codec<PlayerSleepInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.list(BlockPos.CODEC).optionalFieldOf("sleepPositions", Collections.emptyList()).forGetter(PlayerSleepInfo::sleepPositions))
+            Codec.list(BlockPos.CODEC).optionalFieldOf("sleep_positions", Collections.emptyList()).forGetter(PlayerSleepInfo::sleepPositions))
         .apply(instance, PlayerSleepInfo::new));
 
     public static PlayerSleepInfo deserialize(String serialized) {

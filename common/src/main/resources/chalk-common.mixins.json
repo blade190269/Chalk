@@ -4,11 +4,13 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "single_mark_outline.LevelRendererMixin",
+    "creative_mark_breaking.MultiPlayerGameModeMixin",
     "keep_sneaking_while_choosing_symbol.LocalPlayerMixin",
-    "creative_mark_breaking.MultiPlayerGameModeMixin"
+    "single_mark_outline.LevelRendererMixin"
   ],
   "mixins": [
+    "advancements.PlayerAdvancementsMixin",
+    "advancements.PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
