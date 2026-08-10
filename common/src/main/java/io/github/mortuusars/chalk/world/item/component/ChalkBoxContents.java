@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 public record ChalkBoxContents(List<ItemStack> items, int glowAmount) implements TooltipComponent {
-    public static final int SLOTS = 10;
-    public static final int CHALK_SLOTS = 9;
+    public static final int SLOTS = 17;
+    public static final int CHALK_SLOTS = 16;
     public static final int GLOWINGS_SLOT = SLOTS - 1;
 
     public static final Codec<ChalkBoxContents> CODEC = RecordCodecBuilder.create(instance -> instance.group(

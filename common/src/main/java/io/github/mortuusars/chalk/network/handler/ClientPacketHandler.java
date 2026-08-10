@@ -2,7 +2,7 @@ package io.github.mortuusars.chalk.network.handler;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.client.gui.SymbolSelectScreen;
+import io.github.mortuusars.chalk.client.gui.screens.SymbolSelectScreen;
 import io.github.mortuusars.chalk.network.packet.clientbound.SelectSymbolAndDrawMarkS2CP;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.MarkDrawable;

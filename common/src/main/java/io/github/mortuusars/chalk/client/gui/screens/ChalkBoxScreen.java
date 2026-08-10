@@ -1,12 +1,14 @@
-package io.github.mortuusars.chalk.client.gui;
+package io.github.mortuusars.chalk.client.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
+import io.github.mortuusars.chalk.client.gui.Sprites;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -16,34 +18,34 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.NotNull;
 
-public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
+public class ChalkBoxScreen extends AbstractInHandContainerScreen<ChalkBoxMenu> {
     public static final ResourceLocation TEXTURE = Chalk.resource("textures/gui/container/chalk_box.png");
-    private static final int GLOWING_BAR_WIDTH = 72;
-    private final int maxGlowingUses;
-    private final Player player;
+    public static final ResourceLocation CHALK_SLOT_PLACEHOLDER_SPRITE = Chalk.resource("chalk_box/chalk_slot_placeholder");
+    public static final ResourceLocation GLOWING_SLOT_PLACEHOLDER_SPRITE = Chalk.resource("chalk_box/glowing_slot_placeholder");
+    public static final ResourceLocation GLOW_BAR_SPRITE = Chalk.resource("chalk_box/glow_bar");
+    public static final ResourceLocation SELECTED_CHALK_SLOT_OVERLAY_SPRITE = Chalk.resource("chalk_box/selected_chalk_slot_overlay");
+
+    public static final int GLOWING_BAR_WIDTH = 72;
+    protected final int maxGlowingUses;
+    protected final Player player;
 
     public ChalkBoxScreen(ChalkBoxMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        maxGlowingUses = Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
+        super(menu, playerInventory, title, TEXTURE);
+        this.maxGlowingUses = Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
         this.minecraft = Minecraft.getInstance();
-        this.player = Minecraft.getInstance().player;
+        this.player = playerInventory.player;
     }
 
     @Override
     protected void init() {
         this.imageWidth = 176;
-        this.imageHeight = 180;
+        this.imageHeight = 150;
         this.inventoryLabelY = this.imageHeight - 94;
         super.init();
     }
 
     @Override
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
-    }
-
-    @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
 
         for (Slot slot : getMenu().slots) {
@@ -64,8 +66,9 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-
-        renderChalkSlots(graphics, 52, getMenu().isGlowingEnabled() ? 17 : 32);
+        if (getMenu().isGlowingEnabled()) {
+            renderGlowingBar(graphics, mouseX, mouseY, partialTick);
+        }
 
         if (getMenu().isGlowingEnabled()) {
             // Bar + Slot
@@ -83,14 +86,20 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         }
     }
 
-    protected void renderChalkSlots(GuiGraphics graphics, int x, int y) {
-        graphics.blit(TEXTURE, leftPos + x, topPos + y, 0, 180, 72, 36);
+    protected void renderGlowingBar(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 
-        for (int slotIndex = 0; slotIndex < ChalkBoxContents.CHALK_SLOTS; slotIndex++) {
-            Slot slot = getMenu().slots.get(slotIndex);
-            if (slot.getItem().isEmpty()) {
-                graphics.blit(TEXTURE, leftPos + slot.x - 1, topPos + slot.y - 1, 176, 0, 18, 18);
-            }
+
+    }
+
+    @Override
+    protected void renderSlotOverlays(GuiGraphics guiGraphics, Slot slot) {
+        super.renderSlotOverlays(guiGraphics, slot);
+        if (slot.index <= ChalkBoxContents.CHALK_SLOTS) {
+            //TODO: selected slot
+            guiGraphics.blitSprite(CHALK_SLOT_PLACEHOLDER_SPRITE, getLeftPos() + slot.x - 1, getTopPos() + slot.y - 1, 18, 18);
+        }
+        if (getMenu().isGlowingEnabled() && slot.index == ChalkBoxContents.GLOWINGS_SLOT) {
+            guiGraphics.blitSprite(GLOWING_SLOT_PLACEHOLDER_SPRITE, getLeftPos() + slot.x - 1, getTopPos() + slot.y - 1, 18, 18);
         }
     }
 }

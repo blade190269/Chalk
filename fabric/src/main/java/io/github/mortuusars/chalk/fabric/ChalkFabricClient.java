@@ -3,7 +3,7 @@ package io.github.mortuusars.chalk.fabric;
 import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.client.ConfigScreenFactoryRegistry;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.ChalkClient;
-import io.github.mortuusars.chalk.client.gui.ChalkBoxScreen;
+import io.github.mortuusars.chalk.client.gui.screens.ChalkBoxScreen;
 import io.github.mortuusars.chalk.client.render.MarkBlockColor;
 import io.github.mortuusars.chalk.network.fabric.FabricS2CPacketHandler;
 import net.fabricmc.api.ClientModInitializer;

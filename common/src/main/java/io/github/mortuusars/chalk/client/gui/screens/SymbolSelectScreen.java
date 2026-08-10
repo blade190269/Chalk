@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.client.gui;
+package io.github.mortuusars.chalk.client.gui.screens;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -16,8 +16,6 @@ import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.MarkDrawable;
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -29,14 +27,12 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -463,11 +459,6 @@ public class SymbolSelectScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-//        if (keyCode == InputConstants.KEY_LSHIFT) {
-//            Minecraft.getInstance().options.keyShift.setDown(true);
-//            return true;
-//        }
-
         if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode)) {
             this.onClose();
             return true;

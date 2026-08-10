@@ -2,9 +2,8 @@ package io.github.mortuusars.chalk.neoforge.event;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.ChalkClient;
-import io.github.mortuusars.chalk.client.gui.ChalkBoxScreen;
+import io.github.mortuusars.chalk.client.gui.screens.ChalkBoxScreen;
 import io.github.mortuusars.chalk.client.gui.tooltip.ClientChalkBoxTooltip;
-import io.github.mortuusars.chalk.client.render.MarkBakedModel;
 import io.github.mortuusars.chalk.client.render.MarkBlockColor;
 import io.github.mortuusars.chalk.neoforge.client.NeoForgeMarkBakedModel;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
@@ -12,7 +11,6 @@ import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -22,8 +20,6 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-
-import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Chalk.ID, value = Dist.CLIENT)
 public class NeoForgeClientEvents {
