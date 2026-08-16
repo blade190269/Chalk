@@ -1,13 +1,16 @@
 package io.github.mortuusars.chalk.neoforge.datagen.generation;
 
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
@@ -135,7 +138,10 @@ public class LootTables {
         }
 
         private LootPoolSingletonContainer.Builder<?> chalk(DyeColor color, int weight) {
-            return LootItem.lootTableItem(Chalk.Items.getChalk(color)).setWeight(weight);
+            return LootItem.lootTableItem(Chalk.Items.CHALK.get())
+                  .apply(SetComponentsFunction.setComponent(DataComponents.DYED_COLOR,
+                        new DyedItemColor(ChalkItem.getColorFromDye(color), true)))
+                  .setWeight(weight);
         }
 
         private LootPoolSingletonContainer.Builder<?> chalkBox(List<ItemStack> items, int glowAmount) {
@@ -144,11 +150,15 @@ public class LootTables {
         }
 
         private ItemStack chalkStack(DyeColor color, int damage) {
-            ItemStack itemStack = new ItemStack(Chalk.Items.getChalk(color));
-            if (damage > 0) {
-                itemStack.setDamageValue(damage);
+            ItemStack stack = new ItemStack(Chalk.Items.CHALK.get());
+            if (color != DyeColor.WHITE) {
+                DyedItemColor dyedColor = new DyedItemColor(Chalk.Items.CHALK.get().getColorFromDye(stack, color), true);
+                stack.set(DataComponents.DYED_COLOR, dyedColor);
             }
-            return itemStack;
+            if (damage > 0) {
+                stack.setDamageValue(damage);
+            }
+            return stack;
         }
     }
 }

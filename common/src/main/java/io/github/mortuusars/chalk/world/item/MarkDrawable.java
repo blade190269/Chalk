@@ -149,7 +149,7 @@ public interface MarkDrawable {
     }
 
     default @Nullable Mark placeMark(Level level, BlockPos markPos, Direction markFacing, Mark mark) {
-        if (!(getExistingBlockOrPlaceNew(level, markPos) instanceof MarkBlockEntity blockEntity)) {
+        if (!(MarkBlock.getExistingOrPlaceNew(level, markPos) instanceof MarkBlockEntity blockEntity)) {
             return null;
         }
 
@@ -191,20 +191,6 @@ public interface MarkDrawable {
                 serverPlayer.serverLevel().sendParticles(ParticleTypes.END_ROD, pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
             }
         }
-    }
-
-    // --
-
-    static @Nullable MarkBlockEntity getExistingBlockOrPlaceNew(Level level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof MarkBlockEntity existingBlockEntity) {
-            return existingBlockEntity;
-        }
-
-        level.setBlock(pos, Chalk.Blocks.MARK.get().defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
-
-        return level.getBlockEntity(pos) instanceof MarkBlockEntity existingBlockEntity
-              ? existingBlockEntity
-              : null;
     }
 
 

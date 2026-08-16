@@ -17,7 +17,7 @@
     "hidden": true,
     "icon": {
       "count": 1,
-      "id": "chalk:light_gray_chalk"
+      "id": "chalk:chalk"
     },
     "title": {
       "translate": "advancement.chalk.vandalism.title"

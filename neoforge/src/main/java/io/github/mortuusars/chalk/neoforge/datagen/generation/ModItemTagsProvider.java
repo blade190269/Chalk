@@ -1,11 +1,9 @@
 package io.github.mortuusars.chalk.neoforge.datagen.generation;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.data.ChalkColors;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -25,14 +23,5 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(Chalk.Tags.Items.GLOWINGS)
                 .add(Items.GLOW_INK_SAC)
                 .add(Items.GLOWSTONE_DUST);
-
-        Chalk.Items.CHALKS.forEach((color, item) -> {
-            tag(Chalk.Tags.Items.CHALKS).add(item.get());
-            tag(Chalk.Tags.Items.C_CHALKS).add(item.get());
-        });
-
-        for (DyeColor color : ChalkColors.COLORS.keySet()){
-            tag(color.getTag()).add(Chalk.Items.getChalk(color));
-        }
     }
 }

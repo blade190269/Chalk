@@ -28,7 +28,7 @@ public class MarkBlockEntity extends BlockEntity {
     }
 
     public MarkBlockEntity(BlockPos pos, BlockState blockState) {
-        super(Chalk.BlockEntityTypes.CHALK_MARK.get(), pos, blockState);
+        super(Chalk.BlockEntityTypes.MARK.get(), pos, blockState);
     }
 
     public MarkSet getMarks() {

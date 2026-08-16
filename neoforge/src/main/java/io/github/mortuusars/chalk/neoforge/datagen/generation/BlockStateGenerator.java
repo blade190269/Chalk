@@ -13,6 +13,7 @@ public class BlockStateGenerator extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        //noinspection removal
         Chalk.Blocks.MARKS.forEach((color, block) ->
                 simpleBlock(block.get(), models().getExistingFile(Chalk.resource("block/chalk_mark"))));
     }

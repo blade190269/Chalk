@@ -19,23 +19,24 @@
   "block.chalk.orange_chalk_mark": "Orange Chalk Mark",
   "block.chalk.white_chalk_mark": "White Chalk Mark",
 
-  "item.chalk.black_chalk": "Black Chalk",
-  "item.chalk.red_chalk": "Red Chalk",
-  "item.chalk.green_chalk": "Green Chalk",
-  "item.chalk.brown_chalk": "Brown Chalk",
-  "item.chalk.blue_chalk": "Blue Chalk",
-  "item.chalk.purple_chalk": "Purple Chalk",
-  "item.chalk.cyan_chalk": "Cyan Chalk",
+  "item.chalk.chalk": "Chalk",
+  "item.chalk.white_chalk": "White Chalk",
   "item.chalk.light_gray_chalk": "Light Gray Chalk",
   "item.chalk.gray_chalk": "Gray Chalk",
-  "item.chalk.pink_chalk": "Pink Chalk",
-  "item.chalk.lime_chalk": "Lime Chalk",
-  "item.chalk.yellow_chalk": "Yellow Chalk",
-  "item.chalk.light_blue_chalk": "Light Blue Chalk",
-  "item.chalk.magenta_chalk": "Magenta Chalk",
+  "item.chalk.black_chalk": "Black Chalk",
+  "item.chalk.brown_chalk": "Brown Chalk",
+  "item.chalk.red_chalk": "Red Chalk",
   "item.chalk.orange_chalk": "Orange Chalk",
-  "item.chalk.white_chalk": "White Chalk",
-  
+  "item.chalk.yellow_chalk": "Yellow Chalk",
+  "item.chalk.lime_chalk": "Lime Chalk",
+  "item.chalk.green_chalk": "Green Chalk",
+  "item.chalk.cyan_chalk": "Cyan Chalk",
+  "item.chalk.light_blue_chalk": "Light Blue Chalk",
+  "item.chalk.blue_chalk": "Blue Chalk",
+  "item.chalk.purple_chalk": "Purple Chalk",
+  "item.chalk.magenta_chalk": "Magenta Chalk",
+  "item.chalk.pink_chalk": "Pink Chalk",
+
   "tag.item.chalk.chalks": "Chalks",
   "tag.item.chalk.glowings": "Glowings",
 
@@ -79,6 +80,9 @@
   "mark_symbol_group.chalk.primary": "Primary",
   "mark_symbol_group.chalk.symbols": "Symbols",
   "mark_symbol_group.chalk.tools": "Tools",
+
+  "tooltip.chalk.deprecated": "This item is deprecated and will be removed in the future.",
+  "tooltip.chalk.deprecated_use_to_convert": "[Use] to convert to the proper item.",
 
   "gui.chalk.mark_symbol.unlocked_by": "Unlocked by: %s",
 

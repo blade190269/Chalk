@@ -5,12 +5,16 @@ import io.github.mortuusars.chalk.advancements.trigger.ConsecutiveSleepingTrigge
 import io.github.mortuusars.chalk.advancements.trigger.MarkGlowingTrigger;
 import io.github.mortuusars.chalk.world.block.MarkBlockEntity;
 import io.github.mortuusars.chalk.world.block.MarkBlock;
+import io.github.mortuusars.chalk.world.block.OldChalkMarkBlock;
+import io.github.mortuusars.chalk.world.block.OldMarkBlockEntity;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.ChalkBoxItem;
-import io.github.mortuusars.chalk.world.item.ChalkItem;
+import io.github.mortuusars.chalk.world.item.OldChalkItem;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
 import io.github.mortuusars.chalk.data.ChalkColors;
+import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
+import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceKey;
@@ -62,55 +66,54 @@ public class Chalk {
                     .noTerrainParticles()
                     .sound(SoundType.NETHER_WART)));
 
-        public static final Map<DyeColor, Supplier<MarkBlock>> MARKS = new LinkedHashMap<>();
-
-//        static {
-//            for (DyeColor color : ChalkColors.COLORS.keySet()) {
-//                MARKS.put(color, Register.block(color + "_chalk_mark",
-//                        () -> new NewChalkMarkBlock(BlockBehaviour.Properties.of()
-//                                .mapColor(color)
-//                                .pushReaction(PushReaction.DESTROY)
-//                                .instabreak()
-//                                .noOcclusion()
-//                                .noCollission()
-//                                .sound(SoundType.NETHER_WART))));
-//            }
-//        }
-
-        public static MarkBlock getMarkBlock(DyeColor color) {
-            return MARK.get();
-        }
+        @SuppressWarnings("removal")
+        @Deprecated(since = "2.0.0", forRemoval = true)
+        public static final Map<DyeColor, Supplier<OldChalkMarkBlock>> MARKS = Util.make(new LinkedHashMap<>(), map -> {
+            for (DyeColor color : ChalkColors.COLORS.keySet()) {
+                map.put(color, Register.block(color + "_chalk_mark",
+                        () -> new OldChalkMarkBlock(color, BlockBehaviour.Properties.of()
+                                .mapColor(color)
+                                .pushReaction(PushReaction.DESTROY)
+                                .instabreak()
+                                .noOcclusion()
+                                .noCollission()
+                                .sound(SoundType.NETHER_WART))));
+            }
+        });
 
         static void init() {
         }
     }
 
     public static class BlockEntityTypes {
-        public static final Supplier<BlockEntityType<MarkBlockEntity>> CHALK_MARK = Register.blockEntityType("chalk_mark",
+        public static final Supplier<BlockEntityType<MarkBlockEntity>> MARK = Register.blockEntityType("mark",
               () -> Register.newBlockEntityType(MarkBlockEntity::new, Blocks.MARK.get()));
+        @Deprecated(since = "2.0.0", forRemoval = true)
+        public static final Supplier<BlockEntityType<OldMarkBlockEntity>> CHALK_MARK = Register.blockEntityType("chalk_mark",
+              () -> Register.newBlockEntityType(OldMarkBlockEntity::new, Blocks.MARKS.values().stream().map(Supplier::get).toArray(Block[]::new)));
 
         static void init() {
         }
     }
 
     public static class Items {
-        public static Map<DyeColor, Supplier<ChalkItem>> CHALKS = new LinkedHashMap<>();
+        public static final Supplier<ChalkItem> CHALK = Register.item("chalk",
+              () -> new ChalkItem(new Item.Properties()
+                    .stacksTo(1)
+                    .durability(64)));
 
         public static final Supplier<ChalkBoxItem> CHALK_BOX = Register.item("chalk_box",
               () -> new ChalkBoxItem(new Item.Properties()
                     .stacksTo(1)));
 
-        static {
+        @Deprecated(since = "2.0.0", forRemoval = true)
+        public static Map<DyeColor, Supplier<OldChalkItem>> CHALKS = Util.make(new LinkedHashMap<>(), map -> {
             for (DyeColor color : ChalkColors.COLORS.keySet()) {
-                CHALKS.put(color, Register.item(color + "_chalk", () -> new ChalkItem(color, new Item.Properties()
+                map.put(color, Register.item(color + "_chalk", () -> new OldChalkItem(color, new Item.Properties()
                       .stacksTo(1)
                       .durability(64))));
             }
-        }
-
-        public static ChalkItem getChalk(DyeColor color) {
-            return CHALKS.get(color).get();
-        }
+        });
 
         static void init() {
         }
@@ -180,14 +183,10 @@ public class Chalk {
 
     public static class Tags {
         public static final class Items {
-            public static final TagKey<Item> CHALKS = TagKey.create(net.minecraft.core.registries.Registries.ITEM, Chalk.resource("chalks"));
-            public static final TagKey<Item> C_CHALKS = TagKey.create(net.minecraft.core.registries.Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "chalks"));
             public static final TagKey<Item> GLOWINGS = TagKey.create(net.minecraft.core.registries.Registries.ITEM, Chalk.resource("glowings"));
-
         }
 
         public static final class Blocks {
-            public static final TagKey<Block> CHALK_MARKS = TagKey.create(net.minecraft.core.registries.Registries.BLOCK, Chalk.resource("chalk_marks"));
             public static final TagKey<Block> CHALK_CANNOT_DRAW_ON = TagKey.create(net.minecraft.core.registries.Registries.BLOCK, Chalk.resource("chalk_cannot_draw_on"));
         }
     }

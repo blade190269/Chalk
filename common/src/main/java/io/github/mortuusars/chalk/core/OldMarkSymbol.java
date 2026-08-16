@@ -2,10 +2,15 @@ package io.github.mortuusars.chalk.core;
 
 import com.mojang.serialization.Codec;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.world.chalk.MarkSet;
+import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
@@ -16,6 +21,7 @@ import java.util.List;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
+@Deprecated(since = "2.0.0", forRemoval = true)
 public enum OldMarkSymbol implements StringRepresentable {
     CENTER("center", false, OrientationBehavior.FIXED, SymbolOrientation.NORTH),
     ARROW("arrow", false, OrientationBehavior.FULL, SymbolOrientation.NORTH),
@@ -98,5 +104,24 @@ public enum OldMarkSymbol implements StringRepresentable {
         public @NotNull String getSerializedName() {
             return name;
         }
+    }
+    
+    // --
+    
+    public Holder<MarkSymbol> convert(HolderLookup.Provider registries) {
+        var registry = registries.lookupOrThrow(Chalk.Registries.MARK_SYMBOL);
+
+        ResourceKey<MarkSymbol> key = switch (this) {
+            case CENTER -> MarkSymbol.DOT;
+            case ARROW -> MarkSymbol.ARROW;
+            case CROSS -> MarkSymbol.CROSS;
+            case CHECKMARK -> MarkSymbol.CHECK;
+            case SKULL -> MarkSymbol.SKULL;
+            case HOUSE -> MarkSymbol.HOUSE;
+            case HEART -> MarkSymbol.HEART;
+            case PICKAXE -> MarkSymbol.PICKAXE;
+        };
+
+        return registry.get(key).orElse(registry.getOrThrow(MarkSymbol.DOT));
     }
 }

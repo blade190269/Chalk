@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Platform;
 import io.github.mortuusars.chalk.Config;
+import io.github.mortuusars.chalk.data.ChalkColors;
 import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
@@ -26,8 +27,11 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +50,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack stack) {
         return Config.Client.CHALK_BOX_TOOLTIP_CONTENTS.get() && !getContents(stack).isEmpty()
-                ? Optional.of(getContents(stack)) : Optional.empty();
+              ? Optional.of(getContents(stack)) : Optional.empty();
     }
 
     @Override
@@ -60,9 +64,9 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
             tooltipComponents.add(Component.translatable("gui.chalk.tooltip.hold_for_details"));
         } else {
             if (Minecraft.getInstance().player != null
-                    && Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> screen
-                    && screen.hoveredSlot != null
-                    && screen.hoveredSlot.container instanceof Inventory) {
+                  && Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> screen
+                  && screen.hoveredSlot != null
+                  && screen.hoveredSlot.container instanceof Inventory) {
                 tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.open"));
             }
 
@@ -98,14 +102,13 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
                 if (getItemInSlot(stack, i).isEmpty()) {
                     setItemInSlot(stack, i, otherStack.copy());
                     player.playSound(Chalk.SoundEvents.CHALK_BOX_CHANGE.get(),
-                            0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
+                          0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
                     otherStack.setCount(0);
                     return true;
                 }
             }
-        }
-        else if (Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
-                && otherStack.is(Chalk.Tags.Items.GLOWINGS)) {
+        } else if (Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
+              && otherStack.is(Chalk.Tags.Items.GLOWINGS)) {
             ItemStack existingItem = getItemInSlot(stack, ChalkBoxContents.GLOWINGS_SLOT);
             int glowAmountBefore = getGlowAmount(stack);
 
@@ -126,7 +129,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
             }
 
             player.playSound(Chalk.SoundEvents.CHALK_BOX_CHANGE.get(),
-                    0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
+                  0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
 
             if (glowAmountBefore < getGlowAmount(stack)) {
                 player.playSound(Chalk.SoundEvents.GLOW_APPLIED.get(), 1f, 1f);
@@ -153,6 +156,35 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         if (player == null) {
             return InteractionResult.FAIL;
         }
+
+        //TODO: Remove testing code
+//        try {
+//
+//            BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+//            if (state.getBlock() instanceof ChestBlock chestBlock) {
+//                Container container = ChestBlock.getContainer(chestBlock, state, player.level(), context.getClickedPos(), true);
+//                int index = 0;
+//                for (DyeColor color : ChalkColors.ORDERED_DYE_COLORS) {
+//                    container.setItem(index++, new ItemStack(Chalk.Items.CHALKS.get(color).get()));
+//                    ItemStack dyeable = new ItemStack(Chalk.Items.CHALK.get());
+//                    dyeable.set(DataComponents.DYED_COLOR, new DyedItemColor(Chalk.Items.CHALK.get().getColorFromDye(dyeable, color), true));
+//                    container.setItem(index++, dyeable);
+//                }
+//                return InteractionResult.SUCCESS;
+//            }
+//
+////            if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof RandomizableContainerBlockEntity container) {
+////                int index = 0;
+////                for (DyeColor color : DyeColor.values()) {
+////                    container.setItem(index++, new ItemStack(Chalk.Items.CHALKS.get(color).get()));
+////                    ItemStack dyeable = new ItemStack(Chalk.Items.CHALK.get());
+////                    dyeable.set(DataComponents.DYED_COLOR, new DyedItemColor(Chalk.Items.CHALK.get().getColorFromDye(dyeable, color), true));
+////                    container.setItem(index++, dyeable);
+////                }
+////            }
+//        } catch (Exception e) {
+//            boolean a = true;
+//        }
 
         //TODO: verify that offhand check is not needed here
 
@@ -197,7 +229,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         if (player.isSecondaryUseActive()) {
             if (rotateSelectedChalk(stack)) {
                 level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS,
-                        0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+                      0.9f, 0.9f + level.random.nextFloat() * 0.2f);
                 return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
             } else {
                 return InteractionResultHolder.fail(stack);
@@ -303,13 +335,13 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         Preconditions.checkElementIndex(slot, ChalkBoxContents.SLOTS, "Slot " + slot + " is invalid. Chalk Box has " + ChalkBoxContents.SLOTS + " slots.");
         if (!stack.isEmpty()) {
             Preconditions.checkArgument(stack.getItem() instanceof ChalkItem || slot == ChalkBoxContents.GLOWINGS_SLOT,
-                    "%s cannot be inserted into slot '%s'. Only ChalkItem can be inserted into slots 0-%s.", stack, slot, ChalkBoxContents.CHALK_SLOTS - 1);
+                  "%s cannot be inserted into slot '%s'. Only ChalkItem can be inserted into slots 0-%s.", stack, slot, ChalkBoxContents.CHALK_SLOTS - 1);
             Preconditions.checkArgument(stack.is(Chalk.Tags.Items.GLOWINGS) || slot != ChalkBoxContents.GLOWINGS_SLOT,
-                    "%s cannot be inserted into slot '%s'. Only #chalk:glowings can be inserted into slot {}", stack, slot, ChalkBoxContents.GLOWINGS_SLOT);
+                  "%s cannot be inserted into slot '%s'. Only #chalk:glowings can be inserted into slot {}", stack, slot, ChalkBoxContents.GLOWINGS_SLOT);
         }
 
         ChalkBoxContents contents = chalkBoxStack.has(Chalk.DataComponents.CHALK_BOX_CONTENTS)
-                ? chalkBoxStack.get(Chalk.DataComponents.CHALK_BOX_CONTENTS) : ChalkBoxContents.EMPTY;
+              ? chalkBoxStack.get(Chalk.DataComponents.CHALK_BOX_CONTENTS) : ChalkBoxContents.EMPTY;
 
         Preconditions.checkState(contents != null);
 
@@ -335,8 +367,8 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
 
         ArrayList<ItemStack> items = new ArrayList<>(contents.items().stream().limit(ChalkBoxContents.CHALK_SLOTS).toList());
         int chalks = ((int) items.stream()
-                .filter(stack -> stack.getItem() instanceof MarkDrawable)
-                .count());
+              .filter(stack -> stack.getItem() instanceof MarkDrawable)
+              .count());
 
         if (selectedChalkIndex < 0 || chalks < 2) {
             return false;
@@ -365,12 +397,13 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
      * Used by ItemOverrides to determine what chalk to display with the item texture.
      */
     public float getSelectedChalkColor(ItemStack stack) {
-        ChalkBoxContents contents = getContents(stack);
-        for (ItemStack item : contents.items()) {
-            if (item.getItem() instanceof ChalkItem chalkItem) {
-                return chalkItem.getColor().getId() + 1;
-            }
-        }
+        //TODO: use tinting
+//        ChalkBoxContents contents = getContents(stack);
+//        for (ItemStack item : contents.items()) {
+//            if (item.getItem() instanceof ChalkItem chalkItem) {
+//                return chalkItem.getColor().getId() + 1;
+//            }
+//        }
 
         return 0f;
     }
@@ -384,7 +417,6 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
             return stack.getItem() instanceof ChalkItem;
         }
     }
-
 
 
     public int getGlowAmount(ItemStack chalkBoxStack) {

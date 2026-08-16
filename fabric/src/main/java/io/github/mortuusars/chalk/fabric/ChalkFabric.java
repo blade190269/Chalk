@@ -1,10 +1,11 @@
 package io.github.mortuusars.chalk.fabric;
 
 import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.event.CommonEvents;
-import io.github.mortuusars.chalk.world.item.ChalkItem;
+import io.github.mortuusars.chalk.world.item.OldChalkItem;
 import io.github.mortuusars.chalk.network.fabric.FabricC2SPackets;
 import io.github.mortuusars.chalk.network.fabric.FabricS2CPackets;
 import net.fabricmc.api.ModInitializer;
@@ -31,11 +32,21 @@ public class ChalkFabric implements ModInitializer {
         NeoForgeConfigRegistry.INSTANCE.register(Chalk.ID, ModConfig.Type.SERVER, Config.Server.SPEC);
         NeoForgeConfigRegistry.INSTANCE.register(Chalk.ID, ModConfig.Type.COMMON, Config.Common.SPEC);
         NeoForgeConfigRegistry.INSTANCE.register(Chalk.ID, ModConfig.Type.CLIENT, Config.Client.SPEC);
+        NeoForgeModConfigEvents.loading(Chalk.ID).register(config -> {
+            if (config.getType() == ModConfig.Type.SERVER) {
+                Config.Server.loading();
+            }
+        });
+        NeoForgeModConfigEvents.reloading(Chalk.ID).register(config -> {
+            if (config.getType() == ModConfig.Type.SERVER) {
+                Config.Server.reloading();
+            }
+        });
 
         CommonEvents.commonSetup();
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(event -> {
-            for (Supplier<ChalkItem> item : Chalk.Items.CHALKS.values()) {
+            for (Supplier<OldChalkItem> item : Chalk.Items.CHALKS.values()) {
                 event.accept(item.get());
             }
             event.accept(Chalk.Items.CHALK_BOX.get());

@@ -6,6 +6,7 @@ import io.github.mortuusars.chalk.advancements.trigger.ConsecutiveSleepingTrigge
 import io.github.mortuusars.chalk.advancements.predicate.DyeColorPredicate;
 import io.github.mortuusars.chalk.advancements.predicate.MapColorPredicate;
 import io.github.mortuusars.chalk.advancements.trigger.MarkGlowingTrigger;
+import io.github.mortuusars.chalk.world.item.ChalkItem;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
@@ -45,7 +46,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
 
         AdvancementHolder thisWay = Advancement.Builder.advancement()
               .parent(ResourceLocation.parse("minecraft:adventure/root"))
-              .display(Chalk.Items.getChalk(DyeColor.YELLOW),
+              .display(ChalkItem.create(List.of(DyeColor.YELLOW), 0),
                     Component.translatable("advancement.chalk.this_way.title"),
                     Component.translatable("advancement.chalk.this_way.description"),
                     null, AdvancementType.TASK, true, true, false)
@@ -59,7 +60,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
 
         AdvancementHolder vandalism = Advancement.Builder.advancement()
               .parent(thisWay)
-              .display(Chalk.Items.getChalk(DyeColor.LIGHT_GRAY),
+              .display(ChalkItem.create(List.of(DyeColor.LIGHT_GRAY), 0),
                     Component.translatable("advancement.chalk.vandalism.title"),
                     Component.translatable("advancement.chalk.vandalism.description"),
                     null, AdvancementType.TASK, true, true, true)
@@ -85,7 +86,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
 
         AdvancementHolder consumedByTheLight = Advancement.Builder.advancement()
               .parent(guidingStar)
-              .display(Chalk.Items.getChalk(DyeColor.WHITE),
+              .display(ChalkItem.create(List.of(DyeColor.WHITE), 0),
                     Component.translatable("advancement.chalk.consumed_by_the_light.title"),
                     Component.translatable("advancement.chalk.consumed_by_the_light.description"),
                     null, AdvancementType.TASK, true, true, false)
@@ -101,7 +102,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
 
         AdvancementHolder aloneInTheDarkness = Advancement.Builder.advancement()
               .parent(consumedByTheLight)
-              .display(Chalk.Items.getChalk(DyeColor.BLACK),
+              .display(ChalkItem.create(List.of(DyeColor.BLACK), 0),
                     Component.translatable("advancement.chalk.alone_in_the_darkness.title"),
                     Component.translatable("advancement.chalk.alone_in_the_darkness.description"),
                     null, AdvancementType.TASK, true, true, false)

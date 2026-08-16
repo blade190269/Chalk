@@ -32,7 +32,7 @@
     },
     "icon": {
       "count": 1,
-      "id": "chalk:white_chalk"
+      "id": "chalk:chalk"
     },
     "title": {
       "translate": "advancement.chalk.consumed_by_the_light.title"

@@ -9,6 +9,7 @@
     "single_mark_outline.LevelRendererMixin"
   ],
   "mixins": [
+    "DyedItemColorMixin",
     "advancements.PlayerAdvancementsMixin",
     "advancements.PlayerMixin"
   ],

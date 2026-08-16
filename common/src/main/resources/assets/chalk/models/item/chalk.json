@@ -1,5 +1,8 @@
 {
   "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "chalk:item/chalk"
+  },
   "display": {
     "ground": {
       "rotation": [ 0, 0, 0 ],

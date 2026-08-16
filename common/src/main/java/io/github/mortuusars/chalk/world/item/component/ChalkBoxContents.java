@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.MarkDrawable;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -157,7 +158,7 @@ public record ChalkBoxContents(List<ItemStack> items, int glowAmount) implements
         } else if (slot == GLOWINGS_SLOT) {
             return stack.is(Chalk.Tags.Items.GLOWINGS);
         } else {
-            return !stack.is(Chalk.Tags.Items.CHALKS);
+            return stack.getItem() instanceof ChalkItem;
         }
     }
 }

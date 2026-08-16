@@ -62,6 +62,18 @@ public class MarkBlock extends BaseEntityBlock {
         super(properties);
     }
 
+    public static @Nullable MarkBlockEntity getExistingOrPlaceNew(Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof MarkBlockEntity existingBlockEntity) {
+            return existingBlockEntity;
+        }
+
+        level.setBlock(pos, Chalk.Blocks.MARK.get().defaultBlockState(), UPDATE_ALL_IMMEDIATE);
+
+        return level.getBlockEntity(pos) instanceof MarkBlockEntity existingBlockEntity
+              ? existingBlockEntity
+              : null;
+    }
+
     @Override
     protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;

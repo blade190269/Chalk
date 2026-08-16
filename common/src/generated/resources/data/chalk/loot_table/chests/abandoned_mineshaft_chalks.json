@@ -16,23 +16,31 @@
                         "minecraft:damage": 23
                       },
                       "count": 1,
-                      "id": "chalk:white_chalk"
+                      "id": "chalk:chalk"
                     },
                     {},
                     {},
                     {},
                     {},
                     {
+                      "components": {
+                        "minecraft:dyed_color": {
+                          "rgb": -6447721
+                        }
+                      },
                       "count": 1,
-                      "id": "chalk:light_gray_chalk"
+                      "id": "chalk:chalk"
                     },
                     {},
                     {
                       "components": {
-                        "minecraft:damage": 17
+                        "minecraft:damage": 17,
+                        "minecraft:dyed_color": {
+                          "rgb": -5231066
+                        }
                       },
                       "count": 1,
-                      "id": "chalk:red_chalk"
+                      "id": "chalk:chalk"
                     }
                   ]
                 }
@@ -53,23 +61,31 @@
                   "items": [
                     {},
                     {
+                      "components": {
+                        "minecraft:dyed_color": {
+                          "rgb": -6447721
+                        }
+                      },
                       "count": 1,
-                      "id": "chalk:light_gray_chalk"
+                      "id": "chalk:chalk"
                     },
                     {},
                     {},
                     {
                       "count": 1,
-                      "id": "chalk:white_chalk"
+                      "id": "chalk:chalk"
                     },
                     {},
                     {},
                     {
                       "components": {
-                        "minecraft:damage": 6
+                        "minecraft:damage": 6,
+                        "minecraft:dyed_color": {
+                          "rgb": -12930086
+                        }
                       },
                       "count": 1,
-                      "id": "chalk:light_blue_chalk"
+                      "id": "chalk:chalk"
                     },
                     {
                       "count": 7,
@@ -94,25 +110,36 @@
                   "items": [
                     {
                       "components": {
-                        "minecraft:damage": 5
+                        "minecraft:damage": 5,
+                        "minecraft:dyed_color": {
+                          "rgb": -12827478
+                        }
                       },
                       "count": 1,
-                      "id": "chalk:blue_chalk"
+                      "id": "chalk:chalk"
                     },
                     {},
                     {
                       "components": {
-                        "minecraft:damage": 50
+                        "minecraft:damage": 50,
+                        "minecraft:dyed_color": {
+                          "rgb": -816214
+                        }
                       },
                       "count": 1,
-                      "id": "chalk:pink_chalk"
+                      "id": "chalk:chalk"
                     },
                     {},
                     {},
                     {},
                     {
+                      "components": {
+                        "minecraft:dyed_color": {
+                          "rgb": -75715
+                        }
+                      },
                       "count": 1,
-                      "id": "chalk:yellow_chalk"
+                      "id": "chalk:chalk"
                     },
                     {},
                     {
@@ -137,8 +164,13 @@
                   "items": [
                     {},
                     {
+                      "components": {
+                        "minecraft:dyed_color": {
+                          "rgb": -6447721
+                        }
+                      },
                       "count": 1,
-                      "id": "chalk:light_gray_chalk"
+                      "id": "chalk:chalk"
                     },
                     {},
                     {},
@@ -146,10 +178,13 @@
                     {},
                     {
                       "components": {
-                        "minecraft:damage": 14
+                        "minecraft:damage": 14,
+                        "minecraft:dyed_color": {
+                          "rgb": -10585066
+                        }
                       },
                       "count": 1,
-                      "id": "chalk:green_chalk"
+                      "id": "chalk:chalk"
                     }
                   ]
                 }
@@ -162,17 +197,47 @@
         },
         {
           "type": "minecraft:item",
-          "name": "chalk:white_chalk",
+          "functions": [
+            {
+              "components": {
+                "minecraft:dyed_color": {
+                  "rgb": -393218
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "chalk:chalk",
           "weight": 10
         },
         {
           "type": "minecraft:item",
-          "name": "chalk:light_gray_chalk",
+          "functions": [
+            {
+              "components": {
+                "minecraft:dyed_color": {
+                  "rgb": -6447721
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "chalk:chalk",
           "weight": 8
         },
         {
           "type": "minecraft:item",
-          "name": "chalk:black_chalk",
+          "functions": [
+            {
+              "components": {
+                "minecraft:dyed_color": {
+                  "rgb": -14869215
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "chalk:chalk",
           "weight": 4
         },
         {

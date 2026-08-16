@@ -1,39 +1,159 @@
 package io.github.mortuusars.chalk;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableBiMap;
+import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
 
 public class Config {
     public static class Server {
         public static final ModConfigSpec SPEC;
 
-        public static final ModConfigSpec.BooleanValue SYMBOL_UNLOCKING;
+        // Chalk
+        public static final ModConfigSpec.ConfigValue<List<? extends String>> CHALK_DYE_COLORS_DEFINITION;
+        public static final ModConfigSpec.BooleanValue ADD_DYED_CHALKS_TO_TAB;
+        public static final ModConfigSpec.BooleanValue DYED_CHALK_NAMES;
 
         // Chalk Box
         public static final ModConfigSpec.BooleanValue CHALK_BOX_GLOWING_ENABLED;
         public static final ModConfigSpec.IntValue CHALK_BOX_GLOWING_AMOUNT_PER_ITEM;
 
+        public static final ModConfigSpec.BooleanValue SYMBOL_UNLOCKING;
+
+        public static BiMap<DyeColor, Integer> CHALK_COLORS = ImmutableBiMap.of();
+
         static {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
+            {
+                builder.push("chalk");
+
+                CHALK_DYE_COLORS_DEFINITION = builder
+                      .comment("Defines which color a specific dye would have when applied to a chalk item.")
+                      .define("chalk_dye_colors", List.of(
+                            "white:#FFFFFF",
+                            "light_gray:#BDBFBE",
+                            "gray:#818285",
+                            "black:#2C2D2E",
+                            "brown:#BF7B43",
+                            "red:#F55A49",
+                            "orange:#FF9A3D",
+                            "yellow:#FFDB4A",
+                            "lime:#AAF048",
+                            "green:#78C73C",
+                            "cyan:#37DCD2",
+                            "light_blue:#95E3FD",
+                            "blue:#5583F8",
+                            "purple:#C061FF",
+                            "magenta:#F85EC4",
+                            "pink:#FF87A9"
+                      ), Server::validateChalkColorsDefinition);
+
+                ADD_DYED_CHALKS_TO_TAB = builder
+                      .comment("Colored chalks will be added to creative menu and JEI", "Default: true")
+                      .define("add_dyed_chalks_to_tab", true);
+
+                DYED_CHALK_NAMES = builder
+                      .comment("Colored chalks will be named after a dye color if only a single dye was used to color it.", "Default: true")
+                      .define("dyed_chalk_names", true);
+
+                builder.pop();
+            }
+
+            {
+                builder.push("chalk_box");
+                CHALK_BOX_GLOWING_ENABLED = builder.comment("Controls whether glowing should be enabled in Chalk Box.\nIf disabled - you will not be able to draw glowing marks with chalk box.\nDefault: true")
+                      .define("chalk_box_glowing_enabled", true);
+
+                CHALK_BOX_GLOWING_AMOUNT_PER_ITEM = builder.comment("How many glowing uses one glowing item will give.\nDefault: 8")
+                      .defineInRange("chalk_box_amount_per_glowing_item", 8, 1, 9999);
+                builder.pop();
+            }
+
+
             SYMBOL_UNLOCKING = builder
-                  .comment("Controls whether some of the symbols need to be unlocked to be drawable.",
-                        "Setting this to 'false' will bypass unlocking feature and make all symbols always available.",
+                  .comment("Some mark symbols need to be unlocked by completing specific advancements.",
+                        "Setting this to 'false' will bypass the unlocking feature, making all symbols always available.",
                         "Default: true")
                   .define("symbol_unlocking", true);
 
-            builder.push("chalk_box");
-
-            CHALK_BOX_GLOWING_ENABLED = builder.comment("Controls whether glowing should be enabled in Chalk Box.\nIf disabled - you will not be able to draw glowing marks with chalk box.\nDefault: true")
-                  .define("chalk_box_glowing_enabled", true);
-
-            CHALK_BOX_GLOWING_AMOUNT_PER_ITEM = builder.comment("How many glowing uses one glowing item will give.\nDefault: 8")
-                  .defineInRange("chalk_box_amount_per_glowing_item", 8, 1, 9999);
-
-            builder.pop();
-
             SPEC = builder.build();
+        }
+
+        private static boolean validateChalkColorsDefinition(Object object) {
+            if (object == null) {
+                return false;
+            }
+
+            if (!(object instanceof List<?> list)) {
+                Chalk.LOGGER.error("[{}] is not valid value for chalk_colors.", object);
+                return false;
+            }
+
+            for (Object listObject : list) {
+                if (!(listObject instanceof String str)) {
+                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping.", listObject);
+                    return false;
+                }
+
+                if (!str.contains(":")) {
+                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", str);
+                    return false;
+                }
+
+                String[] split = str.trim().split(":");
+
+                if (split.length != 2) {
+                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", str);
+                    return false;
+                }
+
+                @Nullable DyeColor dyeColor = DyeColor.byName(split[0].trim(), null);
+
+                if (dyeColor == null) {
+                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a known DyeColor.", str, split[0].trim());
+                    return false;
+                }
+
+                try {
+                    Long.parseLong(split[1].trim().replace("#", ""), 16);
+                } catch (NumberFormatException e) {
+                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a valid hex color value.", str, split[1].trim());
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static void createColorsMap() {
+            BiMap<DyeColor, Integer> map = HashBiMap.create(DyeColor.values().length);
+
+            for (String entry : CHALK_DYE_COLORS_DEFINITION.get()) {
+                try {
+                    String[] split = entry.trim().split(":");
+
+                    if (split.length == 2 && DyeColor.byName(split[0].trim(), null) instanceof DyeColor dyeColor) {
+                        map.forcePut(dyeColor, (int) Long.parseLong(split[1].trim().replace("#", ""), 16));
+                    }
+                } catch (Exception e) {
+                    Chalk.LOGGER.error("Failed to decode chalk color from '{}'.", entry, e);
+                }
+            }
+
+            CHALK_COLORS = map;
+        }
+
+        public static void loading() {
+            createColorsMap();
+        }
+
+        public static void reloading() {
+            createColorsMap();
         }
     }
 
@@ -48,7 +168,7 @@ public class Config {
             LOOT = builder.comment("If enabled, Chalks (and Chalk Boxes) will generate in Dungeons, Abandoned Mineshafts, " +
                               "Villages (Planes and Savanna), Cartographer village houses",
                         "Default: true")
-                    .define("generate_chalk_in_loot_chests", true);
+                  .define("generate_chalk_in_loot_chests", true);
 
             SPEC = builder.build();
         }
@@ -69,12 +189,12 @@ public class Config {
                   .define("symbol_selection_groups_sorting", List.of("primary", "symbols", "tools"));
 
             CHALK_BOX_TOOLTIP_CONTENTS = builder
-                    .comment("Contents of the Chalk Box will be shown in item's tooltip.")
-                    .define("chalk_box_tooltip_contents", true);
+                  .comment("Contents of the Chalk Box will be shown in item's tooltip.")
+                  .define("chalk_box_tooltip_contents", true);
 
             CHALK_BOX_TOOLTIP_DETAILS = builder
-                    .comment("Information about using Chalk Box will be shown in the item's tooltip.")
-                    .define("chalk_box_tooltip_details", true);
+                  .comment("Information about using Chalk Box will be shown in the item's tooltip.")
+                  .define("chalk_box_tooltip_details", true);
 
             SPEC = builder.build();
         }

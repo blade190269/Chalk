@@ -20,6 +20,9 @@
     ],
     "client": [
       "io.github.mortuusars.chalk.fabric.ChalkFabricClient"
+    ],
+    "jei_mod_plugin": [
+      "io.github.mortuusars.chalk.integration.jei.ChalkJeiPlugin"
     ]
   },
   "mixins": [

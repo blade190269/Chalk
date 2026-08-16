@@ -19,8 +19,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
-        Chalk.Blocks.MARKS.forEach((color, block) -> tag(Chalk.Tags.Blocks.CHALK_MARKS).add(block.get()));
-
         tag(Chalk.Tags.Blocks.CHALK_CANNOT_DRAW_ON)
                 .addTag(BlockTags.LEAVES)
                 .addTag(BlockTags.SAPLINGS)

@@ -3,9 +3,29 @@ package io.github.mortuusars.chalk.data;
 import net.minecraft.world.item.DyeColor;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChalkColors {
+    public static final List<DyeColor> ORDERED_DYE_COLORS = List.of(
+          DyeColor.WHITE,
+          DyeColor.LIGHT_GRAY,
+          DyeColor.GRAY,
+          DyeColor.BLACK,
+          DyeColor.BROWN,
+          DyeColor.RED,
+          DyeColor.ORANGE,
+          DyeColor.YELLOW,
+          DyeColor.LIME,
+          DyeColor.GREEN,
+          DyeColor.CYAN,
+          DyeColor.LIGHT_BLUE,
+          DyeColor.BLUE,
+          DyeColor.PURPLE,
+          DyeColor.MAGENTA,
+          DyeColor.PINK
+    );
+
     public static final Map<DyeColor, Integer> COLORS = new LinkedHashMap<>() {{ // LinkedHasMap keeps order
         put(DyeColor.WHITE, 0xFFFFFF);
         put(DyeColor.LIGHT_GRAY, 0xADADA8);

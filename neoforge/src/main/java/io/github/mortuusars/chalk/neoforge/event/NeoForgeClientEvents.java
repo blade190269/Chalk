@@ -6,6 +6,7 @@ import io.github.mortuusars.chalk.client.gui.screens.ChalkBoxScreen;
 import io.github.mortuusars.chalk.client.gui.tooltip.ClientChalkBoxTooltip;
 import io.github.mortuusars.chalk.client.render.MarkBlockColor;
 import io.github.mortuusars.chalk.neoforge.client.NeoForgeMarkBakedModel;
+import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -34,6 +35,11 @@ public class NeoForgeClientEvents {
     @SubscribeEvent
     private static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(Chalk.MenuTypes.CHALK_BOX.get(), ChalkBoxScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, index) -> ((ChalkItem) stack.getItem()).getTintColor(stack, index), Chalk.Items.CHALK.get());
     }
 
     @SubscribeEvent

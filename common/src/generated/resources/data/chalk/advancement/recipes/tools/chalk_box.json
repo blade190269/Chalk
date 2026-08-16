@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#chalk:chalks"
+            "items": "chalk:chalk"
           }
         ]
       },

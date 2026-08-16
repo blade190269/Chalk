@@ -1,17 +1,10 @@
 package io.github.mortuusars.chalk.client.render;
 
-import com.mojang.math.Transformation;
-import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.core.OldMarkSymbol;
-import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;

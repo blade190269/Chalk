@@ -9,10 +9,7 @@ import io.github.mortuusars.chalk.network.fabric.FabricS2CPacketHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-
-import java.util.function.Supplier;
 
 public class ChalkFabricClient implements ClientModInitializer {
     @Override
@@ -21,10 +18,7 @@ public class ChalkFabricClient implements ClientModInitializer {
 
         ConfigScreenFactoryRegistry.INSTANCE.register(Chalk.ID, ConfigurationScreen::new);
 
-        ColorProviderRegistry.BLOCK.register(new MarkBlockColor(), Chalk.Blocks.MARKS.values()
-              .stream()
-              .map(Supplier::get)
-              .toArray(Block[]::new));
+        ColorProviderRegistry.BLOCK.register(new MarkBlockColor(), Chalk.Blocks.MARK.get());
 
         MenuScreens.register(Chalk.MenuTypes.CHALK_BOX.get(), ChalkBoxScreen::new);
 
