@@ -15,14 +15,14 @@ public class ChalkClient {
     // --
 
     public static class ItemModelOverrides {
-        public static final ResourceLocation SELECTED_PROPERTY = Chalk.resource("selected_chalk");
+        public static final ResourceLocation GLOWING_PROPERTY = Chalk.resource("glowing");
 
         public static void register() {
-            ItemProperties.register(Chalk.Items.CHALK_BOX.get(), SELECTED_PROPERTY, ItemModelOverrides::getSelectedChalkColor);
+            ItemProperties.register(Chalk.Items.CHALK_BOX.get(), GLOWING_PROPERTY, ItemModelOverrides::isChalkBoxGlowing);
         }
 
-        public static float getSelectedChalkColor(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-            return Chalk.Items.CHALK_BOX.get().getSelectedChalkColor(stack);
+        public static float isChalkBoxGlowing(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+            return Chalk.Items.CHALK_BOX.get().shouldDrawGlowingMark(stack) ? 1F : 0F;
         }
     }
 }

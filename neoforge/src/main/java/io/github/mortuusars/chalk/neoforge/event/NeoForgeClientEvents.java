@@ -6,10 +6,10 @@ import io.github.mortuusars.chalk.client.gui.screens.ChalkBoxScreen;
 import io.github.mortuusars.chalk.client.gui.tooltip.ClientChalkBoxTooltip;
 import io.github.mortuusars.chalk.client.render.MarkBlockColor;
 import io.github.mortuusars.chalk.neoforge.client.NeoForgeMarkBakedModel;
+import io.github.mortuusars.chalk.world.item.ChalkBoxItem;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,10 +26,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 public class NeoForgeClientEvents {
     @SubscribeEvent
     private static void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            ItemProperties.register(Chalk.Items.CHALK_BOX.get(), ChalkClient.ItemModelOverrides.SELECTED_PROPERTY,
-                  (stack, level, entity, damage) -> Chalk.Items.CHALK_BOX.get().getSelectedChalkColor(stack));
-        });
+        event.enqueueWork(ChalkClient::init);
     }
 
     @SubscribeEvent
@@ -40,6 +37,7 @@ public class NeoForgeClientEvents {
     @SubscribeEvent
     public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
         event.register((stack, index) -> ((ChalkItem) stack.getItem()).getTintColor(stack, index), Chalk.Items.CHALK.get());
+        event.register((stack, index) -> ((ChalkBoxItem) stack.getItem()).getTintColor(stack, index), Chalk.Items.CHALK_BOX.get());
     }
 
     @SubscribeEvent

@@ -42,7 +42,8 @@
                       "count": 1,
                       "id": "chalk:chalk"
                     }
-                  ]
+                  ],
+                  "selected": 0
                 }
               },
               "function": "minecraft:set_components"
@@ -57,7 +58,7 @@
             {
               "components": {
                 "chalk:chalk_box_contents": {
-                  "glowing_uses": 4,
+                  "glow": 4,
                   "items": [
                     {},
                     {
@@ -92,7 +93,8 @@
                       "count": 4,
                       "id": "minecraft:glowstone_dust"
                     }
-                  ]
+                  ],
+                  "selected": 1
                 }
               },
               "function": "minecraft:set_components"
@@ -141,7 +143,8 @@
                       "count": 1,
                       "id": "chalk:chalk"
                     }
-                  ]
+                  ],
+                  "selected": 0
                 }
               },
               "function": "minecraft:set_components"

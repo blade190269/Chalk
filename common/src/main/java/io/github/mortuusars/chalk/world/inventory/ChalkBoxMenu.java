@@ -2,7 +2,6 @@ package io.github.mortuusars.chalk.world.inventory;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.world.item.ChalkBoxItem;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
@@ -20,8 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChalkBoxMenu extends AbstractInHandContainerMenu {
+    protected boolean containerInitialized;
+
     public ChalkBoxMenu(int containerId, Inventory playerInventory, InteractionHand hand) {
         super(Chalk.MenuTypes.CHALK_BOX.get(), containerId, playerInventory, hand);
+    }
+
+    @Override
+    protected void init() {
+        playerSlotsY = 84;
+        super.init();
+    }
+
+    @Override
+    public void initializeContents(int stateId, List<ItemStack> items, ItemStack carried) {
+        super.initializeContents(stateId, items, carried);
+        containerInitialized = true;
     }
 
     @Override
@@ -31,15 +44,28 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
             items.add(ItemStack.EMPTY);
         }
 
-        return new SimpleContainer(items.stream().limit(ChalkBoxContents.SLOTS).toArray(ItemStack[]::new));
+        SimpleContainer container = new SimpleContainer(items.stream().limit(ChalkBoxContents.SLOTS).toArray(ItemStack[]::new));
+        container.addListener(this::containerChanged);
+        return container;
+    }
+
+    protected void containerChanged(Container container) {
+        if (!containerInitialized && getPlayer().level().isClientSide()) {
+            return;
+        }
+
+        getContents().mutable()
+              .setItems(container)
+              .updateGlow()
+              .toImmutable(getItemInHand());
     }
 
     @Override
     protected void addContainerSlots() {
         int chalkSlotsX = 62;
-        int chalkSlotsY = 18;
+        int chalkSlotsY = 17;
 
-        for (int row = 0; row < 2; row++) {
+        for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
                 int index = column + row * 3;
                 int x = chalkSlotsX + column * 18;
@@ -54,16 +80,21 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
             }
         }
 
-        addSlot(new Slot(getContainer(), ChalkBoxContents.GLOWINGS_SLOT, 134, 36) {
+        addSlot(new Slot(getContainer(), ChalkBoxContents.GLOWINGS_SLOT, 134, 35) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return ChalkBoxContents.canHold(getContainerSlot(), stack);
+                return isGlowEnabled() && ChalkBoxContents.canHold(getContainerSlot(), stack);
+            }
+
+            @Override
+            public boolean isActive() {
+                return isGlowEnabled();
             }
 
             @Override
             public void set(@NotNull ItemStack stack) {
                 if (getPlayer().level().isClientSide && this.getItem().isEmpty()
-                      && getGlowAmount() <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS)) {
+                      && getGlow() <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS)) {
                     Vec3 pos = getPlayer().position();
                     getPlayer().level().playSound(getPlayer(), pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOW_APPLIED.get(), SoundSource.PLAYERS, 1f, 1f);
                     getPlayer().level().playSound(getPlayer(), pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOWING.get(), SoundSource.PLAYERS, 1f, 1f);
@@ -72,18 +103,15 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
                 super.set(stack);
             }
         });
+    }
 
-//        ---
-//
-//        IItemHandler itemHandler = new ChalkBoxItemStackHandler(chalkBoxStack) {
-//            @Override
-//            protected void onContentsChanged(int slot) {
-//                super.onContentsChanged(slot);
-//                if (player.isCreative()) {
-//                    playerInventory.setItem(slot, this.getChalkBoxStack());
-//                }
-//            }
-//        };
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id >= 100 && id < 100 + ChalkBoxContents.CHALK_SLOTS) {
+            setSelectedSlot(id - 100);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -99,43 +127,32 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
         player.inventoryMenu.resumeRemoteUpdates();
     }
 
-    public boolean isGlowingEnabled() {
+    public ChalkBoxContents getContents() {
+        return ChalkBoxContents.of(getItemInHand());
+    }
+
+    public boolean isGlowEnabled() {
         return Config.Server.CHALK_BOX_GLOWING_ENABLED.get();
     }
 
-    public int getGlowAmount() {
-        return getUsedItem() instanceof ChalkBoxItem chalkBoxItem
-              ? chalkBoxItem.getGlowAmount(getItemInHand())
-              : 0;
+    public int getGlow() {
+        return getContents().glow();
     }
 
-//    @Override
-//    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
-//        ItemStack itemstack = ItemStack.EMPTY;
-//        Slot slot = this.slots.get(index);
-//        if (slot.hasItem()) {
-//            ItemStack slotItemStack = slot.getItem();
-//            itemstack = slotItemStack.copy();
-//            if (index < OldChalkBoxContents.SLOTS) { // From Chalk Box to player inventory.
-//                if (!this.moveItemStackTo(slotItemStack, OldChalkBoxContents.SLOTS, this.slots.size(), true))
-//                    return ItemStack.EMPTY;
-//            } else if (!this.moveItemStackTo(slotItemStack, 0, OldChalkBoxContents.SLOTS, false)) // From player inventory to box.
-//                return ItemStack.EMPTY;
-//
-//
-//            if (slotItemStack.isEmpty())
-//                slot.set(ItemStack.EMPTY);
-//            else
-//                slot.setChanged();
-//        }
-//
-//        return itemstack;
-//    }
+    public int getMaxGlow() {
+        return Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
+    }
 
-//    @Override
-//    public boolean stillValid(@NotNull Player player) {
-//        return chalkBoxSlotIndex >= 0 && getChalkBoxStack().getItem().equals(chalkBoxItem);
-//    }
+    public int getSelectedSlot() {
+        return getContents().selected();
+    }
+
+    public void setSelectedSlot(int slot) {
+        if (getContents().selected() != slot) {
+            getContents().mutable().setSelected(slot).toImmutable(getItemInHand());
+            getPlayer().resetAttackStrengthTicker();
+        }
+    }
 
     public static ChalkBoxMenu fromNetwork(int containerID, Inventory playerInventory, RegistryFriendlyByteBuf buffer) {
         return new ChalkBoxMenu(containerID, playerInventory, buffer.readEnum(InteractionHand.class));

@@ -60,10 +60,6 @@ public class NeoForgeCommonEvents {
     @SubscribeEvent
     private static void onCreativeTabsBuild(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            for (Supplier<OldChalkItem> item : Chalk.Items.CHALKS.values()) {
-                event.accept(item.get());
-            }
-
             event.accept(new ItemStack(Chalk.Items.CHALK.get()));
 
             if (Config.Server.ADD_DYED_CHALKS_TO_TAB.get()) {

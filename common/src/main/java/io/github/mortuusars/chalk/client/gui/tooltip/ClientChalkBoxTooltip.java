@@ -2,30 +2,26 @@ package io.github.mortuusars.chalk.client.gui.tooltip;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
+import io.github.mortuusars.chalk.client.gui.screens.ChalkBoxScreen;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ClientChalkBoxTooltip implements ClientTooltipComponent {
-    private static final ResourceLocation TEXTURE = Chalk.resource("textures/gui/container/chalk_box_tooltip.png");
+    public static final ResourceLocation SLOTS_SPRITE = Chalk.resource("chalk_box/tooltip_slots");
+    public static final ResourceLocation GLOWING_SPRITE = Chalk.resource("chalk_box/tooltip_glowing");
 
-    private static final int ROWS = 3;
-    private static final int COLUMNS = 3;
+    public static final int ROWS = 3;
+    public static final int COLUMNS = 3;
 
-    private final ChalkBoxContents contents;
+    protected final ChalkBoxContents contents;
 
     public ClientChalkBoxTooltip(ChalkBoxContents contents) {
         this.contents = contents;
-    }
-
-    @Override
-    public int getHeight() {
-        return this.backgroundHeight() + 2;
     }
 
     @Override
@@ -33,54 +29,72 @@ public class ClientChalkBoxTooltip implements ClientTooltipComponent {
         return backgroundWidth();
     }
 
-    private int backgroundWidth() {
-        return 76;
+    @Override
+    public int getHeight() {
+        return backgroundHeight() + 3;
     }
 
-    private int backgroundHeight() {
-        boolean showGlowingStuff = Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
-                && (contents.glowAmount() > 0 || !contents.items().get(ChalkBoxContents.GLOWINGS_SLOT).isEmpty());
-        return showGlowingStuff ? 69 : 42;
+    protected int backgroundWidth() {
+        return shouldShowGlow() ? 86 : 58;
+    }
+
+    protected int backgroundHeight() {
+        return 60;
+    }
+
+    protected boolean shouldShowGlow() {
+        return Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
+              && (contents.glow() > 0 || !contents.items().get(ChalkBoxContents.GLOWINGS_SLOT).isEmpty());
     }
 
     @Override
-    public void renderImage(@NotNull Font font, int x, int y, GuiGraphics guiGraphics) {
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, backgroundWidth(), 41, 128, 128);
-        int selectedIndex = contents.getSelectedChalkIndex();
+    public void renderImage(@NotNull Font font, int x, int y, GuiGraphics graphics) {
+        graphics.blitSprite(SLOTS_SPRITE, x, y, 58, 60);
+
+        int selectedIndex = contents.selected();
         int index = 0;
-        for (int c = 0; c < COLUMNS; c++) {
-            for (int r = 0; r < ROWS; r++) {
-                int px = x + r * 18 + 2;
-                int py = y + c * 18 + 2;
-                renderSlot(px, py, index, guiGraphics, font);
+        for (int column = 0; column < COLUMNS; column++) {
+            for (int row = 0; row < ROWS; row++) {
+                int slotX = x + row * 18 + 2;
+                int slotY = y + column * 18 + 3;
 
                 if (index == selectedIndex) {
-                    AbstractContainerScreen.renderSlotHighlight(guiGraphics, px + 1, py + 1, 0);
+                    graphics.blitSprite(ChalkBoxScreen.SELECTED_CHALK_SLOT_OVERLAY_SPRITE, slotX - 1, slotY - 1, 20, 20);
                 }
+
+                if (contents.getItem(index).isEmpty()) {
+                    graphics.blitSprite(ChalkBoxScreen.CHALK_SLOT_PLACEHOLDER_SPRITE, slotX, slotY, 18, 18);
+                }
+
+                renderSlotItem(font, graphics, index, slotX, slotY);
 
                 index++;
             }
         }
 
-        boolean showGlowingStuff = Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
-                && (contents.glowAmount() > 0 || !contents.items().get(ChalkBoxContents.GLOWINGS_SLOT).isEmpty());
-        if (showGlowingStuff) {
-            guiGraphics.blit(TEXTURE, x, y + 38, 0, 41, backgroundWidth(), 30, 128, 128);
+        if (shouldShowGlow()) {
+            graphics.blitSprite(GLOWING_SPRITE, x + 58, y + 18, 28, 24);
 
-            renderSlot(x + 29, y + 47, index, guiGraphics, font);
+            if (contents.getItem(index).isEmpty()) {
+                graphics.blitSprite(ChalkBoxScreen.GLOWING_SLOT_PLACEHOLDER_SPRITE, x + 59, y + 21, 18, 18);
+            }
 
-            if (contents.glowAmount() > 0) {
-                int maxWidth = 72;
-                float fill = contents.glowAmount() / (float) Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
-                int fillWidth = Math.min((int)Math.floor(maxWidth * fill), maxWidth);
-                guiGraphics.blit(TEXTURE, x + 2, y + 40, 0, 71, fillWidth, 5, 128, 128);
+            renderSlotItem(font, graphics, index, x + 59, y + 21);
+
+            if (contents.glow() > 0) {
+                int currentGlow = contents.glow();
+                int maxGlow = Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
+                int barSize = currentGlow == maxGlow ? 18 : 2 + Math.round((currentGlow - 1) * 14f / (maxGlow - 2));
+                int glowingBarFillLevel = Math.min(ChalkBoxScreen.GLOW_BAR_HEIGHT, barSize);
+                graphics.blitSprite(ChalkBoxScreen.GLOW_BAR_SPRITE, 5, 18, 0, 18 - glowingBarFillLevel,
+                      x + 79, y + 21 + 18 - glowingBarFillLevel, 5, glowingBarFillLevel);
             }
         }
     }
 
-    private void renderSlot(int x, int y, int index, GuiGraphics guiGraphics, Font font) {
+    protected void renderSlotItem(Font font, GuiGraphics graphics, int index, int x, int y) {
         ItemStack itemstack = this.contents.items().get(index);
-        guiGraphics.renderItem(itemstack, x + 1, y + 1, index);
-        guiGraphics.renderItemDecorations(font, itemstack, x + 1, y + 1);
+        graphics.renderItem(itemstack, x + 1, y + 1, index);
+        graphics.renderItemDecorations(font, itemstack, x + 1, y + 1);
     }
 }

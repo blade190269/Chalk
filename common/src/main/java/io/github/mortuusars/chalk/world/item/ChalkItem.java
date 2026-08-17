@@ -97,7 +97,11 @@ public class ChalkItem extends Item implements MarkDrawable {
     @Override
     public void onMarkDrawn(Player player, MarkDrawingContext context, Mark mark) {
         MarkDrawable.super.onMarkDrawn(player, context, mark);
-        onChalkMarkDrawn(player, context.hand(), player.getItemInHand(context.hand()), context.markPos(), context.markFacing(), mark);
+        ItemStack stack = player.getItemInHand(context.hand());
+        onChalkMarkDrawn(player, context.hand(), stack, context.markPos(), context.markFacing(), mark);
+        if (!player.isCreative()) {
+            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.hand()));
+        }
     }
 
     public void onChalkMarkDrawn(Player player, InteractionHand hand, ItemStack stack, BlockPos markPos, Direction markFacing, Mark mark) {
@@ -105,10 +109,6 @@ public class ChalkItem extends Item implements MarkDrawable {
             BlockPos surfacePos = markPos.relative(markFacing.getOpposite());
             MapColor surfaceColor = player.level().getBlockState(surfacePos).getMapColor(player.level(), surfacePos);
             Chalk.CriteriaTriggers.MARK_DRAWN.get().trigger(serverPlayer, stack, surfaceColor, DyeColor.WHITE); //TODO: proper color
-        }
-
-        if (!player.isCreative()) {
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         }
     }
 

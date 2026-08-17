@@ -41,11 +41,18 @@ public class OldChalkItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        ItemStack convertedStack = stack.transmuteCopy(Chalk.Items.CHALK.get());
-        DyedItemColor dyedColor = new DyedItemColor(Chalk.Items.CHALK.get().getColorFromDye(convertedStack, getColor()), true);
-        convertedStack.set(DataComponents.DYED_COLOR, dyedColor);
+        ItemStack convertedStack = convert(stack);
         player.setItemInHand(hand ,convertedStack);
         player.playSound(Chalk.SoundEvents.MARK_REMOVED.get());
         return InteractionResultHolder.success(convertedStack);
+    }
+
+    public @NotNull ItemStack convert(ItemStack stack) {
+        ItemStack convertedStack = stack.transmuteCopy(Chalk.Items.CHALK.get());
+        if (getColor() != DyeColor.WHITE) {
+            DyedItemColor dyedColor = new DyedItemColor(Chalk.Items.CHALK.get().getColorFromDye(convertedStack, getColor()), true);
+            convertedStack.set(DataComponents.DYED_COLOR, dyedColor);
+        }
+        return convertedStack;
     }
 }

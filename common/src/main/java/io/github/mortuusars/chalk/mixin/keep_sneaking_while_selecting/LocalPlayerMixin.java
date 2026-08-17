@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.mixin.keep_sneaking_while_choosing_symbol;
+package io.github.mortuusars.chalk.mixin.keep_sneaking_while_selecting;
 
 import io.github.mortuusars.chalk.client.gui.screens.SymbolSelectScreen;
 import net.minecraft.client.Minecraft;

@@ -200,7 +200,7 @@ public class SymbolSelectScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        openAnimation = Mth.clamp((System.currentTimeMillis() - openTimestampMs) / 400f, 0f, 1f);
+        openAnimation = Mth.clamp((System.currentTimeMillis() - openTimestampMs) / 500f, 0f, 1f);
         openAnimation = 1f - openAnimation;
         openAnimation *= openAnimation * openAnimation;
         openAnimation = 1f - openAnimation;
@@ -219,7 +219,8 @@ public class SymbolSelectScreen extends Screen {
         graphics.pose().translate(0, 0, 200);
         graphics.fillGradient(0, 0, width, (int) (height * 0.08f),
               FastColor.ARGB32.lerp(openAnimation, 0x007F7F7F, 0x44000000), 0x007F7F7F);
-        graphics.fillGradient(0, (int) (height * 0.92f), width, height, 0x007F7F7F, FastColor.ARGB32.lerp(openAnimation, 0x00000000, 0x44000000));
+        graphics.fillGradient(0, (int) (height * 0.92f), width, height, 0x007F7F7F,
+              FastColor.ARGB32.lerp(openAnimation, 0x00000000, 0x44000000));
 
         if (maxScroll > 0) {
             renderScrollBar(graphics, mouseX, mouseY, partialTicks);
@@ -329,7 +330,7 @@ public class SymbolSelectScreen extends Screen {
         graphics.pose().popPose();
 
         if (hoveredMark != null) {
-            renderMarkTooltip(graphics, mouseX, mouseY, partialTicks, hoveredMark);
+            renderMarkTooltip(graphics, mouseX, mouseY + SYMBOL_SIZE, partialTicks, hoveredMark);
         }
     }
 

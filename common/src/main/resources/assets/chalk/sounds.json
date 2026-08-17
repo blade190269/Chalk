@@ -19,34 +19,34 @@
   "item.chalk_box_change": {
     "subtitle": "chalk.subtitles.chalk_box_changed",
     "sounds": [
-      { "name": "item/bundle/remove_one1", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/remove_one1", "volume": 0.8, "pitch": 1.5 },
-      { "name": "item/bundle/remove_one2", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/remove_one2", "volume": 0.8, "pitch": 1.5 },
-      { "name": "item/bundle/remove_one3", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/remove_one3", "volume": 0.8, "pitch": 1.5 }
+      { "name": "item/bundle/remove_one1", "pitch": 1.25 },
+      { "name": "item/bundle/remove_one1", "pitch": 1.5 },
+      { "name": "item/bundle/remove_one2", "pitch": 1.25 },
+      { "name": "item/bundle/remove_one2", "pitch": 1.5 },
+      { "name": "item/bundle/remove_one3", "pitch": 1.25 },
+      { "name": "item/bundle/remove_one3", "pitch": 1.5 }
     ]
   },
   "item.chalk_box_open": {
     "subtitle": "chalk.subtitles.chalk_box_opens",
     "sounds": [
-      { "name": "item/bundle/insert1", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/insert1", "volume": 0.8, "pitch": 1.5 },
-      { "name": "item/bundle/insert2", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/insert2", "volume": 0.8, "pitch": 1.5 },
-      { "name": "item/bundle/insert3", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/insert3", "volume": 0.8, "pitch": 1.5 }
+      { "name": "item/bundle/insert1", "pitch": 1.25 },
+      { "name": "item/bundle/insert1", "pitch": 1.5 },
+      { "name": "item/bundle/insert2", "pitch": 1.25 },
+      { "name": "item/bundle/insert2", "pitch": 1.5 },
+      { "name": "item/bundle/insert3", "pitch": 1.25 },
+      { "name": "item/bundle/insert3", "pitch": 1.5 }
     ]
   },
   "item.chalk_box_close": {
     "subtitle": "chalk.subtitles.chalk_box_closes",
     "sounds": [
-      { "name": "item/bundle/drop_contents1", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/drop_contents1", "volume": 0.8, "pitch": 1.5 },
-      { "name": "item/bundle/drop_contents2", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/drop_contents2", "volume": 0.8, "pitch": 1.5 },
-      { "name": "item/bundle/drop_contents3", "volume": 0.8, "pitch": 1.25 },
-      { "name": "item/bundle/drop_contents3", "volume": 0.8, "pitch": 1.5 }
+      { "name": "item/bundle/drop_contents1", "pitch": 1.25 },
+      { "name": "item/bundle/drop_contents1", "pitch": 1.5 },
+      { "name": "item/bundle/drop_contents2", "pitch": 1.25 },
+      { "name": "item/bundle/drop_contents2", "pitch": 1.5 },
+      { "name": "item/bundle/drop_contents3", "pitch": 1.25 },
+      { "name": "item/bundle/drop_contents3", "pitch": 1.5 }
     ]
   },
   "item.glow_applied": {

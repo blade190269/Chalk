@@ -42,7 +42,8 @@
                       "count": 1,
                       "id": "chalk:chalk"
                     }
-                  ]
+                  ],
+                  "selected": 0
                 }
               },
               "function": "minecraft:set_components"
@@ -57,7 +58,7 @@
             {
               "components": {
                 "chalk:chalk_box_contents": {
-                  "glowing_uses": 2,
+                  "glow": 2,
                   "items": [
                     {},
                     {
@@ -94,7 +95,8 @@
                       "count": 7,
                       "id": "minecraft:glowstone_dust"
                     }
-                  ]
+                  ],
+                  "selected": 1
                 }
               },
               "function": "minecraft:set_components"
@@ -109,7 +111,7 @@
             {
               "components": {
                 "chalk:chalk_box_contents": {
-                  "glowing_uses": 5,
+                  "glow": 5,
                   "items": [
                     {
                       "components": {
@@ -149,7 +151,8 @@
                       "count": 1,
                       "id": "minecraft:glow_ink_sac"
                     }
-                  ]
+                  ],
+                  "selected": 0
                 }
               },
               "function": "minecraft:set_components"
@@ -198,7 +201,8 @@
                       "count": 1,
                       "id": "chalk:chalk"
                     }
-                  ]
+                  ],
+                  "selected": 1
                 }
               },
               "function": "minecraft:set_components"

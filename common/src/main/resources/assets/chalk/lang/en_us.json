@@ -43,9 +43,10 @@
   "gui.chalk.tooltip.hold_for_details": "§8Hold [§7Shift§8] for Details",
 
   "item.chalk.chalk_box": "Chalk Box",
-  "item.chalk.chalk_box.tooltip.open": "§8[§7Right Click§8] or §8[§7Use§8] in air to open",
+  "item.chalk.chalk_box.tooltip.open": "§8[§7Use§8] in air to open",
   "item.chalk.chalk_box.tooltip.insert": "§8[§7Right Click§8] with item to insert",
-  "item.chalk.chalk_box.tooltip.change_selected": "§8[§7Sneak + Use§8] in air to change selected §7Chalk",
+  "item.chalk.chalk_box.tooltip.remove": "§8[§7Right Click§8] without item to remove selected",
+  "item.chalk.chalk_box.tooltip.change_selected": "§8[§7Sneak + Use§8] in air to cycle selected",
 
   "container.chalk.chalk_box": "Chalk Box",
 
@@ -84,8 +85,9 @@
   "tooltip.chalk.deprecated": "This item is deprecated and will be removed in the future.",
   "tooltip.chalk.deprecated_use_to_convert": "[Use] to convert to the proper item.",
 
+  "gui.chalk.chalk_box.glow": "Glow: %s",
+  "gui.chalk.chalk_box.alt_select": "§8[§7Alt + Click§8] to select",
   "gui.chalk.mark_symbol.unlocked_by": "Unlocked by: %s",
-
   "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
 
   "chat.chalk.symbol_unlocked": "You learned how to draw %s symbol with chalk",

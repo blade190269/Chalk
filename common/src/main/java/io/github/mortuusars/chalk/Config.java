@@ -19,6 +19,7 @@ public class Config {
         public static final ModConfigSpec.BooleanValue DYED_CHALK_NAMES;
 
         // Chalk Box
+        public static final ModConfigSpec.BooleanValue CHALK_BOX_SHOW_DURABILITY_BAR;
         public static final ModConfigSpec.BooleanValue CHALK_BOX_GLOWING_ENABLED;
         public static final ModConfigSpec.IntValue CHALK_BOX_GLOWING_AMOUNT_PER_ITEM;
 
@@ -66,11 +67,17 @@ public class Config {
 
             {
                 builder.push("chalk_box");
-                CHALK_BOX_GLOWING_ENABLED = builder.comment("Controls whether glowing should be enabled in Chalk Box.\nIf disabled - you will not be able to draw glowing marks with chalk box.\nDefault: true")
-                      .define("chalk_box_glowing_enabled", true);
+                CHALK_BOX_SHOW_DURABILITY_BAR = builder
+                      .comment("Durability bar of selected chalk will be shown on a chalk box.", "Default: true")
+                      .define("show_durability_bar", true);
 
-                CHALK_BOX_GLOWING_AMOUNT_PER_ITEM = builder.comment("How many glowing uses one glowing item will give.\nDefault: 8")
-                      .defineInRange("chalk_box_amount_per_glowing_item", 8, 1, 9999);
+                CHALK_BOX_GLOWING_ENABLED = builder
+                      .comment("Controls whether glowing should be enabled in Chalk Box.\nIf disabled - you will not be able to draw glowing marks with chalk box.\nDefault: true")
+                      .define("glowing_enabled", true);
+
+                CHALK_BOX_GLOWING_AMOUNT_PER_ITEM = builder
+                      .comment("How many glowing uses one glowing item will give.\nDefault: 8")
+                      .defineInRange("amount_per_glowing_item", 8, 1, 9999);
                 builder.pop();
             }
 

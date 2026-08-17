@@ -1,10 +1,15 @@
 # Changelog
 
 ## UNRELEASED
-- Sorted chalk item colors same way as in vanilla
 - Glowing marks no longer emit light
-- Improved player's view when choosing a symbol (fixed couple of jittering issues)
-- Improved orientation of the marks drawn on the ceiling (bottom side of a block)
+- Improved player's view when choosing a symbol (fixed a couple of jittering issues)
+- Improved orientation of the marks drawn on the bottom side of a block
+
+Chalk
+- 16 chalks of specific colors are replaced with a single, dyeable **Chalk** item
+  - Chalks are dyed similarly to a **Leather Armor**, allowing many combinations of colors
+- Chalk colors in creative inventory and in JEI are now sorted the same way as in vanilla
+- _Old items are still in the mod and will be converted to the new system on use_ 
 
 Symbols
 - Added new symbols:
@@ -15,7 +20,7 @@ Symbols
   - **Star** - unlocked by the new `Guiding Star` advancement
   - **Note** - unlocked by `Sound of Music` advancement
 - Symbols are now data-driven
-- Overhauled the symbol selection overlay:
+- Overhauled the symbol selection interface:
   - Added proper layout and scrolling to support any number of symbols 
   - Added symbol groups
   - Added smooth animations
@@ -24,6 +29,19 @@ Symbols
 - **Skull** symbol unlocking is changed from `Bound by Bone` to `Sniper Duel` advancement
 - **Heart** symbol unlocking is changed from `Best Friends Forever` to `The Parrots and the Bats` advancement
 - Changed sprite of the **House** symbol
+
+Chalk Box
+- Interface:
+  - Changed amount of slots from **8** to **9**, arranged in a **3x3** grid
+  - Changed glowings slot to be on the right side and updated glow-related visuals
+  - Added tooltip to the glow bar to show how much glow is left 
+- Reworked chalk selection mechanic:
+  - Any slot with chalk can now be selected to draw with, instead of always the first one in order
+  - Chalks are selected by clicking on the slot while holding [Alt]
+- Item now shows durability bar of the selected chalk 
+- Item texture has been changed slightly
+- Item texture now has a small sheen animation when the box has glow
+- [Right-Clicking] the box in inventory without item now removes selected chalk, instead of opening the interface
 
 Advancements
 - Added `Consumed By The Light` and `Guiding Star` advancements
@@ -34,13 +52,15 @@ Advancements
 
 Config
 - Added `symbol_unlocking` server config option
+- Added `chalk_box.show_durability_bar` server config option
 - Added `symbol_selection_groups_sorting` client config option
+- Added server config options related to new chalk behavior
 - Moved `ChalkBoxGlowingEnabled` and `ChalkBoxAmountPerGlowingItem` options from common to server config
 - Changed casing of all config options from 'PascalCase' to 'snake_case'
-- Removed whole Symbols category in common config. All symbol properties are now data-driven
+- Removed whole `Symbols` category in common config; All symbol properties are now data-driven
 - Removed `GlowingMarkLightLevel` common config option
-- Removed `ChalkDurability` common config option. Chalk durability can be configured with `minecraft:max_damage` component on the item
-- Removed `ChalkSymbolOffsets` client config option. Offset is part of the symbol definition.
+- Removed `ChalkDurability` common config option; Chalk durability can be configured with `minecraft:max_damage` component on the item
+- Removed `ChalkSymbolOffsets` client config option; Offset is part of the symbol definition.
 
 ## 1.6.12 - 2026-06-03
 - Fixed equality checking of `chalk:chalk_box_contents` component.
