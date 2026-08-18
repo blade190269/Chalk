@@ -185,7 +185,7 @@ public interface MarkDrawable {
 
             serverPlayer.serverLevel().sendParticles(new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
                   pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
-            serverPlayer.serverLevel().playSound(null, pos.x(), pos.y(), pos.z(), Chalk.SoundEvents.MARK_DRAW.get(),
+            serverPlayer.serverLevel().playSound(null, pos.x(), pos.y(), pos.z(), Chalk.SoundEvents.MARK_DRAWN.get(),
                   SoundSource.BLOCKS, 0.7f, serverPlayer.getRandom().nextFloat() * 0.2f + 0.8f);
 
             if (mark.glowing()) {

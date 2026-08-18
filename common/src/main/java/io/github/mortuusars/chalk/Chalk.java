@@ -148,20 +148,20 @@ public class Chalk {
     }
 
     public static class SoundEvents {
-        public static final Supplier<SoundEvent> CHALK_BOX_CHANGE = Register.soundEvent("item.chalk_box_change",
-              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box_change")));
-        public static final Supplier<SoundEvent> CHALK_BOX_OPEN = Register.soundEvent("item.chalk_box_open",
-              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box_open")));
-        public static final Supplier<SoundEvent> CHALK_BOX_CLOSE = Register.soundEvent("item.chalk_box_close",
-              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box_close")));
-        public static final Supplier<SoundEvent> MARK_DRAW = Register.soundEvent("item.chalk_draw",
-              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_draw")));
+        public static final Supplier<SoundEvent> MARK_DRAWN = Register.soundEvent("item.chalk.draw",
+              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk.draw")));
+        public static final Supplier<SoundEvent> MARK_REMOVED = Register.soundEvent("block.mark.removed",
+              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("block.mark.removed")));
+        public static final Supplier<SoundEvent> CHALK_BOX_OPEN = Register.soundEvent("item.chalk_box.open",
+              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box.open")));
+        public static final Supplier<SoundEvent> CHALK_BOX_CLOSE = Register.soundEvent("item.chalk_box.close",
+              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box.close")));
+        public static final Supplier<SoundEvent> CHALK_BOX_CHANGE = Register.soundEvent("item.chalk_box.change",
+              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box.change")));
         public static final Supplier<SoundEvent> GLOW_APPLIED = Register.soundEvent("item.glow_applied",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.glow_applied")));
         public static final Supplier<SoundEvent> GLOWING = Register.soundEvent("ambient.glowing",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("ambient.glowing")));
-        public static final Supplier<SoundEvent> MARK_REMOVED = Register.soundEvent("block.mark_removed",
-              () -> SoundEvent.createVariableRangeEvent(Chalk.resource("block.mark_removed")));
 
         static void init() {
         }

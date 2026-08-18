@@ -87,7 +87,7 @@ public class Config {
             GLOW_ENABLED = builder
                   .comment("Global toggle for the 'glowing' feature. Disabling this setting will prevent creation of new glowing marks. Existing marks will remain.",
                         "Default: true")
-                  .define("glow_enabled", true);
+                  .define("glowing_enabled", true);
 
             SYMBOL_UNLOCKING = builder
                   .comment("Some mark symbols need to be unlocked by completing specific advancements.",

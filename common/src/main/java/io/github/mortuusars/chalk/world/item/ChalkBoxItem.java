@@ -71,7 +71,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         }
 
         if (!Screen.hasShiftDown()) {
-            tooltipComponents.add(Component.translatable("gui.chalk.tooltip.hold_for_details"));
+            tooltipComponents.add(Component.translatable("item.chalk.tooltip.hold_for_details"));
         } else {
             tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.open"));
             tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.insert"));

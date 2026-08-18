@@ -51,7 +51,7 @@ public class CommonEvents {
                 player.displayClientMessage(Component.translatable("chat.chalk.symbols_unlocked", symbolsListComponent), false);
             }
 
-            player.playNotifySound(Chalk.SoundEvents.MARK_DRAW.get(), SoundSource.PLAYERS, 1f, 1f);
+            player.playNotifySound(Chalk.SoundEvents.MARK_DRAWN.get(), SoundSource.PLAYERS, 1f, 1f);
         }
     }
 

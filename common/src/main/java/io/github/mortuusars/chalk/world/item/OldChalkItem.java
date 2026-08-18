@@ -32,8 +32,8 @@ public class OldChalkItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag tooltipFlag) {
-        lines.add(Component.translatable("tooltip.chalk.deprecated").withStyle(ChatFormatting.DARK_RED));
-        lines.add(Component.translatable("tooltip.chalk.deprecated_use_to_convert").withStyle(ChatFormatting.DARK_RED));
+        lines.add(Component.translatable("item.chalk.chalk.tooltip.deprecated").withStyle(ChatFormatting.DARK_RED));
+        lines.add(Component.translatable("item.chalk.chalk.tooltip.deprecated_use_to_convert").withStyle(ChatFormatting.DARK_RED));
     }
 
     // --

@@ -1,74 +1,14 @@
 {
-  "item.chalk_broken": {
-    "subtitle": "chalk.subtitles.chalk_broken",
-    "sounds": [
-      "dig/gravel1",
-      "dig/gravel2",
-      "dig/gravel3",
-      "dig/gravel4"
-    ]
-  },
-  "item.chalk_draw": {
-    "subtitle": "chalk.subtitles.mark_drawn",
+  "item.chalk.draw": {
+    "subtitle": "subtitles.chalk.mark_drawn",
     "sounds": [
       "ui/cartography_table/drawmap1",
       "ui/cartography_table/drawmap2",
       "ui/cartography_table/drawmap3"
     ]
   },
-  "item.chalk_box_change": {
-    "subtitle": "chalk.subtitles.chalk_box_changed",
-    "sounds": [
-      { "name": "item/bundle/remove_one1", "pitch": 1.25 },
-      { "name": "item/bundle/remove_one1", "pitch": 1.5 },
-      { "name": "item/bundle/remove_one2", "pitch": 1.25 },
-      { "name": "item/bundle/remove_one2", "pitch": 1.5 },
-      { "name": "item/bundle/remove_one3", "pitch": 1.25 },
-      { "name": "item/bundle/remove_one3", "pitch": 1.5 }
-    ]
-  },
-  "item.chalk_box_open": {
-    "subtitle": "chalk.subtitles.chalk_box_opens",
-    "sounds": [
-      { "name": "item/bundle/insert1", "pitch": 1.25 },
-      { "name": "item/bundle/insert1", "pitch": 1.5 },
-      { "name": "item/bundle/insert2", "pitch": 1.25 },
-      { "name": "item/bundle/insert2", "pitch": 1.5 },
-      { "name": "item/bundle/insert3", "pitch": 1.25 },
-      { "name": "item/bundle/insert3", "pitch": 1.5 }
-    ]
-  },
-  "item.chalk_box_close": {
-    "subtitle": "chalk.subtitles.chalk_box_closes",
-    "sounds": [
-      { "name": "item/bundle/drop_contents1", "pitch": 1.25 },
-      { "name": "item/bundle/drop_contents1", "pitch": 1.5 },
-      { "name": "item/bundle/drop_contents2", "pitch": 1.25 },
-      { "name": "item/bundle/drop_contents2", "pitch": 1.5 },
-      { "name": "item/bundle/drop_contents3", "pitch": 1.25 },
-      { "name": "item/bundle/drop_contents3", "pitch": 1.5 }
-    ]
-  },
-  "item.glow_applied": {
-    "subtitle": "chalk.subtitles.glow_applied",
-    "sounds": [
-      "mob/turtle/walk1",
-      "mob/turtle/walk2",
-      "mob/turtle/walk3",
-      "mob/turtle/walk4",
-      "mob/turtle/walk5"
-    ]
-  },
-  "ambient.glowing": {
-    "sounds": [
-      "chalk:glowing1",
-      "chalk:glowing2",
-      "chalk:glowing3",
-      "chalk:glowing4"
-    ]
-  },
-  "block.mark_removed": {
-    "subtitle": "chalk.subtitles.mark_removed",
+  "block.mark.removed": {
+    "subtitle": "subtitles.chalk.mark_removed",
     "sounds": [
       {
         "name": "block/netherwart/step1",
@@ -90,6 +30,57 @@
         "name": "block/netherwart/step5",
         "volume": 0.7
       }
+    ]
+  },
+  "item.chalk_box.open": {
+    "subtitle": "subtitles.chalk.chalk_box_opens",
+    "sounds": [
+      { "name": "item/bundle/insert1", "pitch": 1.25 },
+      { "name": "item/bundle/insert1", "pitch": 1.5 },
+      { "name": "item/bundle/insert2", "pitch": 1.25 },
+      { "name": "item/bundle/insert2", "pitch": 1.5 },
+      { "name": "item/bundle/insert3", "pitch": 1.25 },
+      { "name": "item/bundle/insert3", "pitch": 1.5 }
+    ]
+  },
+  "item.chalk_box.close": {
+    "subtitle": "subtitles.chalk.chalk_box_closes",
+    "sounds": [
+      { "name": "item/bundle/drop_contents1", "pitch": 1.25 },
+      { "name": "item/bundle/drop_contents1", "pitch": 1.5 },
+      { "name": "item/bundle/drop_contents2", "pitch": 1.25 },
+      { "name": "item/bundle/drop_contents2", "pitch": 1.5 },
+      { "name": "item/bundle/drop_contents3", "pitch": 1.25 },
+      { "name": "item/bundle/drop_contents3", "pitch": 1.5 }
+    ]
+  },
+  "item.chalk_box.change": {
+    "subtitle": "subtitles.chalk.chalk_box_changes",
+    "sounds": [
+      { "name": "item/bundle/remove_one1", "pitch": 1.25 },
+      { "name": "item/bundle/remove_one1", "pitch": 1.5 },
+      { "name": "item/bundle/remove_one2", "pitch": 1.25 },
+      { "name": "item/bundle/remove_one2", "pitch": 1.5 },
+      { "name": "item/bundle/remove_one3", "pitch": 1.25 },
+      { "name": "item/bundle/remove_one3", "pitch": 1.5 }
+    ]
+  },
+  "item.glow_applied": {
+    "subtitle": "subtitles.chalk.glow_applied",
+    "sounds": [
+      "mob/turtle/walk1",
+      "mob/turtle/walk2",
+      "mob/turtle/walk3",
+      "mob/turtle/walk4",
+      "mob/turtle/walk5"
+    ]
+  },
+  "ambient.glowing": {
+    "sounds": [
+      "chalk:glowing1",
+      "chalk:glowing2",
+      "chalk:glowing3",
+      "chalk:glowing4"
     ]
   }
 }

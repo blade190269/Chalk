@@ -62,7 +62,7 @@ public class ChalkBoxScreen extends AbstractInHandContainerScreen<ChalkBoxMenu> 
             ChatFormatting glowAmountColor = glow > 0
                   ? ChatFormatting.GOLD
                   : ChatFormatting.GRAY;
-            guiGraphics.renderTooltip(font, Component.translatable("gui.chalk.chalk_box.glow",
+            guiGraphics.renderTooltip(font, Component.translatable("item.chalk.chalk_box.tooltip.glow",
                   Component.literal(Integer.toString(glow)).withStyle(glowAmountColor)), x, y);
             return;
         }
@@ -75,7 +75,7 @@ public class ChalkBoxScreen extends AbstractInHandContainerScreen<ChalkBoxMenu> 
         List<Component> lines = super.getTooltipFromContainerItem(stack);
         if (hoveredSlot != null && hoveredSlot.index < ChalkBoxContents.CHALK_SLOTS && hoveredSlot.getItem().equals(stack)) {
             lines = new ArrayList<>(lines);
-            lines.add(Component.translatable("gui.chalk.chalk_box.alt_select"));
+            lines.add(Component.translatable("item.chalk.chalk_box.tooltip.alt_select"));
         }
 
         return lines;
