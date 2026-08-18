@@ -78,6 +78,7 @@ public class Chalk {
                                 .instabreak()
                                 .noOcclusion()
                                 .noCollission()
+                                .randomTicks()
                                 .sound(SoundType.NETHER_WART))));
             }
         });

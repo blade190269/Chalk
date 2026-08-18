@@ -9,6 +9,10 @@ import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -22,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,9 +81,31 @@ public class OldChalkMarkBlock extends BaseEntityBlock {
               : null;
     }
 
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+        convertMark(level, pos, state);
+    }
+
+    @Override
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level instanceof ServerLevel serverLevel) {
+            convertMark(serverLevel, pos, state);
+        }
+        return InteractionResult.SUCCESS_NO_ITEM_USED;
+    }
+
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        convertMark(level, pos, state);
+    }
+
     public static void convertMark(Level level, BlockPos pos, BlockState state, OldMarkBlockEntity ignored) {
+        convertMark(level, pos, state);
+    }
+
+    public static void convertMark(Level level, BlockPos pos, BlockState state) {
         try {
-            if (MarkBlock.getExistingOrPlaceNew(level, pos) instanceof MarkBlockEntity blockEntity) {
+            if (!level.isClientSide() && MarkBlock.getExistingOrPlaceNew(level, pos) instanceof MarkBlockEntity blockEntity) {
                 Mark mark = new Mark(
                       state.getValue(SYMBOL).convert(level.registryAccess()),
                       ChalkItem.getColorFromDye(((OldChalkMarkBlock) state.getBlock()).getColor()),
