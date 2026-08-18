@@ -24,6 +24,7 @@ public class Config {
         public static final ModConfigSpec.IntValue CHALK_BOX_GLOWING_AMOUNT_PER_ITEM;
 
         public static final ModConfigSpec.BooleanValue SYMBOL_UNLOCKING;
+        public static final ModConfigSpec.BooleanValue GLOW_ENABLED;
 
         public static BiMap<DyeColor, Integer> CHALK_COLORS = ImmutableBiMap.of();
 
@@ -72,7 +73,9 @@ public class Config {
                       .define("show_durability_bar", true);
 
                 CHALK_BOX_GLOWING_ENABLED = builder
-                      .comment("Controls whether glowing should be enabled in Chalk Box.\nIf disabled - you will not be able to draw glowing marks with chalk box.\nDefault: true")
+                      .comment("Controls whether glowing should be enabled in Chalk Box.",
+                            "If disabled - you will not be able to draw glowing marks with chalk box.",
+                            "Default: true")
                       .define("glowing_enabled", true);
 
                 CHALK_BOX_GLOWING_AMOUNT_PER_ITEM = builder
@@ -81,6 +84,10 @@ public class Config {
                 builder.pop();
             }
 
+            GLOW_ENABLED = builder
+                  .comment("Global toggle for the 'glowing' feature. Disabling this setting will prevent creation of new glowing marks. Existing marks will remain.",
+                        "Default: true")
+                  .define("glow_enabled", true);
 
             SYMBOL_UNLOCKING = builder
                   .comment("Some mark symbols need to be unlocked by completing specific advancements.",

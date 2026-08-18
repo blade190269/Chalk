@@ -2,11 +2,14 @@ package io.github.mortuusars.chalk.world.block;
 
 import com.mojang.serialization.MapCodec;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.client.ClientHelper;
 import io.github.mortuusars.chalk.mixin.creative_mark_breaking.MultiPlayerGameModeMixin;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import io.github.mortuusars.chalk.world.chalk.Mark;
+import io.github.mortuusars.chalk.world.item.ChalkItem;
+import io.github.mortuusars.chalk.world.item.MarkDrawable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -31,6 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -133,7 +137,8 @@ public class MarkBlock extends BaseEntityBlock {
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         ItemStack usedStack = player.getItemInHand(hand);
 
-        if (usedStack.is(Chalk.Tags.Items.GLOWINGS)
+        if (Config.Server.GLOW_ENABLED.get()
+              && usedStack.is(Chalk.Tags.Items.GLOWINGS)
               && level.getBlockEntity(pos) instanceof MarkBlockEntity blockEntity
               && getClickedMark(level, hitResult.getLocation()) instanceof DrawnMark(Direction facing, Mark existingMark)
               && !existingMark.glowing()) {
@@ -194,6 +199,14 @@ public class MarkBlock extends BaseEntityBlock {
         return closestDirection != null
               ? new DrawnMark(closestDirection, blockEntity.getMarks().get(closestDirection.get3DDataValue()))
               : null;
+    }
+
+    public ItemStack pick(Player player, LevelReader level, BlockPos pos, BlockState state, HitResult hitResult) {
+        return getClickedMark(level, hitResult.getLocation()) instanceof DrawnMark mark
+              ? MarkDrawable.findMatching(player.getInventory(), mark.mark().color(), player.isCreative() ?
+                  () -> ChalkItem.create(mark.mark().color(), 0)
+                  : null)
+              : MarkDrawable.findMatching(player.getInventory(), 0x000000);
     }
 
     @Override

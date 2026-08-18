@@ -146,7 +146,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         }
 
         // Insert glowing
-        if (Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && other.is(Chalk.Tags.Items.GLOWINGS)) {
+        if (Config.Server.GLOW_ENABLED.get() && Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && other.is(Chalk.Tags.Items.GLOWINGS)) {
             ItemStack existing = contents.getItem(ChalkBoxContents.GLOWINGS_SLOT);
             int glowBeforeInsertion = contents.glow();
 
