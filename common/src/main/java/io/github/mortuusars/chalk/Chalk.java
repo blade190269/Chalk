@@ -64,6 +64,7 @@ public class Chalk {
                     .noOcclusion()
                     .noCollission()
                     .noTerrainParticles()
+                    .lightLevel(state -> state.getValue(MarkBlock.GLOWING) ? 5 : 0)
                     .sound(SoundType.NETHER_WART)));
 
         @SuppressWarnings("removal")

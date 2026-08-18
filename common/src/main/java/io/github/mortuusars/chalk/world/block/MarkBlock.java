@@ -28,6 +28,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -49,6 +51,8 @@ public class MarkBlock extends BaseEntityBlock {
     public static final VoxelShape SHAPE_WEST = Block.box(15.5D, 1.5D, 1.5D, 16D, 14.5D, 14.5D);
     public static final VoxelShape SHAPE_EAST = Block.box(0D, 1.5D, 1.5D, 0.5D, 14.5D, 14.5D);
 
+    public static final BooleanProperty GLOWING = BooleanProperty.create("glowing");
+
     public static final VoxelShape[] SHAPES = new VoxelShape[]{
           SHAPE_DOWN,
           SHAPE_UP,
@@ -60,6 +64,13 @@ public class MarkBlock extends BaseEntityBlock {
 
     public MarkBlock(Properties properties) {
         super(properties);
+        registerDefaultState(getStateDefinition().any()
+              .setValue(GLOWING, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(GLOWING);
     }
 
     public static @Nullable MarkBlockEntity getExistingOrPlaceNew(Level level, BlockPos pos) {
@@ -110,17 +121,6 @@ public class MarkBlock extends BaseEntityBlock {
         }
         return Shapes.empty();
     }
-
-    @Override
-    public @NotNull ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        return super.getCloneItemStack(level, pos, state);
-    }
-
-    //    @Override
-//    public @NotNull ItemStack getCloneItemStack(LevelReader pLevel, BlockPos pPos, BlockState pState) {
-//        //TODO: Check in survival. Maybe client specific code (to check Minecraft#player)?
-//        return new ItemStack(Chalk.Items.getChalk(this.color));
-//    }
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
@@ -199,18 +199,15 @@ public class MarkBlock extends BaseEntityBlock {
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
-        recheckMarks(level, pos);
+        recheckAndUpdate(level, pos);
     }
 
-    public void recheckMarks(Level level, BlockPos pos) {
+    public void recheckAndUpdate(Level level, BlockPos pos) {
         if (!(level.getBlockEntity(pos) instanceof MarkBlockEntity blockEntity)) {
             return;
         }
 
-        if (blockEntity.getMarks().isEmpty()) {
-            level.removeBlock(pos, false);
-            return;
-        }
+        boolean glowing = false;
 
         for (int i = 0; i < 6; i++) {
             @Nullable Mark mark = blockEntity.getMarks().get(i);
@@ -218,7 +215,18 @@ public class MarkBlock extends BaseEntityBlock {
                 Direction facing = Direction.from3DDataValue(i);
                 if (!canMarkSurvive(level, pos, facing)) {
                     removeMarkWithEffects(level, pos, facing);
+                } else if (mark.glowing()) {
+                    glowing = true;
                 }
+            }
+        }
+
+        if (blockEntity.getMarks().isEmpty()) {
+            level.removeBlock(pos, false);
+        } else {
+            BlockState state = level.getBlockState(pos);
+            if (state.getBlock() instanceof MarkBlock && state.getValue(GLOWING) != glowing) {
+                level.setBlock(pos, state.setValue(GLOWING, glowing), UPDATE_ALL_IMMEDIATE);
             }
         }
     }

@@ -1,15 +1,17 @@
 # Changelog
 
 ## UNRELEASED
-- Glowing marks no longer emit light
-- Improved player's view when choosing a symbol (fixed a couple of jittering issues)
-- Improved orientation of the marks drawn on the bottom side of a block
-
 Chalk
 - 16 chalks of specific colors are replaced with a single, dyeable **Chalk** item
   - Chalks are dyed similarly to a **Leather Armor**, allowing many combinations of colors
 - Chalk colors in creative inventory and in JEI are now sorted the same way as in vanilla
 - _Old items are still in the mod and will be converted to the new system on use_ 
+
+Mark
+- Mark block now supports up to 6 marks in a single block space, one for each face
+  - This allows drawing on both sides of a corner, for example
+- Drawing the same mark, but with a different color on top of already existing mark will blend their colors together
+- Improved orientation of marks drawn on the bottom side of a block
 
 Symbols
 - Added new symbols:
@@ -29,6 +31,7 @@ Symbols
 - **Skull** symbol unlocking is changed from `Bound by Bone` to `Sniper Duel` advancement
 - **Heart** symbol unlocking is changed from `Best Friends Forever` to `The Parrots and the Bats` advancement
 - Changed sprite of the **House** symbol
+- Improved player's view when choosing a symbol (fixed a couple of jittering issues)
 
 Chalk Box
 - Interface:

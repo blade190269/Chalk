@@ -36,6 +36,10 @@ public class MarkBlockEntity extends BlockEntity {
     }
 
     public void marksChanged() {
+        if (getBlockState().getBlock() instanceof MarkBlock markBlock) {
+            assert getLevel() != null;
+            markBlock.recheckAndUpdate(getLevel(), getBlockPos());
+        }
         setChanged();
         if (level != null) {
             // Forces client to update
