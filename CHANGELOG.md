@@ -1,6 +1,6 @@
 # Changelog
 
-## UNRELEASED
+## 2.0.0 - Snapshot1
 Chalk
 - 16 chalks of specific colors are replaced with a single, dyeable **Chalk** item
   - Chalks are dyed similarly to a **Leather Armor**, allowing many combinations of colors
