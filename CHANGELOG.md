@@ -45,6 +45,7 @@ Chalk Box
 - Item texture has been changed slightly
 - Item texture now has a small sheen animation when the box has glow
 - [Right-Clicking] the box in inventory without item now removes selected chalk, instead of opening the interface
+- Added Chalk Box crafting recipe from Cardboard, if Create is installed
 
 Advancements
 - Added `Consumed By The Light` and `Guiding Star` advancements
