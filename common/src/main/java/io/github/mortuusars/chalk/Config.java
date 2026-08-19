@@ -24,6 +24,7 @@ public class Config {
         public static final ModConfigSpec.IntValue CHALK_BOX_GLOWING_AMOUNT_PER_ITEM;
 
         public static final ModConfigSpec.BooleanValue SYMBOL_UNLOCKING;
+        public static final ModConfigSpec.BooleanValue SYMBOL_UNLOCKING_CHAT_MESSAGE;
         public static final ModConfigSpec.BooleanValue GLOW_ENABLED;
 
         public static BiMap<DyeColor, Integer> CHALK_COLORS = ImmutableBiMap.of();
@@ -33,7 +34,6 @@ public class Config {
 
             {
                 builder.push("chalk");
-
                 CHALK_DYE_COLORS_DEFINITION = builder
                       .comment("Defines which color a specific dye would have when applied to a chalk item.")
                       .define("chalk_dye_colors", List.of(
@@ -84,16 +84,24 @@ public class Config {
                 builder.pop();
             }
 
+            {
+                builder.push("symbols");
+                SYMBOL_UNLOCKING = builder
+                      .comment("Some mark symbols need to be unlocked by completing specific advancements.",
+                            "Setting this to 'false' will bypass the unlocking feature, making all symbols always available.",
+                            "Default: true")
+                      .define("unlocking", true);
+
+                SYMBOL_UNLOCKING_CHAT_MESSAGE = builder
+                      .comment("When a symbol is unlocked, message will be shown in the chat.", "Default: true")
+                      .define("unlocking_chat_message", true);
+                builder.pop();
+            }
+
             GLOW_ENABLED = builder
                   .comment("Global toggle for the 'glowing' feature. Disabling this setting will prevent creation of new glowing marks. Existing marks will remain.",
                         "Default: true")
                   .define("glowing_enabled", true);
-
-            SYMBOL_UNLOCKING = builder
-                  .comment("Some mark symbols need to be unlocked by completing specific advancements.",
-                        "Setting this to 'false' will bypass the unlocking feature, making all symbols always available.",
-                        "Default: true")
-                  .define("symbol_unlocking", true);
 
             SPEC = builder.build();
         }

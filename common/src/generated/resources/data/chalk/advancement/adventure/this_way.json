@@ -47,6 +47,11 @@
       "translate": "advancement.chalk.this_way.description"
     },
     "icon": {
+      "components": {
+        "minecraft:dyed_color": {
+          "rgb": 16767818
+        }
+      },
       "count": 1,
       "id": "chalk:chalk"
     },

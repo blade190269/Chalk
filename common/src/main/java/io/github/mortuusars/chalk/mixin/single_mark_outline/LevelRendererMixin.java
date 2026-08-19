@@ -2,8 +2,8 @@ package io.github.mortuusars.chalk.mixin.single_mark_outline;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.mortuusars.chalk.world.block.DrawnMark;
 import io.github.mortuusars.chalk.world.block.MarkBlock;
+import io.github.mortuusars.chalk.world.chalk.DrawnMark;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
@@ -28,7 +28,7 @@ public abstract class LevelRendererMixin {
                                           CollisionContext collisionContext, Operation<VoxelShape> original) {
         if (instance.getBlock() instanceof MarkBlock
               && minecraft.hitResult instanceof BlockHitResult hitResult
-              && MarkBlock.getClickedMark(blockGetter, hitResult.getLocation()) instanceof DrawnMark mark) {
+              && MarkBlock.getMarkAt(blockGetter, hitResult.getLocation()) instanceof DrawnMark mark) {
             return MarkBlock.SHAPES[mark.facing().get3DDataValue()];
         }
 

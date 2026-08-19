@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASED - Snapshot2
+- Implemented proper mark color advancement predicate
+- Fixed chalk colors on advancement icons 
+
 ## 2.0.0 - Snapshot1
 Chalk
 - 16 chalks of specific colors are replaced with a single, dyeable **Chalk** item

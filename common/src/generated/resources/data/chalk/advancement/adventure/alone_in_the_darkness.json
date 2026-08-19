@@ -11,9 +11,15 @@
           }
         },
         "mark_color": {
-          "colors": [
-            "black"
-          ]
+          "blue": {
+            "max": 50
+          },
+          "green": {
+            "max": 50
+          },
+          "red": {
+            "max": 50
+          }
         },
         "surface_color": {
           "colors": [
@@ -29,6 +35,11 @@
       "translate": "advancement.chalk.alone_in_the_darkness.description"
     },
     "icon": {
+      "components": {
+        "minecraft:dyed_color": {
+          "rgb": 2895150
+        }
+      },
       "count": 1,
       "id": "chalk:chalk"
     },

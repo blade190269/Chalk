@@ -7,9 +7,9 @@ import io.github.mortuusars.chalk.network.Packets;
 import io.github.mortuusars.chalk.network.packet.clientbound.SelectSymbolAndDrawMarkS2CP;
 import io.github.mortuusars.chalk.utils.GridCell;
 import io.github.mortuusars.chalk.utils.PositionUtils;
-import io.github.mortuusars.chalk.world.block.DrawnMark;
 import io.github.mortuusars.chalk.world.block.MarkBlock;
 import io.github.mortuusars.chalk.world.block.MarkBlockEntity;
+import io.github.mortuusars.chalk.world.chalk.DrawnMark;
 import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
@@ -49,7 +49,7 @@ public interface MarkDrawable {
         Direction markFacing = clickedFace;
 
         if (player.level().getBlockState(clickedPos).getBlock() instanceof MarkBlock
-              && MarkBlock.getClickedMark(player.level(), clickedLocation) instanceof DrawnMark existingMark) {
+              && MarkBlock.getMarkAt(player.level(), clickedLocation) instanceof DrawnMark existingMark) {
             markFacing = existingMark.facing();
         } else {
             markPos = clickedPos.relative(clickedFace);

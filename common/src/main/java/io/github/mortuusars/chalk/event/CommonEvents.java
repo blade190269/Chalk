@@ -1,6 +1,7 @@
 package io.github.mortuusars.chalk.event;
 
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.advancements.PlayerSleepInfo;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import net.minecraft.advancements.AdvancementHolder;
@@ -22,6 +23,10 @@ public class CommonEvents {
     }
 
     public static void onAdvancementAward(ServerPlayer player, AdvancementHolder advancement) {
+        if (!Config.Server.SYMBOL_UNLOCKING_CHAT_MESSAGE.get()) {
+            return;
+        }
+
         List<Holder<MarkSymbol>> unlockedSymbols = MarkSymbol.getAllHolders(player.registryAccess())
               .filter(symbol -> symbol.value().requiredAdvancement()
                     .map(id -> id.equals(advancement.id())).orElse(false))
@@ -48,7 +53,7 @@ public class CommonEvents {
                     symbolsListComponent.append(symbolNames.get(i));
                 }
 
-                player.displayClientMessage(Component.translatable("chat.chalk.symbols_unlocked", symbolsListComponent), false);
+                player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked", symbolsListComponent), false);
             }
 
             player.playNotifySound(Chalk.SoundEvents.MARK_DRAWN.get(), SoundSource.PLAYERS, 1f, 1f);

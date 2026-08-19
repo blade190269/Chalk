@@ -198,8 +198,6 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
             return InteractionResult.FAIL;
         }
 
-        //TODO: verify that offhand check is not needed here
-
         ItemStack selectedChalk = getSelectedChalk(stack);
 
         if (selectedChalk.isEmpty()) {

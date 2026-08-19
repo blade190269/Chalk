@@ -1,9 +1,9 @@
 package io.github.mortuusars.chalk.neoforge.datagen.generation;
 
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.advancements.predicate.ColorPredicate;
 import io.github.mortuusars.chalk.advancements.trigger.MarkDrawnTrigger;
 import io.github.mortuusars.chalk.advancements.trigger.ConsecutiveSleepingTrigger;
-import io.github.mortuusars.chalk.advancements.predicate.DyeColorPredicate;
 import io.github.mortuusars.chalk.advancements.predicate.MapColorPredicate;
 import io.github.mortuusars.chalk.advancements.trigger.MarkGlowingTrigger;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
@@ -14,7 +14,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.StructureTags;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.material.MapColor;
@@ -46,7 +45,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
 
         AdvancementHolder thisWay = Advancement.Builder.advancement()
               .parent(ResourceLocation.parse("minecraft:adventure/root"))
-              .display(ChalkItem.create(List.of(DyeColor.YELLOW), 0),
+              .display(ChalkItem.create(0xFFDB4A, 0),
                     Component.translatable("advancement.chalk.this_way.title"),
                     Component.translatable("advancement.chalk.this_way.description"),
                     null, AdvancementType.TASK, true, true, false)
@@ -60,7 +59,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
 
         AdvancementHolder vandalism = Advancement.Builder.advancement()
               .parent(thisWay)
-              .display(ChalkItem.create(List.of(DyeColor.LIGHT_GRAY), 0),
+              .display(ChalkItem.create(0xBDBFBE, 0),
                     Component.translatable("advancement.chalk.vandalism.title"),
                     Component.translatable("advancement.chalk.vandalism.description"),
                     null, AdvancementType.TASK, true, true, true)
@@ -86,7 +85,7 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
 
         AdvancementHolder consumedByTheLight = Advancement.Builder.advancement()
               .parent(guidingStar)
-              .display(ChalkItem.create(List.of(DyeColor.WHITE), 0),
+              .display(ChalkItem.create(0xFFFFFF, 0),
                     Component.translatable("advancement.chalk.consumed_by_the_light.title"),
                     Component.translatable("advancement.chalk.consumed_by_the_light.description"),
                     null, AdvancementType.TASK, true, true, false)
@@ -97,12 +96,16 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                           .build()),
                     Optional.empty(),
                     Optional.of(new MapColorPredicate(List.of(MapColor.TERRACOTTA_WHITE, MapColor.SNOW, MapColor.QUARTZ))),
-                    Optional.of(new DyeColorPredicate(List.of(DyeColor.WHITE))))))
+                    Optional.of(ColorPredicate.builder()
+                          .red(MinMaxBounds.Ints.atLeast(200))
+                          .green(MinMaxBounds.Ints.atLeast(200))
+                          .blue(MinMaxBounds.Ints.atLeast(200))
+                          .build()))))
               .save(saver, Chalk.resource("adventure/consumed_by_the_light"), existingFileHelper);
 
         AdvancementHolder aloneInTheDarkness = Advancement.Builder.advancement()
               .parent(consumedByTheLight)
-              .display(ChalkItem.create(List.of(DyeColor.BLACK), 0),
+              .display(ChalkItem.create(0x2C2D2E, 0),
                     Component.translatable("advancement.chalk.alone_in_the_darkness.title"),
                     Component.translatable("advancement.chalk.alone_in_the_darkness.description"),
                     null, AdvancementType.TASK, true, true, false)
@@ -113,7 +116,11 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                           .build()),
                     Optional.empty(),
                     Optional.of(new MapColorPredicate(List.of(MapColor.COLOR_BLACK))),
-                    Optional.of(new DyeColorPredicate(List.of(DyeColor.BLACK))))))
+                    Optional.of(ColorPredicate.builder()
+                          .red(MinMaxBounds.Ints.atMost(50))
+                          .green(MinMaxBounds.Ints.atMost(50))
+                          .blue(MinMaxBounds.Ints.atMost(50))
+                          .build()))))
               .save(saver, Chalk.resource("adventure/alone_in_the_darkness"), existingFileHelper);
     }
 }

@@ -1,11 +1,12 @@
 package io.github.mortuusars.chalk.world.chalk;
 
+import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -33,9 +34,17 @@ public class MarkSet {
           });
 
     private final Mark[] marks;
+    private int mask;
 
     public MarkSet(Mark[] marks) {
+        Preconditions.checkState(marks.length == 6, "MarkSet should always have 6 marks.");
         this.marks = marks;
+        mask = 0;
+        for (int i = 0; i < 6; i++) {
+            if (marks[i] != null) {
+                mask |= 1 << i;
+            }
+        }
     }
 
     public MarkSet() {
@@ -51,12 +60,14 @@ public class MarkSet {
         return marks[index];
     }
 
-    public void set(Direction face, Mark mark) {
+    public void set(Direction face, @NotNull Mark mark) {
         marks[face.get3DDataValue()] = mark;
+        mask |= 1 << face.get3DDataValue();
     }
 
     public void remove(Direction face) {
         marks[face.get3DDataValue()] = null;
+        mask &= ~(1 << face.get3DDataValue());
     }
 
     public int[] getIndices() {
@@ -65,13 +76,12 @@ public class MarkSet {
               .toArray();
     }
 
+    public int getMask() {
+        return mask;
+    }
+
     public boolean isEmpty() {
-        for (Mark mark : marks) {
-            if (mark != null) {
-                return false;
-            }
-        }
-        return true;
+        return mask == 0;
     }
 
     public int getCount() {

@@ -11,9 +11,15 @@
           }
         },
         "mark_color": {
-          "colors": [
-            "white"
-          ]
+          "blue": {
+            "min": 200
+          },
+          "green": {
+            "min": 200
+          },
+          "red": {
+            "min": 200
+          }
         },
         "surface_color": {
           "colors": [

@@ -36,8 +36,7 @@
   "gui.chalk.mark_symbol.unlocked_by": "Unlocked by: %s",
   "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
 
-  "chat.chalk.symbol_unlocked": "You learned how to draw %s symbol with chalk",
-  "chat.chalk.symbols_unlocked": "You learned how to draw %s symbols with chalk",
+  "chat.chalk.symbol_unlocked": "You learned how to draw %s with chalk",
 
   "advancement.chalk.home_is_where_the_bed_is.title": "Home Is Where the Bed Is",
   "advancement.chalk.home_is_where_the_bed_is.description": "Sleep in one place three times in a row",
@@ -94,10 +93,12 @@
   "chalk.configuration.amount_per_glowing_item": "Glow per Item",
   "chalk.configuration.show_durability_bar": "Show Selected Durability Bar",
   "chalk.configuration.symbol_selection_groups_sorting": "Symbol Group Sorting",
-  "chalk.configuration.symbol_unlocking": "Symbol Unlocking",
   "chalk.configuration.dyed_chalk_names": "Dyed Chalk Names",
   "chalk.configuration.generate_chalk_in_loot_chests": "Generate Chalks In Loot",
   "chalk.configuration.chalk_box_tooltip_details": "Chalk Box Details Tooltip",
   "chalk.configuration.chalk_box": "Chalk Box",
-  "chalk.configuration.chalk_box_tooltip_contents": "Chalk Box Contents Tooltip"
+  "chalk.configuration.chalk_box_tooltip_contents": "Chalk Box Contents Tooltip",
+  "chalk.configuration.symbols": "Symbols",
+  "chalk.configuration.unlocking": "Unlocking",
+  "chalk.configuration.unlocking_chat_message": "Unlocking Chat Message"
 }

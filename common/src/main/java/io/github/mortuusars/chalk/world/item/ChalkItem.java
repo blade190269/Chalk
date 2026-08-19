@@ -14,15 +14,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class ChalkItem extends Item implements MarkDrawable {
     public ChalkItem(Properties properties) {
@@ -69,12 +66,6 @@ public class ChalkItem extends Item implements MarkDrawable {
             return InteractionResult.FAIL;
         }
 
-        // When holding drawable items in both hands - skip drawing from offhand
-        //TODO: Test if needed
-        if (hand == InteractionHand.OFF_HAND && player.getMainHandItem().getItem() instanceof MarkDrawable) {
-            return InteractionResult.FAIL;
-        }
-
         MarkDrawingContext drawingContext = createMarkDrawingContext(player, context.getHand(),
               context.getClickLocation(), context.getClickedPos(), context.getClickedFace());
 
@@ -94,6 +85,8 @@ public class ChalkItem extends Item implements MarkDrawable {
         return InteractionResult.FAIL;
     }
 
+    // -- Drawable
+
     @Override
     public void onMarkDrawn(Player player, MarkDrawingContext context, Mark mark) {
         MarkDrawable.super.onMarkDrawn(player, context, mark);
@@ -108,7 +101,7 @@ public class ChalkItem extends Item implements MarkDrawable {
         if (player instanceof ServerPlayer serverPlayer) {
             BlockPos surfacePos = markPos.relative(markFacing.getOpposite());
             MapColor surfaceColor = player.level().getBlockState(surfacePos).getMapColor(player.level(), surfacePos);
-            Chalk.CriteriaTriggers.MARK_DRAWN.get().trigger(serverPlayer, stack, surfaceColor, DyeColor.WHITE); //TODO: proper color
+            Chalk.CriteriaTriggers.MARK_DRAWN.get().trigger(serverPlayer, stack, surfaceColor, mark.color());
         }
     }
 
@@ -116,13 +109,6 @@ public class ChalkItem extends Item implements MarkDrawable {
 
     public static int getColorFromDye(DyeColor dye) {
         return Config.Server.CHALK_COLORS.getOrDefault(dye, dye.getTextureDiffuseColor());
-    }
-
-    public static ItemStack create(List<DyeColor> dyeColors, int damage) {
-        ItemStack stack = new ItemStack(Chalk.Items.CHALK.get());
-        if (!dyeColors.isEmpty()) DyedItemColor.applyDyes(stack, dyeColors.stream().map(DyeItem::byColor).toList());
-        if (damage > 0) stack.setDamageValue(damage);
-        return stack;
     }
 
     public static ItemStack create(int color, int damage) {
