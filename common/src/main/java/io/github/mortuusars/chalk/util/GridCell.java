@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.utils;
+package io.github.mortuusars.chalk.util;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;

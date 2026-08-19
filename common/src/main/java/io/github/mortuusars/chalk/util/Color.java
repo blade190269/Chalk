@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.utils;
+package io.github.mortuusars.chalk.util;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;

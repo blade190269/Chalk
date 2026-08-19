@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.utils;
+package io.github.mortuusars.chalk.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

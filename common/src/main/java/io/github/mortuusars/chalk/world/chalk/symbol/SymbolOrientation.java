@@ -1,9 +1,9 @@
 package io.github.mortuusars.chalk.world.chalk.symbol;
 
 import com.mojang.serialization.Codec;
-import io.github.mortuusars.chalk.utils.Point2d;
-import io.github.mortuusars.chalk.utils.GridCell;
-import io.github.mortuusars.chalk.utils.PositionUtils;
+import io.github.mortuusars.chalk.util.Point2d;
+import io.github.mortuusars.chalk.util.GridCell;
+import io.github.mortuusars.chalk.util.PositionUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.Direction;
 import net.minecraft.network.codec.ByteBufCodecs;

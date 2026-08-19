@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk.world.chalk;
 
-import io.github.mortuusars.chalk.utils.Codecs;
-import io.github.mortuusars.chalk.utils.GridCell;
+import io.github.mortuusars.chalk.util.Codecs;
+import io.github.mortuusars.chalk.util.GridCell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;

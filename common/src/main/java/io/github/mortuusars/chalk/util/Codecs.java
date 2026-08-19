@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.utils;
+package io.github.mortuusars.chalk.util;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
