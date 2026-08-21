@@ -208,7 +208,7 @@ public class Config {
             SYMBOL_SELECTION_GROUP_SORTING = builder
                   .comment("Defines how groups will be sorted in symbol selection overlay.",
                         "Undefined groups will be sorted alphabetically and placed after defined ones.")
-                  .define("symbol_selection_groups_sorting", List.of("primary", "symbols", "tools"));
+                  .define("symbol_selection_groups_sorting", List.of("primary", "symbols", "tools", "supporter"));
 
             CHALK_BOX_TOOLTIP_CONTENTS = builder
                   .comment("Contents of the Chalk Box will be shown in item's tooltip.")

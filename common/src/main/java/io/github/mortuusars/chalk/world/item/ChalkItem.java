@@ -18,7 +18,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 public class ChalkItem extends Item implements MarkDrawable {
@@ -99,9 +98,7 @@ public class ChalkItem extends Item implements MarkDrawable {
 
     public void onChalkMarkDrawn(Player player, InteractionHand hand, ItemStack stack, BlockPos markPos, Direction markFacing, Mark mark) {
         if (player instanceof ServerPlayer serverPlayer) {
-            BlockPos surfacePos = markPos.relative(markFacing.getOpposite());
-            MapColor surfaceColor = player.level().getBlockState(surfacePos).getMapColor(player.level(), surfacePos);
-            Chalk.CriteriaTriggers.MARK_DRAWN.get().trigger(serverPlayer, stack, surfaceColor, mark.color());
+            Chalk.CriteriaTriggers.MARK_DRAWN.get().trigger(serverPlayer, stack, markPos, mark, markPos.relative(markFacing.getOpposite()));
         }
     }
 

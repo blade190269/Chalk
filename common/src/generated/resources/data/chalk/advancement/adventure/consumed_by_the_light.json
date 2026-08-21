@@ -10,15 +10,17 @@
             }
           }
         },
-        "mark_color": {
-          "blue": {
-            "min": 200
-          },
-          "green": {
-            "min": 200
-          },
-          "red": {
-            "min": 200
+        "mark": {
+          "color": {
+            "blue": {
+              "max": 200
+            },
+            "green": {
+              "max": 200
+            },
+            "red": {
+              "max": 200
+            }
           }
         },
         "surface_color": {

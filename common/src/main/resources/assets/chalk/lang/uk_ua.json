@@ -50,6 +50,8 @@
   "advancement.chalk.vandalism.description": "Намалюйте крейдою у селищі",
   "advancement.chalk.alone_in_the_darkness.title": "Один у темряві",
   "advancement.chalk.alone_in_the_darkness.description": "Намалюйте чорною крейдою на чорному блоці у чорноті",
+  "advancement.chalk.paint_the_grass.title": "Фарбування трави",
+  "advancement.chalk.paint_the_grass.description": "Намалюйте зеленою крейдою на траві чи ґрунті",
 
   "mark_symbol.chalk.arrow": "Стрілка",
   "mark_symbol.chalk.dot": "Цятка",
@@ -59,11 +61,15 @@
 
   "mark_symbol.chalk.house": "Будинок",
   "mark_symbol.chalk.heart": "Серце",
+  "mark_symbol.chalk.hook": "Гак",
+  "mark_symbol.chalk.bottle": "Пляшка",
   "mark_symbol.chalk.skull": "Череп",
+  "mark_symbol.chalk.face": "Лице",
   "mark_symbol.chalk.note": "Нота",
   "mark_symbol.chalk.sun": "Сонце",
   "mark_symbol.chalk.moon": "Місяць",
   "mark_symbol.chalk.star": "Зірка",
+  "mark_symbol.chalk.grass": "Трава",
 
   "mark_symbol.chalk.sword": "Меч",
   "mark_symbol.chalk.shovel": "Лопата",
@@ -71,9 +77,14 @@
   "mark_symbol.chalk.axe": "Сокира",
   "mark_symbol.chalk.hoe": "Мотика",
 
+  "mark_symbol.chalk.cat": "Кіт",
+  "mark_symbol.chalk.dog": "Пес",
+  "mark_symbol.chalk.dino": "Діно",
+
   "mark_symbol_group.chalk.primary": "Основні",
   "mark_symbol_group.chalk.symbols": "Символи",
   "mark_symbol_group.chalk.tools": "Інструменти",
+  "mark_symbol_group.chalk.supporter": "Ексклюзивні Для Меценатів",
 
   "subtitles.chalk.chalk_broken": "Крейда ламається",
   "subtitles.chalk.mark_drawn": "Крейда малює",

@@ -5,6 +5,11 @@
 - Fixed chalk colors on advancement icons 
 - Reverted **Heart** symbol unlocking back to `Best Friends Forever` instead of `The Parrots and the Bats` advancement
 - Included Mortaar in the mod
+- Added new symbols:
+  - **Hook** - unlocked by `Fishy Business` advancement
+  - **Bottle** - unlocked by `Local Brewery` advancement
+  - **Face** - unlocked by `Hired Help` advancement
+  - **Grass** - unlocked by the new `Painting the Grass` advancement
 
 ## 2.0.0 - Snapshot1
 Chalk

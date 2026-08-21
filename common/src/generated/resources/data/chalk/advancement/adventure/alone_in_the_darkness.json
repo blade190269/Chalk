@@ -10,15 +10,17 @@
             }
           }
         },
-        "mark_color": {
-          "blue": {
-            "max": 50
-          },
-          "green": {
-            "max": 50
-          },
-          "red": {
-            "max": 50
+        "mark": {
+          "color": {
+            "blue": {
+              "max": 50
+            },
+            "green": {
+              "max": 50
+            },
+            "red": {
+              "max": 50
+            }
           }
         },
         "surface_color": {

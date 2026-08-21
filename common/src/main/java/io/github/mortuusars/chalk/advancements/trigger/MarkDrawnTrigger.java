@@ -3,17 +3,19 @@ package io.github.mortuusars.chalk.advancements.trigger;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.mortaar.advancement.predicate.ColorPredicate;
+import io.github.mortuusars.chalk.advancements.predicate.MarkPredicate;
+import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.mortaar.advancement.predicate.MapColorPredicate;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -23,27 +25,30 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
         return TriggerInstance.CODEC;
     }
 
-    public void trigger(ServerPlayer player, ItemStack drawingStack, MapColor surfaceColor, int color) {
-        this.trigger(player, triggerInstance -> triggerInstance.matches(player, drawingStack, surfaceColor, color));
+    public void trigger(ServerPlayer player, ItemStack drawingStack, BlockPos markPos, Mark mark, BlockPos surfacePos) {
+        this.trigger(player, triggerInstance -> triggerInstance.matches(player, drawingStack, markPos, mark, surfacePos));
     }
 
     public record TriggerInstance(Optional<ContextAwarePredicate> player,
-                                  Optional<LocationPredicate> location,
                                   Optional<ItemPredicate> item,
-                                  Optional<MapColorPredicate> surfaceColor,
-                                  Optional<ColorPredicate> markColor) implements SimpleCriterionTrigger.SimpleInstance {
+                                  Optional<LocationPredicate> location,
+                                  Optional<MarkPredicate> mark,
+                                  Optional<BlockPredicate> surfaceBlock,
+                                  Optional<MapColorPredicate> surfaceColor) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance ->
               instance.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
-                          LocationPredicate.CODEC.optionalFieldOf("location").forGetter(TriggerInstance::location),
                           ItemPredicate.CODEC.optionalFieldOf("item").forGetter(TriggerInstance::item),
-                          MapColorPredicate.CODEC.optionalFieldOf("surface_color").forGetter(TriggerInstance::surfaceColor),
-                          ColorPredicate.CODEC.optionalFieldOf("mark_color").forGetter(TriggerInstance::markColor))
+                          LocationPredicate.CODEC.optionalFieldOf("location").forGetter(TriggerInstance::location),
+                          MarkPredicate.CODEC.optionalFieldOf("mark").forGetter(TriggerInstance::mark),
+                          BlockPredicate.CODEC.optionalFieldOf("surface").forGetter(TriggerInstance::surfaceBlock),
+                          MapColorPredicate.CODEC.optionalFieldOf("surface_color").forGetter(TriggerInstance::surfaceColor))
                     .apply(instance, TriggerInstance::new));
 
         public static Criterion<MarkDrawnTrigger.TriggerInstance> structure(Holder<Structure> structureKey) {
             TriggerInstance instance = new TriggerInstance(EntityPredicate.wrap(
                   Optional.empty()),
+                  Optional.empty(),
                   Optional.of(LocationPredicate.Builder.inStructure(structureKey).build()),
                   Optional.empty(),
                   Optional.empty(),
@@ -54,6 +59,7 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
         public static Criterion<MarkDrawnTrigger.TriggerInstance> structures(HolderSet<Structure> structures) {
             TriggerInstance instance = new TriggerInstance(EntityPredicate.wrap(
                   Optional.empty()),
+                  Optional.empty(),
                   Optional.of(new LocationPredicate(Optional.empty(),
                         Optional.empty(),
                         Optional.of(structures),
@@ -69,11 +75,63 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
             return Chalk.CriteriaTriggers.MARK_DRAWN.get().createCriterion(instance);
         }
 
-        public boolean matches(ServerPlayer player, ItemStack item, MapColor surfaceColor, int markColor) {
-            return (location.isEmpty() || location.get().matches(player.serverLevel(), player.getX(), player.getY(), player.getZ()))
-                  && (this.item.isEmpty() || this.item.get().test(item))
-                  && (this.surfaceColor.isEmpty() || this.surfaceColor.get().matches(surfaceColor))
-                  && (this.markColor.isEmpty() || this.markColor.get().matches(markColor));
+        public boolean matches(ServerPlayer player, ItemStack item, BlockPos markPos, Mark mark, BlockPos surfacePos) {
+            return (this.item.isEmpty() || this.item.get().test(item))
+                  && (this.location.isEmpty() || this.location.get().matches(player.serverLevel(), markPos.getX(), markPos.getY(), markPos.getZ()))
+                  && (this.mark.isEmpty() || this.mark.get().matches(mark))
+                  && (this.surfaceBlock.isEmpty() || this.surfaceBlock.get().matches(player.serverLevel(), surfacePos)
+                  && (this.surfaceColor.isEmpty() || this.surfaceColor.get().matches(
+                        player.serverLevel().getBlockState(surfacePos).getMapColor(player.serverLevel(), surfacePos))));
+        }
+    }
+
+    public static class Builder {
+        private @Nullable ContextAwarePredicate player;
+        private @Nullable ItemPredicate item;
+        private @Nullable LocationPredicate location;
+        private @Nullable MarkPredicate mark;
+        private @Nullable BlockPredicate surfaceBlock;
+        private @Nullable MapColorPredicate surfaceColor;
+
+        public Builder player(@Nullable ContextAwarePredicate player) {
+            this.player = player;
+            return this;
+        }
+
+        public Builder item(@Nullable ItemPredicate item) {
+            this.item = item;
+            return this;
+        }
+
+        public Builder location(@Nullable LocationPredicate location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder mark(@Nullable MarkPredicate mark) {
+            this.mark = mark;
+            return this;
+        }
+
+        public Builder surfaceBlock(@Nullable BlockPredicate surfaceBlock) {
+            this.surfaceBlock = surfaceBlock;
+            return this;
+        }
+
+        public Builder surfaceColor(@Nullable MapColorPredicate surfaceColor) {
+            this.surfaceColor = surfaceColor;
+            return this;
+        }
+
+        public MarkDrawnTrigger.TriggerInstance build() {
+            return new TriggerInstance(
+                  Optional.ofNullable(player),
+                  Optional.ofNullable(item),
+                  Optional.ofNullable(location),
+                  Optional.ofNullable(mark),
+                  Optional.ofNullable(surfaceBlock),
+                  Optional.ofNullable(surfaceColor)
+            );
         }
     }
 }

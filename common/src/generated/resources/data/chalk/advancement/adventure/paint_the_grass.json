@@ -1,0 +1,50 @@
+{
+  "parent": "chalk:adventure/alone_in_the_darkness",
+  "criteria": {
+    "draw_green": {
+      "conditions": {
+        "mark": {
+          "color": {
+            "brightness": {
+              "min": 0.4
+            },
+            "hue": {
+              "max": 0.35,
+              "min": 0.2
+            },
+            "saturation": {
+              "min": 0.4
+            }
+          }
+        },
+        "surface": {
+          "blocks": "#minecraft:dirt"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.chalk.paint_the_grass.description"
+    },
+    "icon": {
+      "components": {
+        "minecraft:dyed_color": {
+          "rgb": 7915324
+        }
+      },
+      "count": 1,
+      "id": "chalk:chalk"
+    },
+    "title": {
+      "translate": "advancement.chalk.paint_the_grass.title"
+    }
+  },
+  "requirements": [
+    [
+      "draw_green"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

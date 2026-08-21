@@ -39,10 +39,16 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("cross"));
     public static final ResourceKey<MarkSymbol> HOUSE =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("house"));
+    public static final ResourceKey<MarkSymbol> HOOK =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("hook"));
+    public static final ResourceKey<MarkSymbol> BOTTLE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("bottle"));
     public static final ResourceKey<MarkSymbol> HEART =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("heart"));
     public static final ResourceKey<MarkSymbol> SKULL =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("skull"));
+    public static final ResourceKey<MarkSymbol> FACE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("face"));
     public static final ResourceKey<MarkSymbol> NOTE =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("note"));
     public static final ResourceKey<MarkSymbol> SUN =
@@ -51,6 +57,8 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("moon"));
     public static final ResourceKey<MarkSymbol> STAR =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("star"));
+    public static final ResourceKey<MarkSymbol> GRASS =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("grass"));
 
     public static final String GROUP_TOOLS = "tools";
     public static final ResourceKey<MarkSymbol> PICKAXE =
@@ -151,11 +159,15 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
 
         register(context, HOUSE, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 100, adv("chalk:adventure/home_is_where_the_bed_is"), false);
         register(context, HEART, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 110, adv("minecraft:husbandry/tame_an_animal"), false);
-        register(context, SKULL, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 120, adv("minecraft:adventure/sniper_duel"), false);
-        register(context, NOTE, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 130, adv("minecraft:adventure/play_jukebox_in_meadows"), false);
-        register(context, SUN, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 210, adv("chalk:adventure/consumed_by_the_light"), false);
-        register(context, MOON, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 220, adv("chalk:adventure/alone_in_the_darkness"), false);
-        register(context, STAR, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 230, adv("chalk:adventure/guiding_star"), false);
+        register(context, HOOK, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 120, adv("minecraft:husbandry/fishy_business"), false);
+        register(context, BOTTLE, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 130, adv("minecraft:nether/brew_potion"), false);
+        register(context, SKULL, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 140, adv("minecraft:adventure/sniper_duel"), false);
+        register(context, FACE, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 150, adv("minecraft:adventure/summon_iron_golem"), false);
+        register(context, NOTE, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 160, adv("minecraft:adventure/play_jukebox_in_meadows"), false);
+        register(context, SUN, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 200, adv("chalk:adventure/consumed_by_the_light"), false);
+        register(context, MOON, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 210, adv("chalk:adventure/alone_in_the_darkness"), false);
+        register(context, STAR, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 220, adv("chalk:adventure/guiding_star"), false);
+        register(context, GRASS, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 230, adv("chalk:adventure/paint_the_grass"), false);
 
         register(context, SWORD, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 10, adv("minecraft:story/iron_tools"), false);
         register(context, SHOVEL, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 20, adv("minecraft:story/iron_tools"), false);

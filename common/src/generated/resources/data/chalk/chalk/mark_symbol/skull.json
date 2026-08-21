@@ -1,5 +1,5 @@
 {
-  "group_priority": 120,
+  "group_priority": 140,
   "orientation_behavior": "up_down_cardinal",
   "required_advancement": "minecraft:adventure/sniper_duel",
   "texture": "chalk:block/mark/skull"

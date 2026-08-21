@@ -1,5 +1,5 @@
 {
-  "group_priority": 230,
+  "group_priority": 220,
   "orientation_behavior": "up_down_cardinal",
   "required_advancement": "chalk:adventure/guiding_star",
   "texture": "chalk:block/mark/star"

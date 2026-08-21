@@ -1,6 +1,7 @@
 package io.github.mortuusars.chalk.neoforge.datagen.generation;
 
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.advancements.predicate.MarkPredicate;
 import io.github.mortuusars.chalk.advancements.trigger.MarkDrawnTrigger;
 import io.github.mortuusars.chalk.advancements.trigger.ConsecutiveSleepingTrigger;
 import io.github.mortuusars.chalk.advancements.trigger.MarkGlowingTrigger;
@@ -13,6 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.StructureTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
@@ -74,7 +76,8 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                     Component.translatable("advancement.chalk.guiding_star.title"),
                     Component.translatable("advancement.chalk.guiding_star.description"),
                     null, AdvancementType.TASK, true, true, false)
-              .addCriterion("make_glowing", Chalk.CriteriaTriggers.MARK_GLOWING.get().createCriterion(new MarkGlowingTrigger.TriggerInstance(EntityPredicate.wrap(Optional.empty()),
+              .addCriterion("make_glowing", Chalk.CriteriaTriggers.MARK_GLOWING.get().createCriterion(
+                    new MarkGlowingTrigger.TriggerInstance(EntityPredicate.wrap(Optional.empty()),
                     Optional.empty(),
                     Optional.of(LocationPredicate.Builder.location()
                           .setLight(new LightPredicate.Builder()
@@ -89,18 +92,20 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                     Component.translatable("advancement.chalk.consumed_by_the_light.title"),
                     Component.translatable("advancement.chalk.consumed_by_the_light.description"),
                     null, AdvancementType.TASK, true, true, false)
-              .addCriterion("draw_white", Chalk.CriteriaTriggers.MARK_DRAWN.get().createCriterion(new MarkDrawnTrigger.TriggerInstance(EntityPredicate.wrap(Optional.empty()),
-                    Optional.of(LocationPredicate.Builder.location()
-                          .setLight(new LightPredicate.Builder()
-                                .setComposite(MinMaxBounds.Ints.atLeast(11)))
-                          .build()),
-                    Optional.empty(),
-                    Optional.of(new MapColorPredicate(List.of(MapColor.TERRACOTTA_WHITE, MapColor.SNOW, MapColor.QUARTZ))),
-                    Optional.of(ColorPredicate.builder()
-                          .red(MinMaxBounds.Ints.atLeast(200))
-                          .green(MinMaxBounds.Ints.atLeast(200))
-                          .blue(MinMaxBounds.Ints.atLeast(200))
-                          .build()))))
+              .addCriterion("draw_white", Chalk.CriteriaTriggers.MARK_DRAWN.get().createCriterion(
+                    new MarkDrawnTrigger.Builder()
+                          .location(LocationPredicate.Builder.location()
+                                .setLight(new LightPredicate.Builder().setComposite(MinMaxBounds.Ints.atLeast(11)))
+                                .build())
+                          .mark(new MarkPredicate.Builder()
+                                .color(ColorPredicate.builder()
+                                      .red(MinMaxBounds.Ints.atMost(200))
+                                      .green(MinMaxBounds.Ints.atMost(200))
+                                      .blue(MinMaxBounds.Ints.atMost(200))
+                                      .build())
+                                .build())
+                          .surfaceColor(new MapColorPredicate(List.of(MapColor.TERRACOTTA_WHITE, MapColor.SNOW, MapColor.QUARTZ)))
+                          .build()))
               .save(saver, Chalk.resource("adventure/consumed_by_the_light"), existingFileHelper);
 
         AdvancementHolder aloneInTheDarkness = Advancement.Builder.advancement()
@@ -109,18 +114,41 @@ public class Advancements implements AdvancementProvider.AdvancementGenerator {
                     Component.translatable("advancement.chalk.alone_in_the_darkness.title"),
                     Component.translatable("advancement.chalk.alone_in_the_darkness.description"),
                     null, AdvancementType.TASK, true, true, false)
-              .addCriterion("draw_black", Chalk.CriteriaTriggers.MARK_DRAWN.get().createCriterion(new MarkDrawnTrigger.TriggerInstance(EntityPredicate.wrap(Optional.empty()),
-                    Optional.of(LocationPredicate.Builder.location()
-                          .setLight(new LightPredicate.Builder()
-                                .setComposite(MinMaxBounds.Ints.atMost(7)))
-                          .build()),
-                    Optional.empty(),
-                    Optional.of(new MapColorPredicate(List.of(MapColor.COLOR_BLACK))),
-                    Optional.of(ColorPredicate.builder()
-                          .red(MinMaxBounds.Ints.atMost(50))
-                          .green(MinMaxBounds.Ints.atMost(50))
-                          .blue(MinMaxBounds.Ints.atMost(50))
-                          .build()))))
+              .addCriterion("draw_black", Chalk.CriteriaTriggers.MARK_DRAWN.get().createCriterion(
+                    new MarkDrawnTrigger.Builder()
+                          .location(LocationPredicate.Builder.location()
+                                .setLight(new LightPredicate.Builder().setComposite(MinMaxBounds.Ints.atMost(7)))
+                                .build())
+                          .mark(new MarkPredicate.Builder()
+                                .color(ColorPredicate.builder()
+                                      .red(MinMaxBounds.Ints.atMost(50))
+                                      .green(MinMaxBounds.Ints.atMost(50))
+                                      .blue(MinMaxBounds.Ints.atMost(50))
+                                      .build())
+                                .build())
+                          .surfaceColor(new MapColorPredicate(List.of(MapColor.COLOR_BLACK)))
+                          .build()))
               .save(saver, Chalk.resource("adventure/alone_in_the_darkness"), existingFileHelper);
+
+        AdvancementHolder paintTheGrass = Advancement.Builder.advancement()
+              .parent(aloneInTheDarkness)
+              .display(ChalkItem.create(0x78C73C, 0),
+                    Component.translatable("advancement.chalk.paint_the_grass.title"),
+                    Component.translatable("advancement.chalk.paint_the_grass.description"),
+                    null, AdvancementType.TASK, true, true, false)
+              .addCriterion("draw_green", Chalk.CriteriaTriggers.MARK_DRAWN.get().createCriterion(
+                    new MarkDrawnTrigger.Builder()
+                          .mark(new MarkPredicate.Builder()
+                                .color(ColorPredicate.builder()
+                                      .hue(MinMaxBounds.Doubles.between(0.2, 0.35))
+                                      .saturation(MinMaxBounds.Doubles.atLeast(0.4))
+                                      .brightness(MinMaxBounds.Doubles.atLeast(0.4))
+                                      .build())
+                                .build())
+                          .surfaceBlock(BlockPredicate.Builder.block()
+                                .of(BlockTags.DIRT)
+                                .build())
+                          .build()))
+              .save(saver, Chalk.resource("adventure/paint_the_grass"), existingFileHelper);
     }
 }
