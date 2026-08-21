@@ -28,6 +28,8 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
     modApi("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
 
+    modImplementation(include("io.github.mortuusars.mortaar:mortaar-${minecraft_version}-fabric:${mortaar_version}"))
+
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
     modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port_version}")
 

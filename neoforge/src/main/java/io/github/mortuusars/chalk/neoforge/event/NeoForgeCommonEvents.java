@@ -2,14 +2,13 @@ package io.github.mortuusars.chalk.neoforge.event;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.data.ChalkColors;
+import io.github.mortuusars.chalk.world.chalk.ChalkColors;
 import io.github.mortuusars.chalk.network.neoforge.PacketsImpl;
 import io.github.mortuusars.chalk.network.packet.C2SPackets;
 import io.github.mortuusars.chalk.network.packet.CommonPackets;
 import io.github.mortuusars.chalk.network.packet.Packet;
 import io.github.mortuusars.chalk.network.packet.S2CPackets;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
-import io.github.mortuusars.chalk.world.item.OldChalkItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,8 +25,6 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
-
-import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Chalk.ID)
 public class NeoForgeCommonEvents {

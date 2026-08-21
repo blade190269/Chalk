@@ -25,7 +25,7 @@ public class Config {
 
         public static final ModConfigSpec.BooleanValue SYMBOL_UNLOCKING;
         public static final ModConfigSpec.BooleanValue SYMBOL_UNLOCKING_CHAT_MESSAGE;
-        public static final ModConfigSpec.BooleanValue GLOW_ENABLED;
+        public static final ModConfigSpec.BooleanValue GLOWING_ENABLED;
 
         public static BiMap<DyeColor, Integer> CHALK_COLORS = ImmutableBiMap.of();
 
@@ -98,7 +98,7 @@ public class Config {
                 builder.pop();
             }
 
-            GLOW_ENABLED = builder
+            GLOWING_ENABLED = builder
                   .comment("Global toggle for the 'glowing' feature. Disabling this setting will prevent creation of new glowing marks. Existing marks will remain.",
                         "Default: true")
                   .define("glowing_enabled", true);

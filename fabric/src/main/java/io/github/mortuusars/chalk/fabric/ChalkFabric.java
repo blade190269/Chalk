@@ -4,9 +4,8 @@ import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
 import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.data.ChalkColors;
+import io.github.mortuusars.chalk.world.chalk.ChalkColors;
 import io.github.mortuusars.chalk.event.CommonEvents;
-import io.github.mortuusars.chalk.world.item.OldChalkItem;
 import io.github.mortuusars.chalk.network.fabric.FabricC2SPackets;
 import io.github.mortuusars.chalk.network.fabric.FabricS2CPackets;
 import net.fabricmc.api.ModInitializer;
@@ -26,8 +25,6 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.neoforged.fml.config.ModConfig;
-
-import java.util.function.Supplier;
 
 public class ChalkFabric implements ModInitializer {
     @Override

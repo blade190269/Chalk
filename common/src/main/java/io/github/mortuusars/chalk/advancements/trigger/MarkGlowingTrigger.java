@@ -2,9 +2,9 @@ package io.github.mortuusars.chalk.advancements.trigger;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.mortuusars.chalk.advancements.predicate.MapColorPredicate;
 import io.github.mortuusars.chalk.advancements.predicate.MarkPredicate;
 import io.github.mortuusars.chalk.world.chalk.Mark;
+import io.github.mortuusars.mortaar.advancement.predicate.MapColorPredicate;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;

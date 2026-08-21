@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.mixin;
+package io.github.mortuusars.chalk.mixin.chalk_dye_colors;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

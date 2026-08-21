@@ -3,7 +3,7 @@ package io.github.mortuusars.chalk.world.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.core.OldMarkSymbol;
+import io.github.mortuusars.chalk.world.chalk.OldMarkSymbol;
 import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
 import io.github.mortuusars.chalk.world.item.ChalkItem;

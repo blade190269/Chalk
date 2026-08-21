@@ -3,6 +3,8 @@
 ## UNRELEASED - Snapshot2
 - Implemented proper mark color advancement predicate
 - Fixed chalk colors on advancement icons 
+- Reverted **Heart** symbol unlocking back to `Best Friends Forever` instead of `The Parrots and the Bats` advancement
+- Included Mortaar in the mod
 
 ## 2.0.0 - Snapshot1
 Chalk

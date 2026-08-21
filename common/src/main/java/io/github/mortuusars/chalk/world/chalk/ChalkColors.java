@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.data;
+package io.github.mortuusars.chalk.world.chalk;
 
 import net.minecraft.world.item.DyeColor;
 
@@ -26,6 +26,7 @@ public class ChalkColors {
           DyeColor.PINK
     );
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static final Map<DyeColor, Integer> COLORS = new LinkedHashMap<>() {{ // LinkedHasMap keeps order
         put(DyeColor.WHITE, 0xFFFFFF);
         put(DyeColor.LIGHT_GRAY, 0xADADA8);

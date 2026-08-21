@@ -185,7 +185,7 @@ public class MarkBlock extends BaseEntityBlock {
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         ItemStack usedStack = player.getItemInHand(hand);
 
-        if (Config.Server.GLOW_ENABLED.get()
+        if (Config.Server.GLOWING_ENABLED.get()
               && usedStack.is(Chalk.Tags.Items.GLOWINGS)
               && level.getBlockEntity(pos) instanceof MarkBlockEntity blockEntity
               && getMarkAt(level, hitResult.getLocation()) instanceof DrawnMark(Direction facing, Mark existingMark)

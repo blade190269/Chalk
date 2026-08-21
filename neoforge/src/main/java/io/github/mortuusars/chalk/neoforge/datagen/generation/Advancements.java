@@ -1,12 +1,12 @@
 package io.github.mortuusars.chalk.neoforge.datagen.generation;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.advancements.predicate.ColorPredicate;
 import io.github.mortuusars.chalk.advancements.trigger.MarkDrawnTrigger;
 import io.github.mortuusars.chalk.advancements.trigger.ConsecutiveSleepingTrigger;
-import io.github.mortuusars.chalk.advancements.predicate.MapColorPredicate;
 import io.github.mortuusars.chalk.advancements.trigger.MarkGlowingTrigger;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
+import io.github.mortuusars.mortaar.advancement.predicate.ColorPredicate;
+import io.github.mortuusars.mortaar.advancement.predicate.MapColorPredicate;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;

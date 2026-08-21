@@ -11,7 +11,7 @@ import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.ChalkBoxItem;
 import io.github.mortuusars.chalk.world.item.OldChalkItem;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
-import io.github.mortuusars.chalk.data.ChalkColors;
+import io.github.mortuusars.chalk.world.chalk.ChalkColors;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.Util;

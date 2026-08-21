@@ -1,8 +1,7 @@
-package io.github.mortuusars.chalk.core;
+package io.github.mortuusars.chalk.world.chalk;
 
 import com.mojang.serialization.Codec;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.world.chalk.MarkSet;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
 import io.netty.buffer.ByteBuf;

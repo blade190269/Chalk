@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.world.item.ChalkBoxItem;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -21,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @param items Readonly list of the items. Use {@link #copyItems()} if modification is needed.
- * @param glow Remaining glow uses.
+ * @param items    Readonly list of the items. Use {@link #copyItems()} if modification is needed.
+ * @param glow     Remaining glow uses.
  * @param selected Slot selected for drawing. Always points to the slot with item or -1 if Chalk Box is empty.
  */
 public record ChalkBoxContents(List<ItemStack> items, int glow, int selected) implements TooltipComponent {
@@ -205,7 +204,8 @@ public record ChalkBoxContents(List<ItemStack> items, int glow, int selected) im
     public @NotNull String toString() {
         return "ChalkBoxContents{" +
               "items=" + items +
-              ", glowAmount=" + glow +
+              ", glow=" + glow +
+              ", selected=" + selected +
               '}';
     }
 
@@ -217,10 +217,20 @@ public record ChalkBoxContents(List<ItemStack> items, int glow, int selected) im
         } else if (!stack.getItem().canFitInsideContainerItems()) {
             return false;
         } else if (slot == GLOWINGS_SLOT) {
-            return stack.is(Chalk.Tags.Items.GLOWINGS);
+            return Config.Server.GLOWING_ENABLED.get() && Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && stack.is(Chalk.Tags.Items.GLOWINGS);
         } else {
             return stack.getItem() instanceof ChalkItem;
         }
+    }
+
+    public static boolean canHold(ItemStack stack) {
+        if (!stack.getItem().canFitInsideContainerItems()) {
+            return false;
+        }
+        return stack.getItem() instanceof ChalkItem
+              || (Config.Server.GLOWING_ENABLED.get()
+                  && Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
+                  && stack.is(Chalk.Tags.Items.GLOWINGS));
     }
 
     public static class Mutable {

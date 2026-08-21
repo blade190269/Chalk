@@ -4,13 +4,12 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "carrying_tooltip.AbstractContainerScreenMixin",
     "creative_mark_breaking.MultiPlayerGameModeMixin",
     "keep_sneaking_while_selecting.LocalPlayerMixin",
     "single_mark_outline.LevelRendererMixin"
   ],
   "mixins": [
-    "DyedItemColorMixin",
+    "chalk_dye_colors.DyedItemColorMixin",
     "advancements.PlayerAdvancementsMixin",
     "advancements.PlayerMixin"
   ],

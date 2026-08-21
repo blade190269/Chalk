@@ -7,6 +7,7 @@ import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
+import io.github.mortuusars.mortaar.world.item.ApplicationTargetItem;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public class ChalkBoxItem extends Item implements MarkDrawable {
+public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTargetItem {
     public ChalkBoxItem(Properties properties) {
         super(properties);
     }
@@ -80,6 +81,11 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         }
     }
 
+    @Override
+    public boolean shouldRenderSlotTooltipWhileCarrying(Level level, ItemStack carried, ItemStack hovered) {
+        return ChalkBoxContents.canHold(carried);
+    }
+
     // -- Bar
 
     @Override
@@ -122,10 +128,19 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
                 access.set(selectedChalk.copy());
                 player.level().playSound(player, player, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS, 1, 1);
                 player.resetAttackStrengthTicker();
-            } else {
-                player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
+                return true;
             }
 
+            ItemStack glowingItem = contents.getItem(ChalkBoxContents.GLOWINGS_SLOT);
+            if (Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && !glowingItem.isEmpty()) {
+                slot.set(contents.mutable().setItem(ChalkBoxContents.GLOWINGS_SLOT, ItemStack.EMPTY).toImmutable(stack));
+                access.set(glowingItem.copy());
+                player.level().playSound(player, player, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS, 1, 1);
+                player.resetAttackStrengthTicker();
+                return true;
+            }
+
+            player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
             return true;
         }
 
@@ -146,13 +161,16 @@ public class ChalkBoxItem extends Item implements MarkDrawable {
         }
 
         // Insert glowing
-        if (Config.Server.GLOW_ENABLED.get() && Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && other.is(Chalk.Tags.Items.GLOWINGS)) {
+        if (Config.Server.GLOWING_ENABLED.get() && Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && other.is(Chalk.Tags.Items.GLOWINGS)) {
             ItemStack existing = contents.getItem(ChalkBoxContents.GLOWINGS_SLOT);
             int glowBeforeInsertion = contents.glow();
 
             if (existing.isEmpty()) {
                 access.set(ItemStack.EMPTY);
-                slot.set(contents.mutable().setItem(ChalkBoxContents.GLOWINGS_SLOT, other.copy()).toImmutable(stack));
+                slot.set(contents.mutable()
+                      .setItem(ChalkBoxContents.GLOWINGS_SLOT, other.copy())
+                      .updateGlow()
+                      .toImmutable(stack));
             } else if (existing.getCount() >= existing.getMaxStackSize() || !ItemStack.isSameItemSameComponents(existing, other)) {
                 player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
                 return true;

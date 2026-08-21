@@ -1,11 +1,6 @@
 package io.github.mortuusars.chalk.util;
 
-import io.github.mortuusars.chalk.data.ChalkColors;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
 
@@ -26,25 +21,5 @@ public class ParticleUtils {
                     velocity.y(),
                     velocity.z());
         }
-    }
-
-    /**
-     * Spawns a particle with slight random offset to each.
-     */
-    public static void spawnParticle(Level level, ParticleOptions particleType, Vector3f position, int count){
-        spawnParticle(level, particleType, position, new Vector3f(0f, 0f, 0f), count);
-    }
-
-    /**
-     * Spawns a color dust particles at the blockPos, close to the specified face.
-     */
-    public static void spawnColorDustParticles(DyeColor color, Level level, BlockPos pos, Direction face){
-        int colorValue = ChalkColors.fromDyeColor(color);
-        float R = (colorValue & 0x00FF0000) >> 16;
-        float G = (colorValue & 0x0000FF00) >> 8;
-        float B = (colorValue & 0x000000FF);
-
-        ParticleUtils.spawnParticle(level, new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
-                PositionUtils.blockCenterOffsetToFace(pos, face, 0.25f), 1);
     }
 }

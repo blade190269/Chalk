@@ -127,7 +127,7 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
         register(context, CROSS, 45, FIXED, Optional.empty(), GROUP_PRIMARY, 50);
 
         register(context, HOUSE, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/home_is_where_the_bed_is"), GROUP_SYMBOLS, 100);
-        register(context, HEART, 0, UP_DOWN_CARDINAL, adv("minecraft:husbandry/breed_an_animal"), GROUP_SYMBOLS, 110);
+        register(context, HEART, 0, UP_DOWN_CARDINAL, adv("minecraft:husbandry/tame_an_animal"), GROUP_SYMBOLS, 110);
         register(context, SKULL, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/sniper_duel"), GROUP_SYMBOLS, 120);
         register(context, NOTE, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/play_jukebox_in_meadows"), GROUP_SYMBOLS, 130);
         register(context, SUN, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/consumed_by_the_light"), GROUP_SYMBOLS, 210);
