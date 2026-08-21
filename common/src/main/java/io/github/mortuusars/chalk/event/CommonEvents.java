@@ -4,6 +4,7 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.advancements.PlayerSleepInfo;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
+import io.github.mortuusars.mortaar.util.supporter.Supporters;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -27,7 +28,7 @@ public class CommonEvents {
             return;
         }
 
-        List<Holder<MarkSymbol>> unlockedSymbols = MarkSymbol.getAllHolders(player.registryAccess())
+        List<Holder<MarkSymbol>> unlockedSymbols = MarkSymbol.getAllHolders(player.registryAccess(), Supporters.isEligibleForGoldenRewards(player.getUUID()))
               .filter(symbol -> symbol.value().requiredAdvancement()
                     .map(id -> id.equals(advancement.id())).orElse(false))
               .toList();

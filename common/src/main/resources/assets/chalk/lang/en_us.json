@@ -71,9 +71,14 @@
   "mark_symbol.chalk.axe": "Axe",
   "mark_symbol.chalk.hoe": "Hoe",
 
+  "mark_symbol.chalk.cat": "Cat",
+  "mark_symbol.chalk.dog": "Dog",
+  "mark_symbol.chalk.dino": "Dino",
+
   "mark_symbol_group.chalk.primary": "Primary",
   "mark_symbol_group.chalk.symbols": "Symbols",
   "mark_symbol_group.chalk.tools": "Tools",
+  "mark_symbol_group.chalk.supporter": "Supporter",
 
   "subtitles.chalk.chalk_broken": "Chalk breaks",
   "subtitles.chalk.mark_drawn": "Chalk draws",

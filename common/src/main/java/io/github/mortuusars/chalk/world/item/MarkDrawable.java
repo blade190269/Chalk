@@ -15,6 +15,8 @@ import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
+import io.github.mortuusars.mortaar.util.supporter.Supporter;
+import io.github.mortuusars.mortaar.util.supporter.Supporters;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -94,7 +96,8 @@ public interface MarkDrawable {
 
     default void selectSymbolAndDraw(Player player, MarkDrawingContext context) {
         if (player instanceof ServerPlayer serverPlayer) {
-            List<Holder<MarkSymbol>> availableSymbols = MarkSymbol.getAllHolders(serverPlayer.registryAccess())
+            List<Holder<MarkSymbol>> availableSymbols = MarkSymbol.getAllHolders(
+                        serverPlayer.registryAccess(), Supporters.isEligibleForGoldenRewards(player.getUUID()))
                   .filter(holder -> isSymbolAvailable(serverPlayer, context, holder))
                   .toList();
 

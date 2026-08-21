@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import static io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol.OrientationBehavior.*;
 
 public record MarkSymbol(ResourceLocation texture, int rotationOffset, OrientationBehavior orientationBehavior,
-                         Optional<ResourceLocation> requiredAdvancement, String group, int groupPriority) {
+                         String group, int groupPriority, Optional<ResourceLocation> requiredAdvancement, boolean supporterOnly) {
 
     public static final String GROUP_PRIMARY = "primary";
     public static final ResourceKey<MarkSymbol> ARROW =
@@ -64,6 +64,14 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
     public static final ResourceKey<MarkSymbol> HOE =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("hoe"));
 
+    public static final String GROUP_SUPPORTER = "supporter";
+    public static final ResourceKey<MarkSymbol> CAT =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("cat"));
+    public static final ResourceKey<MarkSymbol> DOG =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("dog"));
+    public static final ResourceKey<MarkSymbol> DINO =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("dino"));
+
     public static final ResourceKey<MarkSymbol> DEFAULT = DOT;
 
     // --
@@ -72,19 +80,31 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
           ResourceLocation.CODEC.fieldOf("texture").forGetter(MarkSymbol::texture),
           Codec.intRange(-180, 180).optionalFieldOf("rotation_offset", 0).forGetter(MarkSymbol::rotationOffset),
           OrientationBehavior.CODEC.optionalFieldOf("orientation_behavior", FULL).forGetter(MarkSymbol::orientationBehavior),
-          ResourceLocation.CODEC.optionalFieldOf("required_advancement").forGetter(MarkSymbol::requiredAdvancement),
           Codec.STRING.optionalFieldOf("group", "symbols").forGetter(MarkSymbol::group),
-          Codec.INT.optionalFieldOf("group_priority", 9999).forGetter(MarkSymbol::groupPriority)
+          Codec.INT.optionalFieldOf("group_priority", 9999).forGetter(MarkSymbol::groupPriority),
+          ResourceLocation.CODEC.optionalFieldOf("required_advancement").forGetter(MarkSymbol::requiredAdvancement),
+          Codec.BOOL.optionalFieldOf("supporter_only", false).forGetter(MarkSymbol::supporterOnly)
     ).apply(i, MarkSymbol::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, MarkSymbol> DIRECT_STREAM_CODEC = StreamCodec.composite(
-          ResourceLocation.STREAM_CODEC, MarkSymbol::texture,
-          ByteBufCodecs.INT, MarkSymbol::rotationOffset,
-          OrientationBehavior.STREAM_CODEC, MarkSymbol::orientationBehavior,
-          ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), MarkSymbol::requiredAdvancement,
-          ByteBufCodecs.STRING_UTF8, MarkSymbol::group,
-          ByteBufCodecs.INT, MarkSymbol::groupPriority,
-          MarkSymbol::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, MarkSymbol> DIRECT_STREAM_CODEC = StreamCodec.of(
+          (buffer, symbol) -> {
+              ResourceLocation.STREAM_CODEC.encode(buffer, symbol.texture());
+              ByteBufCodecs.INT.encode(buffer, symbol.rotationOffset());
+              OrientationBehavior.STREAM_CODEC.encode(buffer, symbol.orientationBehavior());
+              ByteBufCodecs.STRING_UTF8.encode(buffer, symbol.group());
+              ByteBufCodecs.INT.encode(buffer, symbol.groupPriority());
+              ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC).encode(buffer, symbol.requiredAdvancement());
+              ByteBufCodecs.BOOL.encode(buffer, symbol.supporterOnly());
+          },
+          buffer -> new MarkSymbol(
+                ResourceLocation.STREAM_CODEC.decode(buffer),
+                ByteBufCodecs.INT.decode(buffer),
+                OrientationBehavior.STREAM_CODEC.decode(buffer),
+                ByteBufCodecs.STRING_UTF8.decode(buffer),
+                ByteBufCodecs.INT.decode(buffer),
+                ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC).decode(buffer),
+                ByteBufCodecs.BOOL.decode(buffer)
+          )
     );
 
     public static final Codec<Holder<MarkSymbol>> CODEC =
@@ -111,34 +131,41 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
               .orElseThrow();
     }
 
-    public static Stream<Holder<MarkSymbol>> getAllHolders(HolderLookup.Provider lookup) {
-        return lookup.lookupOrThrow(Chalk.Registries.MARK_SYMBOL)
+    public static Stream<Holder<MarkSymbol>> getAllHolders(HolderLookup.Provider lookup, boolean includeSupporterOnly) {
+        Stream<Holder<MarkSymbol>> stream = lookup.lookupOrThrow(Chalk.Registries.MARK_SYMBOL)
               .listElements()
               .map(ref -> ref);
+        return includeSupporterOnly
+              ? stream
+              : stream.filter(symbol -> !symbol.value().supporterOnly());
     }
 
     // --
 
     public static void bootstrap(BootstrapContext<MarkSymbol> context) {
-        register(context, ARROW, 0, FULL, Optional.empty(), GROUP_PRIMARY, 10);
-        register(context, DOT, 0, FIXED, Optional.empty(), GROUP_PRIMARY, 20);
-        register(context, BACK, 0, CARDINAL, adv("chalk:adventure/this_way"), GROUP_PRIMARY, 30);
-        register(context, CHECK, 45, UP_DOWN_CARDINAL, Optional.empty(), GROUP_PRIMARY, 40);
-        register(context, CROSS, 45, FIXED, Optional.empty(), GROUP_PRIMARY, 50);
+        register(context, ARROW, 0, FULL, GROUP_PRIMARY, 10, Optional.empty(), false);
+        register(context, DOT, 0, FIXED, GROUP_PRIMARY, 20, Optional.empty(), false);
+        register(context, BACK, 0, CARDINAL, GROUP_PRIMARY, 30, adv("chalk:adventure/this_way"), false);
+        register(context, CHECK, 45, UP_DOWN_CARDINAL, GROUP_PRIMARY, 40, Optional.empty(), false);
+        register(context, CROSS, 45, FIXED, GROUP_PRIMARY, 50, Optional.empty(), false);
 
-        register(context, HOUSE, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/home_is_where_the_bed_is"), GROUP_SYMBOLS, 100);
-        register(context, HEART, 0, UP_DOWN_CARDINAL, adv("minecraft:husbandry/tame_an_animal"), GROUP_SYMBOLS, 110);
-        register(context, SKULL, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/sniper_duel"), GROUP_SYMBOLS, 120);
-        register(context, NOTE, 0, UP_DOWN_CARDINAL, adv("minecraft:adventure/play_jukebox_in_meadows"), GROUP_SYMBOLS, 130);
-        register(context, SUN, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/consumed_by_the_light"), GROUP_SYMBOLS, 210);
-        register(context, MOON, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/alone_in_the_darkness"), GROUP_SYMBOLS, 220);
-        register(context, STAR, 0, UP_DOWN_CARDINAL, adv("chalk:adventure/guiding_star"), GROUP_SYMBOLS, 230);
+        register(context, HOUSE, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 100, adv("chalk:adventure/home_is_where_the_bed_is"), false);
+        register(context, HEART, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 110, adv("minecraft:husbandry/tame_an_animal"), false);
+        register(context, SKULL, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 120, adv("minecraft:adventure/sniper_duel"), false);
+        register(context, NOTE, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 130, adv("minecraft:adventure/play_jukebox_in_meadows"), false);
+        register(context, SUN, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 210, adv("chalk:adventure/consumed_by_the_light"), false);
+        register(context, MOON, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 220, adv("chalk:adventure/alone_in_the_darkness"), false);
+        register(context, STAR, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 230, adv("chalk:adventure/guiding_star"), false);
 
-        register(context, SWORD, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 10);
-        register(context, SHOVEL, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 20);
-        register(context, PICKAXE, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 30);
-        register(context, AXE, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 40);
-        register(context, HOE, 0, UP_DOWN_CARDINAL, adv("minecraft:story/iron_tools"), GROUP_TOOLS, 50);
+        register(context, SWORD, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 10, adv("minecraft:story/iron_tools"), false);
+        register(context, SHOVEL, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 20, adv("minecraft:story/iron_tools"), false);
+        register(context, PICKAXE, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 30, adv("minecraft:story/iron_tools"), false);
+        register(context, AXE, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 40, adv("minecraft:story/iron_tools"), false);
+        register(context, HOE, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 50, adv("minecraft:story/iron_tools"), false);
+
+        register(context, CAT, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 10, Optional.empty(), true);
+        register(context, DOG, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 20, Optional.empty(), true);
+        register(context, DINO, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 30, Optional.empty(), true);
     }
 
     static Optional<ResourceLocation> adv(String id) {
@@ -146,10 +173,10 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
     }
 
     static void register(BootstrapContext<MarkSymbol> context, ResourceKey<MarkSymbol> key,
-                         int rotationOffset, MarkSymbol.OrientationBehavior behavior,
-                         Optional<ResourceLocation> requiredAdvancement, String group, int groupPriority) {
+                         int rotationOffset, OrientationBehavior behavior, String group, int groupPriority,
+                         Optional<ResourceLocation> requiredAdvancement, boolean supporterOnly) {
         ResourceLocation texture = key.location().withPrefix("block/mark/");
-        context.register(key, new MarkSymbol(texture, rotationOffset, behavior, requiredAdvancement, group, groupPriority));
+        context.register(key, new MarkSymbol(texture, rotationOffset, behavior, group, groupPriority, requiredAdvancement, supporterOnly));
     }
 
     // --
