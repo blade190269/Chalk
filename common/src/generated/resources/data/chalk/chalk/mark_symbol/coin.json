@@ -1,0 +1,7 @@
+{
+  "group": "supporter",
+  "group_priority": 50,
+  "orientation_behavior": "up_down_cardinal",
+  "supporter_only": true,
+  "texture": "chalk:block/mark/coin"
+}

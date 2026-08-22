@@ -80,6 +80,12 @@
   "mark_symbol.chalk.cat": "Cat",
   "mark_symbol.chalk.dog": "Dog",
   "mark_symbol.chalk.dino": "Dino",
+  "mark_symbol.chalk.crown": "Crown",
+  "mark_symbol.chalk.coin": "Coin",
+  "mark_symbol.chalk.gem": "Gem",
+  "mark_symbol.chalk.cake": "Cake",
+  "mark_symbol.chalk.flame": "Flame",
+  "mark_symbol.chalk.smirk": "Smirk",
 
   "mark_symbol_group.chalk.primary": "Primary",
   "mark_symbol_group.chalk.symbols": "Symbols",

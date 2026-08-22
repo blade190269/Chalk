@@ -79,6 +79,18 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("dog"));
     public static final ResourceKey<MarkSymbol> DINO =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("dino"));
+    public static final ResourceKey<MarkSymbol> CROWN =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("crown"));
+    public static final ResourceKey<MarkSymbol> COIN =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("coin"));
+    public static final ResourceKey<MarkSymbol> GEM =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("gem"));
+    public static final ResourceKey<MarkSymbol> CAKE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("cake"));
+    public static final ResourceKey<MarkSymbol> FLAME =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("flame"));
+    public static final ResourceKey<MarkSymbol> SMIRK =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("smirk"));
 
     public static final ResourceKey<MarkSymbol> DEFAULT = DOT;
 
@@ -178,6 +190,12 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
         register(context, CAT, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 10, Optional.empty(), true);
         register(context, DOG, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 20, Optional.empty(), true);
         register(context, DINO, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 30, Optional.empty(), true);
+        register(context, CROWN, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 40, Optional.empty(), true);
+        register(context, COIN, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 50, Optional.empty(), true);
+        register(context, GEM, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 60, Optional.empty(), true);
+        register(context, CAKE, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 80, Optional.empty(), true);
+        register(context, FLAME, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 90, Optional.empty(), true);
+        register(context, SMIRK, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 100, Optional.empty(), true);
     }
 
     static Optional<ResourceLocation> adv(String id) {

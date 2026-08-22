@@ -153,12 +153,14 @@ public class SymbolSelectScreen extends Screen {
             contentHeight += (SYMBOL_SIZE + SYMBOL_SPACING) * group.getValue().size();
         }
 
-        if (contentHeight < height * 0.75f) {
+        float edgeMargin = 0.15f;
+
+        if (contentHeight < height * (1 - edgeMargin)) {
             maxScroll = 0;
             contentY = height / 2 - contentHeight / 2;
         } else {
-            maxScroll = Math.max(0, height * 0.25f + contentHeight - height * 0.75f);
-            contentY = (int) (height * 0.25f);
+            maxScroll = Math.max(0, height * edgeMargin + contentHeight - height * (1 - edgeMargin));
+            contentY = (int) (height * edgeMargin);
         }
 
         changePerScroll = height / 8.0;

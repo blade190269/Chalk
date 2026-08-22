@@ -4,12 +4,13 @@
 - Implemented proper mark color advancement predicate
 - Fixed chalk colors on advancement icons 
 - Reverted **Heart** symbol unlocking back to `Best Friends Forever` instead of `The Parrots and the Bats` advancement
-- Included Mortaar in the mod
+- Included Mortaar library in the mod
 - Added new symbols:
   - **Hook** - unlocked by `Fishy Business` advancement
   - **Bottle** - unlocked by `Local Brewery` advancement
   - **Face** - unlocked by `Hired Help` advancement
   - **Grass** - unlocked by the new `Painting the Grass` advancement
+- Added 9 patreon supporter exclusive symbols: **Cat**, **Dog**, **Dino**, **Crown**, **Coin**, **Gem**, **Cake**, **Flame** and **Smirk**
 
 ## 2.0.0 - Snapshot1
 Chalk
@@ -28,8 +29,8 @@ Symbols
 - Added new symbols:
   - **Back** - unlocked by `This Way` advancement
   - **Sword**, **Shovel**, **Axe**, **Hoe** - unlocked by `Isn't It Iron Pick` advancement
-  - **Sun** - unlocked by the new `Consumed By The Light` advancement
-  - **Moon** - unlocked by `Alone In The Darkness` advancement
+  - **Sun** - unlocked by the new `Consumed By the Light` advancement
+  - **Moon** - unlocked by `Alone In the Darkness` advancement
   - **Star** - unlocked by the new `Guiding Star` advancement
   - **Note** - unlocked by `Sound of Music` advancement
 - Symbols are now data-driven
