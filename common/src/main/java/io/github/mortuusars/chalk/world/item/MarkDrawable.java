@@ -97,7 +97,7 @@ public interface MarkDrawable {
     default void selectSymbolAndDraw(Player player, MarkDrawingContext context) {
         if (player instanceof ServerPlayer serverPlayer) {
             List<Holder<MarkSymbol>> availableSymbols = MarkSymbol.getAllHolders(
-                        serverPlayer.registryAccess(), /*Supporters.isEligibleForGoldenRewards(player.getUUID())*/true)
+                        serverPlayer.registryAccess(), Supporters.isEligibleForGoldenRewards(player.getUUID()))
                   .filter(holder -> isSymbolAvailable(serverPlayer, context, holder))
                   .toList();
 
