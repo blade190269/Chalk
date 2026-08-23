@@ -1,39 +1,25 @@
 # Changelog
 
-## UNRELEASED
-- Changed **Chalk Box** recipe to require less paper
+## 2.0.0
+Note:
+_This release heavily changes existing chalk systems._<br>
+_Update process should be smooth for the most part, but some marks could be lost in the process._
 
-From snapshots
-- Added 'Dyeable' line to uncolored chalk tooltip
-- Fixed **Consumed By the Light** advancement expected color being wrong
-- Fixed `mark_drawn` advancement trigger not checking surface color properly
-- Fixed Chalk Boxes in loot placing glowing items in the chalk slots 
+_In any case: **backup your world before updating**._
 
-## 2.0.0 - Snapshot2
-- Added new symbols:
-  - **Hook** - unlocked by `Fishy Business` advancement
-  - **Bottle** - unlocked by `Local Brewery` advancement
-  - **Face** - unlocked by `Hired Help` advancement
-  - **Grass** - unlocked by the new `Painting the Grass` advancement
-  - Added 10 exclusive symbols for patreon supporters (Gold+): **Cat**, **Dog**, **Dino**, **Crown**, **Coin**, **Gem**, **Cake**, **Lambda**, **Flame** and **Smirk**
-- Added chalk eating
-  - Gives 30 seconds of Strength buff when eaten
-- Reverted **Heart** symbol unlocking back to `Best Friends Forever` instead of `The Parrots and the Bats` advancement
-- Included Mortaar library in the mod
-- Implemented proper mark color advancement predicate
-- Minor fixes and improvements to symbol selection interface
-- Fixed chalk colors on advancement icons 
+---
 
-## 2.0.0 - Snapshot1
 Chalk
 - 16 chalks of specific colors are replaced with a single, dyeable **Chalk** item
   - Chalks are dyed similarly to a **Leather Armor**, allowing many combinations of colors
+  - _Old items are still in the mod and will be converted to the new system on use_
+- Chalk is now edible
+  - Chalk doesn't have any nutritional value but gives 30 seconds of Strength effect
 - Chalk colors in creative inventory and in JEI are now sorted the same way as in vanilla
-- _Old items are still in the mod and will be converted to the new system on use_ 
 
 Mark
 - Mark block now supports up to 6 marks in a single block space, one for each face
-  - This allows drawing on both sides of a corner, for example
+  - This allows drawing in corners, for example
 - Drawing the same mark, but with a different color on top of already existing mark will blend their colors together
 - Improved orientation of marks drawn on the bottom side of a block
 
@@ -45,15 +31,19 @@ Symbols
   - **Moon** - unlocked by `Alone In the Darkness` advancement
   - **Star** - unlocked by the new `Guiding Star` advancement
   - **Note** - unlocked by `Sound of Music` advancement
+  - - **Hook** - unlocked by `Fishy Business` advancement
+  - **Bottle** - unlocked by `Local Brewery` advancement
+  - **Face** - unlocked by `Hired Help` advancement
+  - **Grass** - unlocked by the new `Painting the Grass` advancement
+  - **10** exclusive symbols for patreon supporters (Gold+): **Cat**, **Dog**, **Dino**, **Crown**, **Coin**, **Gem**, **Cake**, **Lambda**, **Flame** and **Smirk**
 - Symbols are now data-driven
 - Overhauled the symbol selection interface:
-  - Added proper layout and scrolling to support any number of symbols 
+  - Added proper layout and scrolling to support any number of symbols
   - Added symbol groups
   - Added smooth animations
   - Symbol name is now shown in a tooltip, instead of the action bar
   - Overlay now shows all symbols if player is in creative mode, instead of only unlocked
 - **Skull** symbol unlocking is changed from `Bound by Bone` to `Sniper Duel` advancement
-- **Heart** symbol unlocking is changed from `Best Friends Forever` to `The Parrots and the Bats` advancement
 - Changed sprite of the **House** symbol
 - Improved player's view when choosing a symbol (fixed a couple of jittering issues)
 
@@ -61,15 +51,16 @@ Chalk Box
 - Interface:
   - Changed amount of slots from **8** to **9**, arranged in a **3x3** grid
   - Changed glowings slot to be on the right side and updated glow-related visuals
-  - Added tooltip to the glow bar to show how much glow is left 
+  - Added tooltip to the glow bar to show how much glow is left
 - Reworked chalk selection mechanic:
   - Any slot with chalk can now be selected to draw with, instead of always the first one in order
   - Chalks are selected by clicking on the slot while holding [Alt]
-- Item now shows durability bar of the selected chalk 
+- Item now shows durability bar of the selected chalk
 - Item texture has been changed slightly
 - Item texture now has a small sheen animation when the box has glow
 - [Right-Clicking] the box in inventory without item now removes selected chalk, instead of opening the interface
-- Added Chalk Box crafting recipe from Cardboard, if Create is installed
+- Changed **Chalk Box** crafting recipe to require less paper
+- Added **Chalk Box** crafting recipe from Cardboard, if Create is installed
 
 Advancements
 - Added `Consumed By The Light` and `Guiding Star` advancements
@@ -77,6 +68,12 @@ Advancements
 - Added Trial Chambers to the list of structures that unlock `This Way` advancement
 - Added `chalk:mark_glowing` advancement trigger
 - Removed `Bound By Bone` advancement
+
+Misc
+- Updated mod icon
+- Bundled Mortaar library with the mod
+  - Mortaar is a library mod that will be used to aid in mod development and reduce code duplication
+  - As a player, you will not see any difference, apart from an additional mod in the mod menu
 
 Config
 - Added `symbol_unlocking` server config option
@@ -86,7 +83,7 @@ Config
 - Moved `ChalkBoxGlowingEnabled` and `ChalkBoxAmountPerGlowingItem` options from common to server config
 - Changed casing of all config options from 'PascalCase' to 'snake_case'
 - Removed whole `Symbols` category in common config; All symbol properties are now data-driven
-- Removed `GlowingMarkLightLevel` common config option
+- Removed `GlowingMarkLightLevel` common config option; Glowing marks now always have a light level of 5
 - Removed `ChalkDurability` common config option; Chalk durability can be configured with `minecraft:max_damage` component on the item
 - Removed `ChalkSymbolOffsets` client config option; Offset is part of the symbol definition.
 
