@@ -1,6 +1,6 @@
 {
-  "group_priority": 1000,
+  "group_priority": 990,
   "orientation_behavior": "up_down_cardinal",
   "supporter_only": true,
-  "texture": "chalk:block/mark/flame"
+  "texture": "chalk:block/mark/lambda"
 }

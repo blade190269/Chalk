@@ -60,19 +60,6 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
     public static final ResourceKey<MarkSymbol> GRASS =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("grass"));
 
-    public static final String GROUP_TOOLS = "tools";
-    public static final ResourceKey<MarkSymbol> PICKAXE =
-          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("pickaxe"));
-    public static final ResourceKey<MarkSymbol> AXE =
-          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("axe"));
-    public static final ResourceKey<MarkSymbol> SHOVEL =
-          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("shovel"));
-    public static final ResourceKey<MarkSymbol> SWORD =
-          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("sword"));
-    public static final ResourceKey<MarkSymbol> HOE =
-          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("hoe"));
-
-    public static final String GROUP_SUPPORTER = "supporter";
     public static final ResourceKey<MarkSymbol> CAT =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("cat"));
     public static final ResourceKey<MarkSymbol> DOG =
@@ -87,10 +74,24 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("gem"));
     public static final ResourceKey<MarkSymbol> CAKE =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("cake"));
+    public static final ResourceKey<MarkSymbol> LAMBDA =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("lambda"));
     public static final ResourceKey<MarkSymbol> FLAME =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("flame"));
     public static final ResourceKey<MarkSymbol> SMIRK =
           ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("smirk"));
+
+    public static final String GROUP_TOOLS = "tools";
+    public static final ResourceKey<MarkSymbol> PICKAXE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("pickaxe"));
+    public static final ResourceKey<MarkSymbol> AXE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("axe"));
+    public static final ResourceKey<MarkSymbol> SHOVEL =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("shovel"));
+    public static final ResourceKey<MarkSymbol> SWORD =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("sword"));
+    public static final ResourceKey<MarkSymbol> HOE =
+          ResourceKey.create(Chalk.Registries.MARK_SYMBOL, Chalk.resource("hoe"));
 
     public static final ResourceKey<MarkSymbol> DEFAULT = DOT;
 
@@ -179,23 +180,24 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
         register(context, SUN, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 200, adv("chalk:adventure/consumed_by_the_light"), false);
         register(context, MOON, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 210, adv("chalk:adventure/alone_in_the_darkness"), false);
         register(context, STAR, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 220, adv("chalk:adventure/guiding_star"), false);
-        register(context, GRASS, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 230, adv("chalk:adventure/paint_the_grass"), false);
+        register(context, GRASS, 0, CARDINAL, GROUP_SYMBOLS, 230, adv("chalk:adventure/paint_the_grass"), false);
 
-        register(context, SWORD, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 10, adv("minecraft:story/iron_tools"), false);
-        register(context, SHOVEL, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 20, adv("minecraft:story/iron_tools"), false);
-        register(context, PICKAXE, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 30, adv("minecraft:story/iron_tools"), false);
-        register(context, AXE, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 40, adv("minecraft:story/iron_tools"), false);
-        register(context, HOE, 0, UP_DOWN_CARDINAL, GROUP_TOOLS, 50, adv("minecraft:story/iron_tools"), false);
+        register(context, CAT, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 910, Optional.empty(), true);
+        register(context, DOG, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 920, Optional.empty(), true);
+        register(context, DINO, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 930, Optional.empty(), true);
+        register(context, CROWN, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 940, Optional.empty(), true);
+        register(context, COIN, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 950, Optional.empty(), true);
+        register(context, GEM, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 960, Optional.empty(), true);
+        register(context, CAKE, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 980, Optional.empty(), true);
+        register(context, LAMBDA, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 990, Optional.empty(), true);
+        register(context, FLAME, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 1000, Optional.empty(), true);
+        register(context, SMIRK, 0, UP_DOWN_CARDINAL, GROUP_SYMBOLS, 1010, Optional.empty(), true);
 
-        register(context, CAT, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 10, Optional.empty(), true);
-        register(context, DOG, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 20, Optional.empty(), true);
-        register(context, DINO, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 30, Optional.empty(), true);
-        register(context, CROWN, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 40, Optional.empty(), true);
-        register(context, COIN, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 50, Optional.empty(), true);
-        register(context, GEM, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 60, Optional.empty(), true);
-        register(context, CAKE, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 80, Optional.empty(), true);
-        register(context, FLAME, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 90, Optional.empty(), true);
-        register(context, SMIRK, 0, UP_DOWN_CARDINAL, GROUP_SUPPORTER, 100, Optional.empty(), true);
+        register(context, SWORD, 0, CARDINAL, GROUP_TOOLS, 10, adv("minecraft:story/iron_tools"), false);
+        register(context, SHOVEL, 0, CARDINAL, GROUP_TOOLS, 20, adv("minecraft:story/iron_tools"), false);
+        register(context, PICKAXE, 0, CARDINAL, GROUP_TOOLS, 30, adv("minecraft:story/iron_tools"), false);
+        register(context, AXE, 0, CARDINAL, GROUP_TOOLS, 40, adv("minecraft:story/iron_tools"), false);
+        register(context, HOE, 0, CARDINAL, GROUP_TOOLS, 50, adv("minecraft:story/iron_tools"), false);
     }
 
     static Optional<ResourceLocation> adv(String id) {

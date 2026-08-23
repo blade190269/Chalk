@@ -36,7 +36,7 @@ public class Config {
                 builder.push("chalk");
                 CHALK_DYE_COLORS_DEFINITION = builder
                       .comment("Defines which color a specific dye would have when applied to a chalk item.")
-                      .define("chalk_dye_colors", List.of(
+                      .defineList("chalk_dye_colors", () -> List.of(
                             "white:#FFFFFF",
                             "light_gray:#BDBFBE",
                             "gray:#818285",
@@ -53,7 +53,7 @@ public class Config {
                             "purple:#C061FF",
                             "magenta:#F85EC4",
                             "pink:#FF87A9"
-                      ), Server::validateChalkColorsDefinition);
+                      ), () -> "", Server::validateChalkColorsDefinition);
 
                 ADD_DYED_CHALKS_TO_TAB = builder
                       .comment("Colored chalks will be added to creative menu and JEI", "Default: true")
@@ -107,46 +107,35 @@ public class Config {
         }
 
         private static boolean validateChalkColorsDefinition(Object object) {
-            if (object == null) {
-                return false;
-            }
-
-            if (!(object instanceof List<?> list)) {
+            if (!(object instanceof String value)) {
                 Chalk.LOGGER.error("[{}] is not valid value for chalk_colors.", object);
                 return false;
             }
 
-            for (Object listObject : list) {
-                if (!(listObject instanceof String str)) {
-                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping.", listObject);
-                    return false;
-                }
+            if (!value.contains(":")) {
+                Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", value);
+                return false;
+            }
 
-                if (!str.contains(":")) {
-                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", str);
-                    return false;
-                }
+            String[] split = value.trim().split(":");
 
-                String[] split = str.trim().split(":");
+            if (split.length != 2) {
+                Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", value);
+                return false;
+            }
 
-                if (split.length != 2) {
-                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", str);
-                    return false;
-                }
+            @Nullable DyeColor dyeColor = DyeColor.byName(split[0].trim(), null);
 
-                @Nullable DyeColor dyeColor = DyeColor.byName(split[0].trim(), null);
+            if (dyeColor == null) {
+                Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a known DyeColor.", value, split[0].trim());
+                return false;
+            }
 
-                if (dyeColor == null) {
-                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a known DyeColor.", str, split[0].trim());
-                    return false;
-                }
-
-                try {
-                    Long.parseLong(split[1].trim().replace("#", ""), 16);
-                } catch (NumberFormatException e) {
-                    Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a valid hex color value.", str, split[1].trim());
-                    return false;
-                }
+            try {
+                Long.parseLong(split[1].trim().replace("#", ""), 16);
+            } catch (NumberFormatException e) {
+                Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a valid hex color value.", value, split[1].trim());
+                return false;
             }
 
             return true;
@@ -208,7 +197,7 @@ public class Config {
             SYMBOL_SELECTION_GROUP_SORTING = builder
                   .comment("Defines how groups will be sorted in symbol selection overlay.",
                         "Undefined groups will be sorted alphabetically and placed after defined ones.")
-                  .define("symbol_selection_groups_sorting", List.of("primary", "symbols", "tools", "supporter"));
+                  .defineList("symbol_selection_groups_sorting", () -> List.of("primary", "symbols", "tools"), () -> "", o -> o instanceof String);
 
             CHALK_BOX_TOOLTIP_CONTENTS = builder
                   .comment("Contents of the Chalk Box will be shown in item's tooltip.")

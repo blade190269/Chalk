@@ -1,6 +1,5 @@
 {
-  "group": "supporter",
-  "group_priority": 20,
+  "group_priority": 920,
   "orientation_behavior": "up_down_cardinal",
   "supporter_only": true,
   "texture": "chalk:block/mark/dog"

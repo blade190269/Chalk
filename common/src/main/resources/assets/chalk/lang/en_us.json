@@ -34,6 +34,7 @@
   "container.chalk.chalk_box": "Chalk Box",
 
   "gui.chalk.mark_symbol.unlocked_by": "Unlocked by: %s",
+  "gui.chalk.mark_symbol.supporter_exclusive": "Supporter Exclusive",
   "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
 
   "chat.chalk.symbol_unlocked": "You learned how to draw %s with chalk",
@@ -84,13 +85,13 @@
   "mark_symbol.chalk.coin": "Coin",
   "mark_symbol.chalk.gem": "Gem",
   "mark_symbol.chalk.cake": "Cake",
+  "mark_symbol.chalk.lambda": "Lambda",
   "mark_symbol.chalk.flame": "Flame",
   "mark_symbol.chalk.smirk": "Smirk",
 
   "mark_symbol_group.chalk.primary": "Primary",
   "mark_symbol_group.chalk.symbols": "Symbols",
   "mark_symbol_group.chalk.tools": "Tools",
-  "mark_symbol_group.chalk.supporter": "Supporter Exclusive",
 
   "subtitles.chalk.chalk_broken": "Chalk breaks",
   "subtitles.chalk.mark_drawn": "Chalk draws",

@@ -1,6 +1,5 @@
 {
-  "group": "supporter",
-  "group_priority": 30,
+  "group_priority": 930,
   "orientation_behavior": "up_down_cardinal",
   "supporter_only": true,
   "texture": "chalk:block/mark/dino"

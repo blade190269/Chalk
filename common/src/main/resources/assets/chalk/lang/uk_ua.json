@@ -34,6 +34,7 @@
   "container.chalk.chalk_box": "Коробка для Крейди",
 
   "gui.chalk.mark_symbol.unlocked_by": "Відкриваєтся з: %s",
+  "gui.chalk.mark_symbol.supporter_exclusive": "Ексклюзивний Для Меценатів",
   "gui.chalk.no_symbols_unlocked": "Ви поки не знаєте як намалювати скийсь символ",
 
   "chat.chalk.symbol_unlocked": "Ви навчилися малювати %s крейдою",
@@ -84,13 +85,13 @@
   "mark_symbol.chalk.coin": "Монета",
   "mark_symbol.chalk.gem": "Самоцвіт",
   "mark_symbol.chalk.cake": "Тортик",
+  "mark_symbol.chalk.lambda": "Лямбда",
   "mark_symbol.chalk.flame": "Полум’я",
   "mark_symbol.chalk.smirk": "Усмішка",
 
   "mark_symbol_group.chalk.primary": "Основні",
   "mark_symbol_group.chalk.symbols": "Символи",
   "mark_symbol_group.chalk.tools": "Інструменти",
-  "mark_symbol_group.chalk.supporter": "Ексклюзивні Для Меценатів",
 
   "subtitles.chalk.chalk_broken": "Крейда ламається",
   "subtitles.chalk.mark_drawn": "Крейда малює",

@@ -65,7 +65,7 @@ public record ChalkBoxContents(List<ItemStack> items, int glow, int selected) im
         }
 
         if (selected <= -1) {
-            for (int i = 0; i < items.size(); i++) {
+            for (int i = 0; i < CHALK_SLOTS; i++) {
                 if (!getItem(i).isEmpty()) {
                     return i;
                 }

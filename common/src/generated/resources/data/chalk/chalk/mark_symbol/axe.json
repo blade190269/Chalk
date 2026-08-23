@@ -1,7 +1,7 @@
 {
   "group": "tools",
   "group_priority": 40,
-  "orientation_behavior": "up_down_cardinal",
+  "orientation_behavior": "cardinal",
   "required_advancement": "minecraft:story/iron_tools",
   "texture": "chalk:block/mark/axe"
 }

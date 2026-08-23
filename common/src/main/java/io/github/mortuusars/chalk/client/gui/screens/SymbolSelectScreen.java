@@ -30,6 +30,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -45,6 +46,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SymbolSelectScreen extends Screen {
+    protected static final ResourceLocation BORDER_REGULAR_SPRITE = Chalk.resource("symbol_selection/border_regular");
+    protected static final ResourceLocation BORDER_GOLD_SPRITE = Chalk.resource("symbol_selection/border_gold");
+    protected static final ResourceLocation BORDER_HOVERED_SPRITE = Chalk.resource("symbol_selection/border_hovered");
+
     protected int SYMBOL_SIZE = 32;
     protected int SYMBOL_SPACING = 8;
     protected int SYMBOL_BORDER_THICKNESS = SYMBOL_SIZE / 16;
@@ -97,6 +102,7 @@ public class SymbolSelectScreen extends Screen {
     @Nullable
     protected Mark hoveredMark;
     protected boolean mouseWasReleased;
+    protected float edgeMargin = 0.15f;
 
     public SymbolSelectScreen(List<Holder<MarkSymbol>> symbols, MarkDrawingContext context) {
         super(Component.empty());
@@ -153,8 +159,6 @@ public class SymbolSelectScreen extends Screen {
             contentHeight += (SYMBOL_SIZE + SYMBOL_SPACING) * group.getValue().size();
         }
 
-        float edgeMargin = 0.15f;
-
         if (contentHeight < height * (1 - edgeMargin)) {
             maxScroll = 0;
             contentY = height / 2 - contentHeight / 2;
@@ -190,7 +194,7 @@ public class SymbolSelectScreen extends Screen {
     }
 
     protected List<List<Mark>> createRows(List<Holder<MarkSymbol>> symbols) {
-        int maxSymbolsInRow = Math.max(1, (int) ((width * 0.7f) / (SYMBOL_SIZE + SYMBOL_SPACING)));
+        int maxSymbolsInRow = Math.max(1, (int) ((width * (1f - edgeMargin * 2)) / (SYMBOL_SIZE + SYMBOL_SPACING)));
 
         List<Mark> marks = symbols.stream()
               .sorted(Comparator.comparingInt(symbol -> symbol.value().groupPriority()))
@@ -340,11 +344,13 @@ public class SymbolSelectScreen extends Screen {
         mark.symbol().unwrapKey()
               .map(ResourceKey::location)
               .ifPresent(location -> {
-                  @SuppressWarnings("deprecation")
-                  String namespace = WordUtils.capitalizeFully(location.getNamespace().replace("_", " "));
-
                   List<FormattedCharSequence> lines = new ArrayList<>();
                   lines.add(Component.translatable(location.toLanguageKey("mark_symbol")).getVisualOrderText());
+
+                  if (mark.symbol().value().supporterOnly()) {
+                      lines.add(Component.translatable("gui.chalk.mark_symbol.supporter_exclusive").withStyle(ChatFormatting.GOLD)
+                            .getVisualOrderText());
+                  }
 
                   if (player.isCreative() && Minecraft.getInstance().options.advancedItemTooltips) {
                       mark.symbol().value().requiredAdvancement().ifPresent(advancementId -> lines.add(
@@ -353,7 +359,10 @@ public class SymbolSelectScreen extends Screen {
                                   .withStyle(ChatFormatting.GRAY).getVisualOrderText()));
                   }
 
-                  lines.add(Component.literal(namespace).withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(true)).getVisualOrderText());
+                  @SuppressWarnings("deprecation")
+                  String namespace = WordUtils.capitalizeFully(location.getNamespace().replace("_", " "));
+                  lines.add(Component.literal(namespace).withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(true))
+                        .getVisualOrderText());
 
                   graphics.renderTooltip(font, lines, x, y);
               });
@@ -367,10 +376,13 @@ public class SymbolSelectScreen extends Screen {
     }
 
     protected void renderMarkButton(GuiGraphics graphics, int mouseX, int mouseY, Mark mark, int x, int y, boolean isHovering) {
-        int borderColor = isHovering ? hoverBorderColor : DEFAULT_BORDER_COLOR;
-        borderColor = FastColor.ARGB32.lerp(openAnimation, FastColor.ARGB32.color(0x00, borderColor), borderColor);
-        graphics.fill(x - SYMBOL_BORDER_THICKNESS, y - SYMBOL_BORDER_THICKNESS,
-              x + SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS, y + SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS, borderColor);
+        ResourceLocation borderSprite = isHovering
+              ? BORDER_HOVERED_SPRITE
+              : mark.symbol().value().supporterOnly()
+              ? BORDER_GOLD_SPRITE
+              : BORDER_REGULAR_SPRITE;
+        graphics.blitSprite(borderSprite, x - SYMBOL_BORDER_THICKNESS, y - SYMBOL_BORDER_THICKNESS,
+              SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS * 2, SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS * 2);
 
         renderBlockSurface(graphics, mouseX, mouseY, x, y);
 
@@ -379,20 +391,10 @@ public class SymbolSelectScreen extends Screen {
         RenderSystem.enableBlend();
 
         graphics.pose().pushPose();
-
         graphics.pose().translate(x + SYMBOL_SIZE / 2f, y + SYMBOL_SIZE / 2f, 0);
 
-        int rotation = mark.symbol().value().orientationBehavior() == MarkSymbol.OrientationBehavior.FULL || mark.symbol().value().orientationBehavior() == MarkSymbol.OrientationBehavior.CARDINAL
-              ? mark.orientation().getRotation()
-              : 0;
-
-        //TODO: fix
-        if (mark.symbol().value().orientationBehavior() == MarkSymbol.OrientationBehavior.FULL) {
-            rotation += player.getDirection().get2DDataValue() * 90 + 180;
-            rotation %= 360;
-        }
-
-        graphics.pose().mulPose(Axis.ZP.rotationDegrees(rotation + mark.symbol().value().rotationOffset()));
+        float rotation = calculateMarkRoration(mark);
+        graphics.pose().mulPose(Axis.ZP.rotationDegrees(rotation));
         graphics.pose().translate(-x - SYMBOL_SIZE / 2f, -y - SYMBOL_SIZE / 2f, 100);
         graphics.blit(mark.symbol().value().texture().withPrefix("textures/").withSuffix(".png"),
               x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);
@@ -407,6 +409,25 @@ public class SymbolSelectScreen extends Screen {
               FastColor.ARGB32.lerp(openAnimation, 0x33000000, 0x00AAAAAA),
               FastColor.ARGB32.lerp(openAnimation, 0x33000000, 0x2F000000));
         graphics.pose().popPose();
+    }
+
+    protected float calculateMarkRoration(Mark mark) {
+        if (context.markFacing().getAxis().isHorizontal()) {
+            return mark.orientation().getRotation() + mark.symbol().value().rotationOffset();
+        } else if (context.markFacing() == Direction.UP) {
+            int viewRot = (player.getDirection().get2DDataValue() * 90 + 180) % 360;
+            return mark.orientation().getRotation() - viewRot + mark.symbol().value().rotationOffset();
+        } else {
+            // Down orientation for some symbols is still wrong in some cases.
+            // Maybe I'll fix it in the future.
+            int viewRot = (player.getDirection().get2DDataValue() * 90) % 360;
+            int orientationRot = mark.orientation().getRotation();
+            if (mark.symbol().value().orientationBehavior() == MarkSymbol.OrientationBehavior.FULL
+                  || mark.symbol().value().orientationBehavior() == MarkSymbol.OrientationBehavior.CARDINAL) {
+                orientationRot = (orientationRot + 180) % 360;
+            }
+            return orientationRot - viewRot + mark.symbol().value().rotationOffset();
+        }
     }
 
     @SuppressWarnings("DataFlowIssue")
@@ -424,17 +445,21 @@ public class SymbolSelectScreen extends Screen {
         int xRot = 0;
         int yRot = 0;
 
-        if (markFacing == Direction.UP)
+        if (markFacing == Direction.UP) {
             xRot = -90;
-        else if (markFacing == Direction.DOWN)
+        } else if (markFacing == Direction.DOWN) {
             xRot = 90;
-
-        if (markFacing == Direction.EAST)
+        } else if (markFacing == Direction.EAST) {
             yRot = 270;
-        else if (markFacing == Direction.NORTH)
+        } else if (markFacing == Direction.NORTH) {
             yRot = 180;
-        else if (markFacing == Direction.WEST)
+        } else if (markFacing == Direction.WEST) {
             yRot = 90;
+        }
+
+        if (markFacing == Direction.UP || markFacing == Direction.DOWN) {
+            yRot = player.getDirection().get2DDataValue() * 90 + 180;
+        }
 
         graphics.pose().translate(SYMBOL_SIZE / 2f, SYMBOL_SIZE / 2f, SYMBOL_SIZE / 2f);
         graphics.pose().mulPose(Axis.XP.rotationDegrees(xRot - 0.1f));
