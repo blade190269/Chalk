@@ -1,17 +1,19 @@
 # Changelog
 
-## UNRELEASED - Snapshot2
-- Implemented proper mark color advancement predicate
-- Fixed chalk colors on advancement icons 
-- Reverted **Heart** symbol unlocking back to `Best Friends Forever` instead of `The Parrots and the Bats` advancement
+## 2.0.0 - Snapshot2
 - Added new symbols:
   - **Hook** - unlocked by `Fishy Business` advancement
   - **Bottle** - unlocked by `Local Brewery` advancement
   - **Face** - unlocked by `Hired Help` advancement
   - **Grass** - unlocked by the new `Painting the Grass` advancement
-  - Added 10 exclusive patreon supporter symbols: **Cat**, **Dog**, **Dino**, **Crown**, **Coin**, **Gem**, **Cake**, **Lambda**, **Flame** and **Smirk**
-- Minor fixes and improvements to symbol selection interface
+  - Added 10 exclusive symbols for patreon supporters (Gold+): **Cat**, **Dog**, **Dino**, **Crown**, **Coin**, **Gem**, **Cake**, **Lambda**, **Flame** and **Smirk**
+- Added chalk eating
+  - Gives 30 seconds of Strength buff when eaten
+- Reverted **Heart** symbol unlocking back to `Best Friends Forever` instead of `The Parrots and the Bats` advancement
 - Included Mortaar library in the mod
+- Implemented proper mark color advancement predicate
+- Minor fixes and improvements to symbol selection interface
+- Fixed chalk colors on advancement icons 
 
 ## 2.0.0 - Snapshot1
 Chalk

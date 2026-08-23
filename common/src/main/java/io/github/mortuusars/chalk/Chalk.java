@@ -21,6 +21,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -90,6 +93,7 @@ public class Chalk {
     public static class BlockEntityTypes {
         public static final Supplier<BlockEntityType<MarkBlockEntity>> MARK = Register.blockEntityType("mark",
               () -> Register.newBlockEntityType(MarkBlockEntity::new, Blocks.MARK.get()));
+        @SuppressWarnings("removal")
         @Deprecated(since = "2.0.0", forRemoval = true)
         public static final Supplier<BlockEntityType<OldMarkBlockEntity>> CHALK_MARK = Register.blockEntityType("chalk_mark",
               () -> Register.newBlockEntityType(OldMarkBlockEntity::new, Blocks.MARKS.values().stream().map(Supplier::get).toArray(Block[]::new)));
@@ -98,16 +102,25 @@ public class Chalk {
         }
     }
 
+    public static class Foods {
+        public static final FoodProperties CHALK = new FoodProperties.Builder()
+              .effect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 600, 0), 1.0F)
+              .alwaysEdible()
+              .build();
+    }
+
     public static class Items {
         public static final Supplier<ChalkItem> CHALK = Register.item("chalk",
               () -> new ChalkItem(new Item.Properties()
                     .stacksTo(1)
-                    .durability(64)));
+                    .durability(64)
+                    .food(Foods.CHALK)));
 
         public static final Supplier<ChalkBoxItem> CHALK_BOX = Register.item("chalk_box",
               () -> new ChalkBoxItem(new Item.Properties()
                     .stacksTo(1)));
 
+        @SuppressWarnings("removal")
         @Deprecated(since = "2.0.0", forRemoval = true)
         public static Map<DyeColor, Supplier<OldChalkItem>> CHALKS = Util.make(new LinkedHashMap<>(), map -> {
             for (DyeColor color : ChalkColors.COLORS.keySet()) {

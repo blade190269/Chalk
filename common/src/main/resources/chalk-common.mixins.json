@@ -9,9 +9,10 @@
     "single_mark_outline.LevelRendererMixin"
   ],
   "mixins": [
-    "chalk_dye_colors.DyedItemColorMixin",
     "advancements.PlayerAdvancementsMixin",
-    "advancements.PlayerMixin"
+    "advancements.PlayerMixin",
+    "chalk_dye_colors.DyedItemColorMixin",
+    "chalk_item_particles.LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -57,7 +57,6 @@ public class ChalkItem extends Item implements MarkDrawable {
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
-        InteractionHand hand = context.getHand();
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
 
