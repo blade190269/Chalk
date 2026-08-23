@@ -13,13 +13,13 @@
         "mark": {
           "color": {
             "blue": {
-              "max": 200
+              "min": 200
             },
             "green": {
-              "max": 200
+              "min": 200
             },
             "red": {
-              "max": 200
+              "min": 200
             }
           }
         },

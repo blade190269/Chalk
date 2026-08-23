@@ -6,7 +6,8 @@
   "client": [
     "creative_mark_breaking.MultiPlayerGameModeMixin",
     "keep_sneaking_while_selecting.LocalPlayerMixin",
-    "single_mark_outline.LevelRendererMixin"
+    "single_mark_outline.LevelRendererMixin",
+    "tooltip.ClientTooltipComponentMixin"
   ],
   "mixins": [
     "advancements.PlayerAdvancementsMixin",

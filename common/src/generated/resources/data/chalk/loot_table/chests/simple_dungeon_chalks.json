@@ -91,6 +91,7 @@
                       "id": "chalk:chalk"
                     },
                     {},
+                    {},
                     {
                       "count": 7,
                       "id": "minecraft:glowstone_dust"
@@ -147,6 +148,7 @@
                       "id": "chalk:chalk"
                     },
                     {},
+                    {},
                     {
                       "count": 1,
                       "id": "minecraft:glow_ink_sac"
@@ -180,6 +182,7 @@
                       "id": "chalk:chalk"
                     },
                     {},
+                    {},
                     {
                       "components": {
                         "minecraft:dyed_color": {
@@ -189,7 +192,6 @@
                       "count": 1,
                       "id": "chalk:chalk"
                     },
-                    {},
                     {},
                     {
                       "components": {

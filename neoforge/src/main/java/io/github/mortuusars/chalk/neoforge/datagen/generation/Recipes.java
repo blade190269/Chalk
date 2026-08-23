@@ -26,7 +26,6 @@ public class Recipes extends RecipeProvider {
                 .unlockedBy("has_chalk", has(Chalk.Items.CHALK.get()))
                 .unlockedBy("has_paper", has(Items.PAPER))
                 .unlockedBy("has_slimeball", has(Tags.Items.SLIME_BALLS))
-                .pattern("P P")
                 .pattern("PSP")
                 .pattern("PPP")
                 .define('P', Items.PAPER)

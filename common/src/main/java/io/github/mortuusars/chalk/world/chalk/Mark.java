@@ -10,6 +10,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.util.FastColor;
 
+import java.util.Objects;
+
 public record Mark(Holder<MarkSymbol> symbol, int color, SymbolOrientation orientation, boolean glowing) {
     public static final Codec<Mark> CODEC = RecordCodecBuilder.create(i -> i.group(
           RegistryFixedCodec.create(Chalk.Registries.MARK_SYMBOL).fieldOf("symbol").forGetter(Mark::symbol),
@@ -42,5 +44,17 @@ public record Mark(Holder<MarkSymbol> symbol, int color, SymbolOrientation orien
         return other.symbol().equals(symbol())
               && other.orientation() == orientation()
               && other.color() != color();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Mark mark = (Mark) object;
+        return color == mark.color && orientation == mark.orientation && glowing == mark.glowing && Objects.equals(symbol, mark.symbol);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(symbol, color, orientation, glowing);
     }
 }

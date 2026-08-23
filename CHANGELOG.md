@@ -1,5 +1,13 @@
 # Changelog
 
+## UNRELEASED
+- Changed **Chalk Box** recipe to require less paper
+
+From snapshots
+- Added 'Dyeable' line to uncolored chalk tooltip
+- Fixed **Consumed By the Light** advancement expected color being wrong
+- Fixed Chalk Boxes in loot placing glowing items in the chalk slots 
+
 ## 2.0.0 - Snapshot2
 - Added new symbols:
   - **Hook** - unlocked by `Fishy Business` advancement

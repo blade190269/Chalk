@@ -18,6 +18,7 @@
   "item.chalk.purple_chalk": "Purple Chalk",
   "item.chalk.magenta_chalk": "Magenta Chalk",
   "item.chalk.pink_chalk": "Pink Chalk",
+  "item.chalk.chalk.tooltip.dyeable": "Dyeable",
   "item.chalk.chalk.tooltip.deprecated": "This item is deprecated and will be removed in the future.",
   "item.chalk.chalk.tooltip.deprecated_use_to_convert": "[Use] to convert to the proper item.",
 

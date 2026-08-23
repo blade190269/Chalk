@@ -8,8 +8,10 @@ import io.github.mortuusars.chalk.world.chalk.ChalkColors;
 import io.github.mortuusars.chalk.event.CommonEvents;
 import io.github.mortuusars.chalk.network.fabric.FabricC2SPackets;
 import io.github.mortuusars.chalk.network.fabric.FabricS2CPackets;
+import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
@@ -34,6 +36,7 @@ public class ChalkFabric implements ModInitializer {
         NeoForgeConfigRegistry.INSTANCE.register(Chalk.ID, ModConfig.Type.SERVER, Config.Server.SPEC);
         NeoForgeConfigRegistry.INSTANCE.register(Chalk.ID, ModConfig.Type.COMMON, Config.Common.SPEC);
         NeoForgeConfigRegistry.INSTANCE.register(Chalk.ID, ModConfig.Type.CLIENT, Config.Client.SPEC);
+
         NeoForgeModConfigEvents.loading(Chalk.ID).register(config -> {
             if (config.getType() == ModConfig.Type.SERVER) {
                 Config.Server.loading();
@@ -47,7 +50,11 @@ public class ChalkFabric implements ModInitializer {
 
         CommonEvents.commonSetup();
 
+        DynamicRegistries.registerSynced(Chalk.Registries.MARK_SYMBOL, MarkSymbol.DIRECT_CODEC, MarkSymbol.DIRECT_CODEC);
+
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(event -> {
+            event.accept(new ItemStack(Chalk.Items.CHALK.get()));
+
             if (Config.Server.ADD_DYED_CHALKS_TO_TAB.get()) {
                 for (DyeColor dyeColor : ChalkColors.ORDERED_DYE_COLORS) {
                     if (dyeColor == DyeColor.WHITE) {

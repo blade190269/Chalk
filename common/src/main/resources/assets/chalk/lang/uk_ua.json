@@ -18,6 +18,7 @@
   "item.chalk.purple_chalk": "Фіолетова Крейда",
   "item.chalk.magenta_chalk": "Пурпурова Крейда",
   "item.chalk.pink_chalk": "Рожева Крейда",
+  "item.chalk.chalk.tooltip.dyeable": "Може бути пофарбованою",
   "item.chalk.chalk.tooltip.deprecated": "Цей предмет застарів і буде видалений у майбутньому.",
   "item.chalk.chalk.tooltip.deprecated_use_to_convert": "[Використайте], щоб замінити на правильний предмет.",
 
