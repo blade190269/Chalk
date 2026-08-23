@@ -226,6 +226,8 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
             return InteractionResult.SUCCESS;
         }
 
+        convertOldChalks(player, hand, stack);
+
         if (!(selectedChalk.getItem() instanceof MarkDrawable)) {
             Chalk.LOGGER.error("Cannot draw mark using a Chalk Box: selected chalk is not a drawable item, but {}.", selectedChalk.getItem());
             player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
@@ -256,6 +258,8 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isSecondaryUseActive()) {
+            convertOldChalks(player, hand, stack);
+
             ChalkBoxContents contents = getContents(stack);
             if (contents.getChalkCount() <= 1) {
                 player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
@@ -283,7 +287,6 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
         return InteractionResultHolder.consume(stack);
     }
 
-    @SuppressWarnings("removal")
     public void open(ServerPlayer player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
@@ -292,18 +295,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
             return;
         }
 
-        ChalkBoxContents contents = getContents(stack);
-        if (contents.items().stream().anyMatch(s -> s.getItem() instanceof OldChalkItem)) {
-            List<ItemStack> items = contents.copyItems().stream()
-                  .map(s -> {
-                      if (s.getItem() instanceof OldChalkItem oldChalkItem) {
-                          return oldChalkItem.convert(s);
-                      }
-                      return s;
-                  })
-                  .toList();
-            player.setItemInHand(hand, contents.mutable().setItems(items).toImmutable(stack));
-        }
+        convertOldChalks(player, hand, stack);
 
         Component title = stack.has(DataComponents.CUSTOM_NAME)
               ? stack.getHoverName()
@@ -317,6 +309,22 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
         player.level().playSound(null, player.position().x, player.position().y, player.position().z,
               Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
               0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
+    }
+
+    @SuppressWarnings("removal")
+    protected void convertOldChalks(Player player, InteractionHand hand, ItemStack stack) {
+        ChalkBoxContents contents = getContents(stack);
+        if (contents.items().stream().anyMatch(s -> s.getItem() instanceof OldChalkItem)) {
+            List<ItemStack> items = contents.copyItems().stream()
+                  .map(s -> {
+                      if (s.getItem() instanceof OldChalkItem oldChalkItem) {
+                          return oldChalkItem.convert(s);
+                      }
+                      return s;
+                  })
+                  .toList();
+            player.setItemInHand(hand, contents.mutable().setItems(items).toImmutable(stack));
+        }
     }
 
     // -- Drawable

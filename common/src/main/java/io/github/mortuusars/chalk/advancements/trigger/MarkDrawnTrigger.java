@@ -79,9 +79,9 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
             return (this.item.isEmpty() || this.item.get().test(item))
                   && (this.location.isEmpty() || this.location.get().matches(player.serverLevel(), markPos.getX(), markPos.getY(), markPos.getZ()))
                   && (this.mark.isEmpty() || this.mark.get().matches(mark))
-                  && (this.surfaceBlock.isEmpty() || this.surfaceBlock.get().matches(player.serverLevel(), surfacePos)
+                  && (this.surfaceBlock.isEmpty() || this.surfaceBlock.get().matches(player.serverLevel(), surfacePos))
                   && (this.surfaceColor.isEmpty() || this.surfaceColor.get().matches(
-                        player.serverLevel().getBlockState(surfacePos).getMapColor(player.serverLevel(), surfacePos))));
+                        player.serverLevel().getBlockState(surfacePos).getMapColor(player.serverLevel(), surfacePos)));
         }
     }
 

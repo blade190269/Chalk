@@ -6,6 +6,7 @@
 From snapshots
 - Added 'Dyeable' line to uncolored chalk tooltip
 - Fixed **Consumed By the Light** advancement expected color being wrong
+- Fixed `mark_drawn` advancement trigger not checking surface color properly
 - Fixed Chalk Boxes in loot placing glowing items in the chalk slots 
 
 ## 2.0.0 - Snapshot2
