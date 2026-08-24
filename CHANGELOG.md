@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0
+## 2.0.0 - 2026-08-24
 Note:
 _This release heavily changes existing chalk systems._<br>
 _Update process should be smooth for the most part, but some marks could be lost in the process._
