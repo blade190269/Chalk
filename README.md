@@ -1,7 +1,8 @@
 <div align=center>
-<a href="https://www.curseforge.com/minecraft/mc-mods/chalk"><img src="https://i.imgur.com/R28CPFc.png" width="256"><a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/chalk"><img src="https://raw.githubusercontent.com/mortuusars/resources/main/media/chalk/main.png" width="256"><a>
   
-Forge mod for Minecraft.
+Mod for drawing with chalk in Minecraft
+
 ### [Changelog](CHANGELOG.md)
   
 [Curseforge](https://www.curseforge.com/minecraft/mc-mods/chalk)
