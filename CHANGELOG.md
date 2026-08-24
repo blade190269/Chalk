@@ -31,7 +31,7 @@ Symbols
   - **Moon** - unlocked by `Alone In the Darkness` advancement
   - **Star** - unlocked by the new `Guiding Star` advancement
   - **Note** - unlocked by `Sound of Music` advancement
-  - - **Hook** - unlocked by `Fishy Business` advancement
+  - **Hook** - unlocked by `Fishy Business` advancement
   - **Bottle** - unlocked by `Local Brewery` advancement
   - **Face** - unlocked by `Hired Help` advancement
   - **Grass** - unlocked by the new `Painting the Grass` advancement
